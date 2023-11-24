@@ -20,17 +20,29 @@ model Role {
 }
 
 model User {
-  id                Int      @id @default(autoincrement())
-  uuid              String
-  name              String
-  email             String   @unique
-  phone             Int      @unique
-  password          String
-  resetToken        String?   @map("reset_token")
-  roleId            Int      @map("role_id")
-  verified          Boolean  @default(false)
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  id           Int           @id @default(autoincrement())
+  uuid         String        @default(uuid())
+  name         String
+  email        String        @unique
+  phone        Int           @unique
+  password     String
+  resetToken   String?       @map("reset_token")
+  roleId       Int           @map("role_id")
+  verified     Boolean       @default(false)
+  photoProfile PhotoProfile?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model PhotoProfile {
+  id        Int      @id @default(autoincrement())
+  urlPhoto  String   @map("url_photo")
+  userId    Int      @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("photo_profiles")
 }
