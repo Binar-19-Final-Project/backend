@@ -7,6 +7,7 @@ const usedRoleName = new Set()
 const usedUserId = new Set()
 const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
+const usedCourseLevel = new Set()
 
 async function seedData()  {
     /* Reset database before run seeder */
@@ -109,6 +110,22 @@ async function seedData()  {
         }
   
       await db.courseType.create({ data: seedCourseType })
+    }
+
+    /* Course Type Seeder */
+    for (let i = 0; i < 3; i++) {
+      let courseLevel
+        do {
+          courseLevel = faker.helpers.arrayElement(['Beginner', 'Intermediate', 'Advanced'])
+        } while (usedCourseLevel.has(courseLevel))
+    
+        usedCourseLevel.add(courseLevel)
+    
+        const seedCourseLevel = {
+          name: courseLevel,
+        }
+  
+      await db.courseLevel.create({ data: seedCourseLevel })
     }
 
     /* Disconnect Prisma Connection */
