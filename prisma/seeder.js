@@ -10,6 +10,7 @@ const usedCourseType = new Set()
 const usedCourseLevel = new Set()
 const usedCoursePromoName = new Set()
 
+
 async function seedData()  {
     /* Reset database before run seeder */
       /* Delete all data in table */
@@ -17,11 +18,19 @@ async function seedData()  {
     await db.$transaction([db.role.deleteMany()])
     await db.$transaction([db.photoProfile.deleteMany()])
     await db.$transaction([db.courseCategory.deleteMany()])
+    await db.$transaction([db.courseType.deleteMany()])
+    await db.$transaction([db.courseLevel.deleteMany()])
+    await db.$transaction([db.courseInstructor.deleteMany()])
+    await db.$transaction([db.coursePromo.deleteMany()])
       /* Reset ID to 1 again */
     await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE photo_profiles AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
 
     /* Role Seeder */
     for (let i = 0; i < 2; i++) {
@@ -155,6 +164,25 @@ async function seedData()  {
   
       await db.coursePromo.create({ data: seedPromos })
     } 
+
+    /* Course Data Seeder */
+    for (let i = 0; i < 30; i++) {
+      
+      const seedCourse = {
+        title: faker.commerce.productName(),
+        slug: faker.lorem.slug(2),
+        description: faker.commerce.productDescription(),
+        price: faker.number.int({ min: 100000, max: 1000000 }),
+        rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
+        instructorId: faker.number.int({ min: 1, max: 5 }),
+        courseTypeId: faker.number.int({ min: 1, max: 2 }),
+        courseCategoryId: faker.number.int({ min: 1, max: 5 }),
+        courseLevelId: faker.number.int({ min: 1, max: 3 }),
+        coursePromoId: faker.number.int({ min: 1, max: 2 })
+      }  
+  
+      await db.course.create({ data: seedCourse })
+    }
 
 
     /* Disconnect Prisma Connection */

@@ -26,7 +26,7 @@ model User {
   email        String        @unique
   phone        Int           @unique
   password     String
-  resetToken   String?       @map("reset_token")
+  resetToken   String?       @db.Text @map("reset_token")
   roleId       Int           @map("role_id")
   verified     Boolean       @default(false)
   photoProfile PhotoProfile?
@@ -104,11 +104,11 @@ model CoursePromo {
 model Course {
   id               Int              @id @default(autoincrement())
   title            String
-  slug             String
+  slug             String           @unique
   description      String           @db.Text
   price            Float
-  rating           Int
-  instructorId     Int
+  rating           Float
+  instructorId     Int              @map("course_instructor_id")
   instructor       CourseInstructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   courseTypeId     Int              @map("course_type_id")
   courseType       CourseType       @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
