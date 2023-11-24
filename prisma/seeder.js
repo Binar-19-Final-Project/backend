@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt")
 /* For create unique data */
 const usedRoleName = new Set()
 const usedUserId = new Set()
+const usedCourseCategoryName = new Set()
+const usedCourseCategorySlug = new Set()
 
 async function seedData()  {
     /* Reset database before run seeder */
@@ -45,7 +47,7 @@ async function seedData()  {
         await db.user.create({ data: seedUsers })
     }
 
-    /* User Seeder */
+    /* Photo Profile Seeder */
     for (let i = 0; i < 10; i++) {
       let userId
         do {
@@ -60,6 +62,28 @@ async function seedData()  {
       }
   
       await db.photoProfile.create({ data: seedPhotoProfiles })
+    }
+
+    /* Course Category Seeder */
+    for (let i = 0; i < 5; i++) {
+      let courseCategoryName
+        do {
+          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI / UX Design', 'Web Development', 'Android Development', 'iOS Development'])
+        } while (usedCourseCategoryName.has(courseCategoryName))
+      
+      let courseCategorySlug
+        do {
+          courseCategorySlug = faker.helpers.arrayElement(['product-management', 'ui-ux-design', 'web-development', 'android-development', 'ios-development'])
+        } while (usedCourseCategorySlug.has(courseCategorySlug))
+    
+        usedCourseCategorySlug.add(courseCategorySlug)
+    
+        const seedCategoryCourse = {
+          name: courseCategoryName,
+          slug: courseCategorySlug,
+        }
+  
+      await db.courseCategory.create({ data: seedCategoryCourse })
     }
 
     /* Disconnect Prisma Connection */

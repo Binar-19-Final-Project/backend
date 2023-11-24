@@ -46,3 +46,14 @@ model PhotoProfile {
 
   @@map("photo_profiles")
 }
+
+model CourseCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   
+  slug      String   @unique
+  isPublished Boolean       @default(true) @map("is_published")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("course_categories")
+}
