@@ -6,16 +6,20 @@ const bcrypt = require("bcrypt")
 const usedRoleName = new Set()
 const usedUserId = new Set()
 const usedCourseCategoryName = new Set()
-const usedCourseCategorySlug = new Set()
+const usedCourseType = new Set()
 
 async function seedData()  {
     /* Reset database before run seeder */
+      /* Delete all data in table */
     await db.$transaction([db.user.deleteMany()])
     await db.$transaction([db.role.deleteMany()])
     await db.$transaction([db.photoProfile.deleteMany()])
+    await db.$transaction([db.courseCategory.deleteMany()])
+      /* Reset ID to 1 again */
     await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE photo_profiles AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
 
     /* Role Seeder */
     for (let i = 0; i < 2; i++) {
@@ -70,13 +74,18 @@ async function seedData()  {
         do {
           courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI / UX Design', 'Web Development', 'Android Development', 'iOS Development'])
         } while (usedCourseCategoryName.has(courseCategoryName))
+
+        usedCourseCategoryName.add(courseCategoryName)
       
-      let courseCategorySlug
-        do {
-          courseCategorySlug = faker.helpers.arrayElement(['product-management', 'ui-ux-design', 'web-development', 'android-development', 'ios-development'])
-        } while (usedCourseCategorySlug.has(courseCategorySlug))
-    
-        usedCourseCategorySlug.add(courseCategorySlug)
+        const slug = {
+          'Product Management': 'product-management',
+          'UI / UX Design': 'ui-ux-design',
+          'Web Development': 'web-development',
+          'Android Development': 'android-development',
+          'iOS Development': 'ios-development'
+        }
+
+        const courseCategorySlug = slug[courseCategoryName]
     
         const seedCategoryCourse = {
           name: courseCategoryName,
@@ -84,6 +93,22 @@ async function seedData()  {
         }
   
       await db.courseCategory.create({ data: seedCategoryCourse })
+    }
+
+    /* Course Type Seeder */
+    for (let i = 0; i < 2; i++) {
+      let courseType
+        do {
+          courseType = faker.helpers.arrayElement(['Free', 'Premium'])
+        } while (usedCourseType.has(courseType))
+    
+        usedCourseType.add(courseType)
+    
+        const seedCourseType = {
+          name: courseType,
+        }
+  
+      await db.courseType.create({ data: seedCourseType })
     }
 
     /* Disconnect Prisma Connection */
