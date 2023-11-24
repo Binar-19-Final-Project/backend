@@ -2,7 +2,7 @@
   "name": "final-project",
   "version": "1.0.0",
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seeder.js"
   },
   "description": "",
   "main": "src/index.js",

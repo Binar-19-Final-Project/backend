@@ -27,7 +27,6 @@ model User {
   phone             Int      @unique
   password          String
   resetToken        String?   @map("reset_token")
-  photoId           Int      @map("photo_id")
   roleId            Int      @map("role_id")
   verified          Boolean  @default(false)
   createdAt         DateTime @default(now()) @map("created_at")
