@@ -51,7 +51,7 @@ model CourseCategory {
   id          Int      @id @default(autoincrement())
   name        String
   slug        String   @unique
-  // course      Course[]
+  course      Course[]
   isPublished Boolean  @default(true) @map("is_published")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -62,7 +62,7 @@ model CourseCategory {
 model CourseType {
   id        Int      @id @default(autoincrement())
   name      String
-  // course    Course[]
+  course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -72,31 +72,57 @@ model CourseType {
 model CourseLevel {
   id        Int      @id @default(autoincrement())
   name      String
-  // course    Course[]
+  course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("course_levels")
 }
 
-// model Course {
-//   id               Int            @id @default(autoincrement())
-//   title            String
-//   slug             String
-//   description      String
-//   price            Float
-//   rating           Int
-//   instructor       String
-//   courseTypeId     Int            @map("course_type_id")
-//   courseType       CourseType     @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
-//   courseCategoryId Int            @map("course_category_id")
-//   courseCategory   CourseCategory @relation(fields: [courseCategoryId], references: [id], onDelete: Cascade)
-//   courseLevelId    Int            @map("course_level_id")
-//   courseLevel      CourseLevel    @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
-//   isPromo          Boolean        @default(false) @map("is_promo")
-//   isPublished      Boolean        @default(true) @map("is_published")
-//   createdAt        DateTime       @default(now()) @map("created_at")
-//   updatedAt        DateTime       @updatedAt @map("updated_at")
+model CourseInstructor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  course    Course[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-//   @@map("courses")
+  @@map("course_instructors")
+}
+
+// model CoursePromo {
+//   id          Int      @id @default(autoincrement())
+//   name        String
+//   description String   @db.Text
+//   discount    Float
+//   expiredAt   DateTime @map("expired_at")
+//   course      Course[]
+//   createdAt   DateTime @default(now()) @map("created_at")
+//   updatedAt   DateTime @updatedAt @map("updated_at")
+
+//   @@map("course_promos")
 // }
+
+model Course {
+  id               Int              @id @default(autoincrement())
+  title            String
+  slug             String
+  description      String           @db.Text
+  price            Float
+  rating           Int
+  instructorId     Int
+  instructor       CourseInstructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  courseTypeId     Int              @map("course_type_id")
+  courseType       CourseType       @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
+  courseCategoryId Int              @map("course_category_id")
+  courseCategory   CourseCategory   @relation(fields: [courseCategoryId], references: [id], onDelete: Cascade)
+  courseLevelId    Int              @map("course_level_id")
+  courseLevel      CourseLevel      @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
+  coursePromoId    Int?             @map("course_promo_id")
+  // coursePromo      CoursePromo?     @relation(fields: [coursePromoId], references: [id], onDelete: Cascade)
+  isPromo          Boolean          @default(false) @map("is_promo")
+  isPublished      Boolean          @default(true) @map("is_published")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  @@map("courses")
+}

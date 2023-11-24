@@ -112,7 +112,7 @@ async function seedData()  {
       await db.courseType.create({ data: seedCourseType })
     }
 
-    /* Course Type Seeder */
+    /* Course Level Seeder */
     for (let i = 0; i < 3; i++) {
       let courseLevel
         do {
@@ -127,6 +127,15 @@ async function seedData()  {
   
       await db.courseLevel.create({ data: seedCourseLevel })
     }
+
+    /* Course Instructor Seeder */
+    for (let i = 0; i < 5; i++) {
+      const seedInsctructor = {
+          name: faker.person.fullName(), 
+      }
+  
+      await db.courseInstructor.create({ data: seedInsctructor })
+    } 
 
     /* Disconnect Prisma Connection */
     await db.$disconnect()
