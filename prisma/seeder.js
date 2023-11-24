@@ -8,6 +8,7 @@ const usedUserId = new Set()
 const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
 const usedCourseLevel = new Set()
+const usedCoursePromoName = new Set()
 
 async function seedData()  {
     /* Reset database before run seeder */
@@ -136,6 +137,25 @@ async function seedData()  {
   
       await db.courseInstructor.create({ data: seedInsctructor })
     } 
+
+    /* Course Promo Seeder */
+    for (let i = 0; i < 2; i++) {
+      let promoName
+      do {
+        promoName = faker.helpers.arrayElement(['Special New Year', 'Special Independence Day'])
+      } while (usedCoursePromoName.has(promoName))
+  
+      usedCoursePromoName.add(promoName)
+  
+      const seedPromos = {
+        name: promoName,
+        discount: faker.number.int({ min: 5, max: 20 }),
+        expiredAt:  faker.date.between({ from: '2024-01-01T00:00:00.000Z', to: '2024-03-03T00:00:00.000Z' })
+      }  
+  
+      await db.coursePromo.create({ data: seedPromos })
+    } 
+
 
     /* Disconnect Prisma Connection */
     await db.$disconnect()
