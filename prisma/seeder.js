@@ -9,6 +9,7 @@ const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
 const usedCourseLevel = new Set()
 const usedCoursePromoName = new Set()
+const existingPairs = new Set();
 
 
 async function seedData()  {
@@ -22,6 +23,9 @@ async function seedData()  {
     await db.$transaction([db.courseLevel.deleteMany()])
     await db.$transaction([db.courseInstructor.deleteMany()])
     await db.$transaction([db.coursePromo.deleteMany()])
+    await db.$transaction([db.course.deleteMany()])
+    await db.$transaction([db.courseModule.deleteMany()])
+    await db.$transaction([db.courseContent.deleteMany()])
       /* Reset ID to 1 again */
     await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
@@ -31,6 +35,9 @@ async function seedData()  {
     await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
 
     /* Role Seeder */
     for (let i = 0; i < 2; i++) {
@@ -182,6 +189,51 @@ async function seedData()  {
       }  
   
       await db.course.create({ data: seedCourse })
+    }
+
+    /* Course Module Seeder */
+    for (let i = 0; i < 20; i++) {
+
+      const seedCourseModules = {
+          title: faker.commerce.productName(),
+          duration: faker.number.int({ min: 1, max: 30 }), 
+          totalChapter: 0, 
+          courseId: faker.number.int({ min: 1, max: 30 })
+      }
+  
+      await db.courseModule.create({ data: seedCourseModules })
+    }
+
+     /* Course Content Seeder */
+     for (let i = 0; i < 60; i++) {
+
+      const seedCourseContents = {
+          title: faker.commerce.productName(),
+          videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
+          moduleId: faker.number.int({ min: 1, max: 20 }),
+      }
+  
+      await db.courseContent.create({ data: seedCourseContents })
+    }
+
+    /* Course Testimonial Seeder */
+    for (let i = 0; i < 60; i++) {
+      let userId = faker.number.int({ min: 1, max: 10 })
+      let courseId = faker.number.int({ min: 1, max: 30 })
+      const pair = `${userId}-${courseId}`
+    
+      if (!existingPairs.has(pair)) {
+        existingPairs.add(pair);
+    
+        const seedCourseTestimonial = {
+          testimonial: faker.lorem.text(),
+          rating: faker.number.int({ min: 1, max: 5 }),
+          userId,
+          courseId,
+        };
+    
+        await db.courseTestimonial.create({ data: seedCourseTestimonial });
+      }
     }
 
 
