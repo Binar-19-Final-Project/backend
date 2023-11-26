@@ -39,6 +39,7 @@ async function seedData()  {
     await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_testimonials AUTO_INCREMENT = 1`
 
     /* Role Seeder */
@@ -64,7 +65,7 @@ async function seedData()  {
             email: faker.internet.email(),
             phone: faker.number.int({ max: 100000000 }),
             password: bcrypt.hashSync("12345678", bcrypt.genSaltSync(10)), 
-            verified: faker.datatype.boolean(0.9),
+            verified: faker.datatype.boolean(0.7),
             roleId: faker.number.int({ min: 1, max: 3 }), 
         }
     
@@ -92,24 +93,26 @@ async function seedData()  {
     for (let i = 0; i < 5; i++) {
       let courseCategoryName
         do {
-          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI / UX Design', 'Web Development', 'Android Development', 'iOS Development'])
+          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development'])
         } while (usedCourseCategoryName.has(courseCategoryName))
 
         usedCourseCategoryName.add(courseCategoryName)
       
-        const slug = {
-          'Product Management': 'product-management',
-          'UI / UX Design': 'ui-ux-design',
-          'Web Development': 'web-development',
-          'Android Development': 'android-development',
-          'iOS Development': 'ios-development'
-        }
+        // const slug = {
+        //   'Product Management': 'product-management',
+        //   'UI / UX Design': 'ui-ux-design',
+        //   'Web Development': 'web-development',
+        //   'Android Development': 'android-development',
+        //   'iOS Development': 'ios-development'
+        // }
 
-        const courseCategorySlug = slug[courseCategoryName]
+        const slug = slugify(courseCategoryName, { lower: true, remove: /[*+~.()'"!:@]/g })
+
+        // const courseCategorySlug = slug[courseCategoryName]
     
         const seedCategoryCourse = {
           name: courseCategoryName,
-          slug: courseCategorySlug,
+          slug: slug,
         }
   
       await db.courseCategory.create({ data: seedCategoryCourse })
@@ -123,9 +126,12 @@ async function seedData()  {
         } while (usedCourseType.has(courseType))
     
         usedCourseType.add(courseType)
+
+        const slug = slugify(courseType, { lower: true, remove: /[*+~.()'"!:@]/g })
     
         const seedCourseType = {
           name: courseType,
+          slug: slug
         }
   
       await db.courseType.create({ data: seedCourseType })
@@ -139,9 +145,12 @@ async function seedData()  {
         } while (usedCourseLevel.has(courseLevel))
     
         usedCourseLevel.add(courseLevel)
+
+        const slug = slugify(courseLevel, { lower: true, remove: /[*+~.()'"!:@]/g })
     
         const seedCourseLevel = {
           name: courseLevel,
+          slug: slug
         }
   
       await db.courseLevel.create({ data: seedCourseLevel })
@@ -149,8 +158,13 @@ async function seedData()  {
 
     /* Course Instructor Seeder */
     for (let i = 0; i < 5; i++) {
+
+      const name = faker.person.fullName()
+      const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
+
       const seedInsctructor = {
-          name: faker.person.fullName(), 
+          name: name,
+          slug: slug
       }
   
       await db.courseInstructor.create({ data: seedInsctructor })
@@ -164,9 +178,12 @@ async function seedData()  {
       } while (usedCoursePromoName.has(promoName))
   
       usedCoursePromoName.add(promoName)
+
+      const slug = slugify(promoName, { lower: true, remove: /[*+~.()'"!:@]/g })
   
       const seedPromos = {
         name: promoName,
+        slug: slug,
         discount: faker.number.int({ min: 5, max: 20 }),
         expiredAt:  faker.date.between({ from: '2024-01-01T00:00:00.000Z', to: '2024-03-03T00:00:00.000Z' })
       }  
@@ -192,7 +209,7 @@ async function seedData()  {
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
         courseLevelId: faker.number.int({ min: 1, max: 3 }),
-        isPromo: faker.datatype.boolean(),
+        isPromo: faker.datatype.boolean(0.2),
       }
       
       if (seedCourse.isPromo) {
@@ -229,6 +246,7 @@ async function seedData()  {
           title: title,
           slug: slug,
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
+          isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 20 }),
       }

@@ -92,6 +92,7 @@ model CourseCategory {
 model CourseType {
   id        Int      @id @default(autoincrement())
   name      String
+  slug      String   @unique
   course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -102,6 +103,7 @@ model CourseType {
 model CourseLevel {
   id        Int      @id @default(autoincrement())
   name      String
+  slug      String   @unique
   course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -112,6 +114,7 @@ model CourseLevel {
 model CourseInstructor {
   id        Int      @id @default(autoincrement())
   name      String
+  slug      String   @unique
   course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -122,6 +125,7 @@ model CourseInstructor {
 model CoursePromo {
   id        Int      @id @default(autoincrement())
   name      String
+  slug      String   @unique
   discount  Float
   expiredAt DateTime @map("expired_at")
   course    Course[]
@@ -247,6 +251,9 @@ model Order {
   transaction Transaction?
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  @@map("orders")
+
 }
 
 model Transaction {
@@ -258,4 +265,7 @@ model Transaction {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transactions")
+
 }
