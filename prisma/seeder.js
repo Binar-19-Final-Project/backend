@@ -26,6 +26,7 @@ async function seedData()  {
     await db.$transaction([db.course.deleteMany()])
     await db.$transaction([db.courseModule.deleteMany()])
     await db.$transaction([db.courseContent.deleteMany()])
+    await db.$transaction([db.courseTestimonial.deleteMany()])
       /* Reset ID to 1 again */
     await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
@@ -37,7 +38,7 @@ async function seedData()  {
     await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_testimonials AUTO_INCREMENT = 1`
 
     /* Role Seeder */
     for (let i = 0; i < 2; i++) {
@@ -79,7 +80,7 @@ async function seedData()  {
         usedUserId.add(userId)
 
       const seedPhotoProfiles = {
-          urlPhoto: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+          urlPhoto: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
           userId: userId, 
       }
   
@@ -181,6 +182,7 @@ async function seedData()  {
         description: faker.commerce.productDescription(),
         price: faker.number.int({ min: 100000, max: 1000000 }),
         rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
+        imageUrl: "https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg",
         instructorId: faker.number.int({ min: 1, max: 5 }),
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
