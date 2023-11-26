@@ -182,6 +182,7 @@ async function seedData()  {
         description: faker.commerce.productDescription(),
         price: faker.number.int({ min: 100000, max: 1000000 }),
         rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
+        duration: faker.number.int({ min: 1, max: 5 }),
         imageUrl: "https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg",
         instructorId: faker.number.int({ min: 1, max: 5 }),
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
@@ -216,6 +217,7 @@ async function seedData()  {
       const seedCourseContents = {
           title: faker.commerce.productName(),
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
+          duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 20 }),
       }
   

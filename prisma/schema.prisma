@@ -138,6 +138,7 @@ model Course {
   description       String               @db.Text
   price             Float
   rating            Float
+  duration          Int
   imageUrl          String               @map("image_url")
   instructorId      Int                  @map("course_instructor_id")
   instructor        CourseInstructor     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
@@ -180,6 +181,7 @@ model CourseContent {
   id                 Int                      @id @default(autoincrement())
   title              String
   videoUrl           String
+  duration           Int
   finished           Boolean                  @default(false)
   isFree             Boolean                  @default(true) @map("is_free")
   moduleId           Int                      @map("course_id")
