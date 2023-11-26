@@ -166,6 +166,7 @@ model Course {
 model CourseModule {
   id            Int            @id @default(autoincrement())
   title         String
+  slug          String         @unique
   duration      Int
   totalChapter  Int            @map("total_content")
   courseId      Int            @map("course_id")
@@ -180,6 +181,7 @@ model CourseModule {
 model CourseContent {
   id                 Int                      @id @default(autoincrement())
   title              String
+  slug          String         @unique
   videoUrl           String
   duration           Int
   finished           Boolean                  @default(false)

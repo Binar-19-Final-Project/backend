@@ -1,6 +1,7 @@
 const db = require('./connection')
 const { faker } = require('@faker-js/faker/locale/id_ID')
 const bcrypt = require("bcrypt")
+const slugify = require('slugify');
 
 /* For create unique data */
 const usedRoleName = new Set()
@@ -175,10 +176,13 @@ async function seedData()  {
 
     /* Course Data Seeder */
     for (let i = 0; i < 30; i++) {
+
+      const title = faker.commerce.productName()
+      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
       
       const seedCourse = {
-        title: faker.commerce.productName(),
-        slug: faker.lorem.slug(2),
+        title: title,
+        slug: slug,
         description: faker.commerce.productDescription(),
         price: faker.number.int({ min: 100000, max: 1000000 }),
         rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
@@ -201,8 +205,12 @@ async function seedData()  {
     /* Course Module Seeder */
     for (let i = 0; i < 20; i++) {
 
+      const title = faker.commerce.productName()
+      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+
       const seedCourseModules = {
-          title: faker.commerce.productName(),
+          title: title,
+          slug: slug,
           duration: faker.number.int({ min: 1, max: 30 }), 
           totalChapter: 0, 
           courseId: faker.number.int({ min: 1, max: 30 })
@@ -214,8 +222,12 @@ async function seedData()  {
      /* Course Content Seeder */
      for (let i = 0; i < 60; i++) {
 
+      const title = faker.commerce.productName()
+      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+
       const seedCourseContents = {
-          title: faker.commerce.productName(),
+          title: title,
+          slug: slug,
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 20 }),
