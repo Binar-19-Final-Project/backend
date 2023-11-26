@@ -185,8 +185,12 @@ async function seedData()  {
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
         courseLevelId: faker.number.int({ min: 1, max: 3 }),
-        coursePromoId: faker.number.int({ min: 1, max: 2 })
-      }  
+        isPromo: faker.datatype.boolean(),
+      }
+      
+      if (seedCourse.isPromo) {
+        seedCourse.coursePromoId = faker.number.int({ min: 1, max: 2 });
+      }
   
       await db.course.create({ data: seedCourse })
     }
