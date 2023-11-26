@@ -212,7 +212,7 @@ async function seedData()  {
           title: title,
           slug: slug,
           duration: faker.number.int({ min: 1, max: 30 }), 
-          totalChapter: 0, 
+          totalChapter: faker.number.int({ min: 1, max: 10 }), 
           courseId: faker.number.int({ min: 1, max: 30 })
       }
   

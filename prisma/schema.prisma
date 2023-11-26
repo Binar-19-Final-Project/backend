@@ -168,7 +168,7 @@ model CourseModule {
   title         String
   slug          String         @unique
   duration      Int
-  totalChapter  Int            @map("total_content")
+  totalChapter  Int            @map("total_chapter")
   courseId      Int            @map("course_id")
   course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseContent CourseContent[]
