@@ -15,7 +15,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.success("Success fetch data catagory", type))
+            return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
 
         } catch (error) {
             console.log(error)
@@ -59,7 +59,7 @@ module.exports = {
 
             
 
-            return res.status(200).json(utils.success("Berhasil buat type", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil buat type", data))
 
         } catch (error) {
             console.log(error)
@@ -91,7 +91,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.success("Success update type", type))
+            return res.status(200).json(utils.apiSuccess("Success update type", type))
 
         } catch (error) {
             console.log(error)
@@ -117,7 +117,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.success("Success delete type"))            
+            return res.status(200).json(utils.apiSuccess("Success delete type"))            
 
         } catch (error) {
             console.log(error)
