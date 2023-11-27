@@ -24,10 +24,12 @@ model User {
   uuid              String                  @default(uuid())
   name              String
   email             String                  @unique
-  phone             Int                     @unique
+  phone             BigInt                     
   password          String
+  city              String?
+  country           String?
   resetToken        String?                 @map("reset_token") @db.Text
-  roleId            Int                     @map("role_id")
+  roleId            Int                     @default(1) @map("role_id")
   verified          Boolean                 @default(false)
   photoProfile      PhotoProfile?
   userWishlist      UserCourseWishlist?
@@ -36,7 +38,6 @@ model User {
   coursePurchased   CoursePurchased?
   learningProgress  CourseLearningProgress?
   courseTestimonial CourseTestimonial[]
-  otp               Otp?
   createdAt         DateTime                @default(now()) @map("created_at")
   updatedAt         DateTime                @updatedAt @map("updated_at")
 
@@ -56,19 +57,17 @@ model CoursePurchased {
 
 model Otp {
   id        Int      @id @default(autoincrement())
-  otp       Int      @map("url_photo")
-  userId    Int      @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiredAt DateTime
+  otp       String   @map("otp")
+  email     String   
+  expiredAt DateTime @map("expired_at")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("otps")
 }
 
 model PhotoProfile {
   id        Int      @id @default(autoincrement())
-  urlPhoto  String   @map("url_photo")
+  urlPhoto  String?   @map("url_photo")
   userId    Int      @unique @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")

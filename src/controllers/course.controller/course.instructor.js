@@ -1,5 +1,5 @@
 const db = require('../../../prisma/connection'),
-    responseApi = require('../../utils/responseApi'),
+    responseApi = require('../../utils/response.api'),
     slugify = require('slugify')
 
 
