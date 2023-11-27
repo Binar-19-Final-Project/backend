@@ -1,5 +1,7 @@
-const db = require('../../../prisma/connection')
-const responseApi = require('../../utils/responseApi')
+const db = require('../../../prisma/connection'),
+    responseApi = require('../../utils/responseApi'),
+    slugify = require('slugify')
+
 
 module.exports = {
     read: async (req, res) => {
@@ -7,7 +9,8 @@ module.exports = {
             const data = await db.courseInstructor.findMany({
                 select: {
                     id: true,
-                    name: true
+                    name: true,
+                    slug: true
                 }
             })
             return res.status(200).json(responseApi.success("Success fetch data instructor", data))
@@ -27,7 +30,8 @@ module.exports = {
                 },
                 select: {
                     id: true,
-                    name: true
+                    name: true,
+                    slug: true
                 }
             })
             if (!instructor) {
@@ -43,10 +47,11 @@ module.exports = {
     create: async (req, res) => {
         try {
             const { name } = req.body
-
+            const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
             const instructor = await db.courseInstructor.create({
                 data: {
-                    name: name 
+                    name: name,
+                    slug: slug
                 }
             })
 
@@ -60,14 +65,15 @@ module.exports = {
     update: async (req, res) => {
         const { id } = req.params
         const { name } = req.body
-
+        const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
         try {
             const updatedInstructor = await db.courseInstructor.update({
                 where: {
                     id: parseInt(id) 
                 },
                 data: { 
-                    name: name
+                    name: name,
+                    slug: slug
                 }
             })
 
