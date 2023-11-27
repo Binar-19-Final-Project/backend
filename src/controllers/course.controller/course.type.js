@@ -1,5 +1,5 @@
 const db = require('../../../prisma/connection'),
-    responseApi = require('../../utils/responseApi'),
+    utils = require('../../utils/utils'),
     slugify = require('slugify')
 
 
@@ -15,11 +15,11 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success fetch data catagory", type))
+            return res.status(200).json(utils.success("Success fetch data catagory", type))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
     getById: async(req, res)=>{
@@ -36,11 +36,11 @@ module.exports = {
                 }
             })
             if(!type){
-                return res.status(404).json(responseApi.error("type not found"))
+                return res.status(404).json(utils.error("type not found"))
             }
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
     create: async (req, res) => {
@@ -59,11 +59,11 @@ module.exports = {
 
             
 
-            return res.status(200).json(responseApi.success("Berhasil buat type", data))
+            return res.status(200).json(utils.success("Berhasil buat type", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
     update: async (req, res) => {
@@ -79,7 +79,7 @@ module.exports = {
                 }
             })
 
-            if(!check) return res.status(404).json(responseApi.error("type not found"))
+            if(!check) return res.status(404).json(utils.error("type not found"))
 
             const type = await db.cousetype.update({
                 where:{
@@ -91,11 +91,11 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success update type", type))
+            return res.status(200).json(utils.success("Success update type", type))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
     destroy: async (req, res) => {
@@ -109,7 +109,7 @@ module.exports = {
                 }
             })
 
-            if(!check) return res.status(404).json(responseApi.error("type not found"))
+            if(!check) return res.status(404).json(utils.error("type not found"))
 
             await db.cousetype.delete({
                 where: {
@@ -117,11 +117,11 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success delete type"))            
+            return res.status(200).json(utils.success("Success delete type"))            
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
 
