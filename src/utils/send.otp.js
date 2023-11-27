@@ -1,7 +1,6 @@
 const db = require('../../prisma/connection'),
-    hashData = require('./hash.data'),
+    utils = require('./utils')
     transporter = require('./transporter'),
-    generateOtp = require('./generate.otp'),
     { NODEMAILER_EMAIL } = require('../config')
 
 module.exports = {
@@ -24,7 +23,7 @@ module.exports = {
                 })
             }
 
-            const otp = await generateOtp.create()
+            const otp = await utils.generateOtp()
 
             const mailOptions = {
                 from: NODEMAILER_EMAIL,
@@ -37,7 +36,7 @@ module.exports = {
 
             await transporter.send(mailOptions)
 
-            const hashedOtp = await hashData.create(otp)
+            const hashedOtp = await utils.createHashData(otp)
             const expiredAt = new Date(Date.now() + 3600000)
 
             await db.otp.create({

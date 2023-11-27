@@ -4,6 +4,9 @@ dotEnv.config();
 module.exports = {
   PORT: process.env.PORT,
 
+  /* JWT Key Configuration*/
+  JWT_SECRET_KEY: process.env.PORT,
+
   /* Nodemailer Configuration */
   NODEMAILER_SERVICE: process.env.NODEMAILER_SERVICE,
   NODEMAILER_HOST: process.env.NODEMAILER_HOST,

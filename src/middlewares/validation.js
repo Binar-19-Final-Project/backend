@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator"),
-    responseApi = require('../utils/response.api')
+    utils = require('../utils/utils')
 
 const validate = (validations) => {
   return async (req, res, next) => {
@@ -11,7 +11,7 @@ const validate = (validations) => {
       const errorMessages = validationErrors
         .array()
         .map((error) => error.msg)
-      return res.status(400).json(responseApi.error(errorMessages.join(", ")))
+      return res.status(400).json(utils.apiError(errorMessages.join(", ")))
     }
 
     return next();
