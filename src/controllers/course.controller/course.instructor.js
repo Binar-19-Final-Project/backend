@@ -10,7 +10,7 @@ module.exports = {
                     name: true
                 }
             })
-            return res.status(200).json(responseApi.success("Success fetch data instructor", "courseInstructor", data))
+            return res.status(200).json(responseApi.success("Success fetch data instructor", data))
 
         } catch (error) {
             console.log(error)
@@ -33,7 +33,7 @@ module.exports = {
             if (!instructor) {
                 return res.status(404).json(responseApi.error("Instructor not found"))
             }
-            return res.status(200).json(responseApi.success("Success fetch instructor by id", "courseInstructor", instructor))
+            return res.status(200).json(responseApi.success("Success fetch instructor by id", instructor))
         } catch (error) {
             console.log(error)
             return res.status(500).json(responseApi.error("Internal Server Error"))
@@ -50,7 +50,7 @@ module.exports = {
                 }
             })
 
-            return res.status(201).json(responseApi.success("Success create instructor", "courseInstructor", instructor))
+            return res.status(201).json(responseApi.success("Success create instructor", instructor))
         } catch (error) {
             console.log(error)
             return res.status(500).json(responseApi.error("Internal Server Error"))
@@ -71,7 +71,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success update instructor", "courseInstructor", updatedInstructor))
+            return res.status(200).json(responseApi.success("Success update instructor", updatedInstructor))
         } catch (error) {
             console.log(error)
             return res.status(500).json(responseApi.error("Internal Server Error"))

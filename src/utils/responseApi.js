@@ -1,10 +1,10 @@
 
 module.exports = {
-    success: (msg, key, data) => {
+    success: (msg, data) => {
         const response = {}
         response.error = false
         response.message = msg
-        response[key] = data
+        response.data = data
         
         return response
     },
