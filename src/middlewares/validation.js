@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator"),
-    responseApi = require('../utils/responseApi')
+    responseApi = require('../utils/response.api')
 
 const validate = (validations) => {
   return async (req, res, next) => {
