@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken"),
-    bcrypt = require("bcrypt")
-
-
-const { JWT_SECRET_KEY } = require('../config')
+    bcrypt = require("bcrypt"),
+    slugify = require("slugify"),
+    { JWT_SECRET_KEY } = require("../config")
 
 module.exports = {
 
@@ -58,6 +57,15 @@ module.exports = {
     generateOtp: async () => {
         try {
             return `${Math.floor(100000 + Math.random() * 900000)}`
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+    createSlug: async (data) => {
+        try {
+            const dataSlug = await slugify(data, { lower: true, remove: /[*+~.()'"!:@]/g })
+            return dataSlug
         } catch (error) {
             console.log(error)
         }
