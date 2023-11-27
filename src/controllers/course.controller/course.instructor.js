@@ -1,5 +1,5 @@
 const db = require('../../../prisma/connection'),
-    responseApi = require('../../utils/response.api'),
+    utils = require('../../utils/utils'),
     slugify = require('slugify')
 
 
@@ -13,11 +13,11 @@ module.exports = {
                     slug: true
                 }
             })
-            return res.status(200).json(responseApi.success("Success fetch data instructor", data))
+            return res.status(200).json(utils.apiSuccess("Success fetch data instructor", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -35,12 +35,12 @@ module.exports = {
                 }
             })
             if (!instructor) {
-                return res.status(404).json(responseApi.error("Instructor not found"))
+                return res.status(404).json(utils.apiError("Instructor not found"))
             }
-            return res.status(200).json(responseApi.success("Success fetch instructor by id", instructor))
+            return res.status(200).json(utils.apiSuccess("Success fetch instructor by id", instructor))
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -55,10 +55,10 @@ module.exports = {
                 }
             })
 
-            return res.status(201).json(responseApi.success("Success create instructor", instructor))
+            return res.status(201).json(utils.apiSuccess("Success create instructor", instructor))
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -77,10 +77,10 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success update instructor", updatedInstructor))
+            return res.status(200).json(utils.apiSuccess("Success update instructor", updatedInstructor))
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -92,10 +92,10 @@ module.exports = {
                     id: parseInt(id) 
                 }
             })
-            return res.status(200).json(responseApi.success("Success delete instructor"))
+            return res.status(200).json(utils.apiSuccess("Success delete instructor"))
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     }
 }
