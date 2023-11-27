@@ -7,7 +7,7 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             
-            const type = await db.cousetype.findMany({
+            const type = await db.couseType.findMany({
                 select : {
                     id: true,
                     name : true,
@@ -25,7 +25,7 @@ module.exports = {
     getById: async(req, res)=>{
         try {
             const {id} = req.params
-            const type = await db.cousetype.findUnique({
+            const type = await db.couseType.findUnique({
                 where : {
                     id : parseInt(id)
                 },
@@ -50,7 +50,7 @@ module.exports = {
 
             const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
 
-            const data = await db.cousetype.create({
+            const data = await db.couseType.create({
                 data:{
                     name : name,
                     slug : slug,
@@ -73,7 +73,7 @@ module.exports = {
             const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
             const id = parseInt(req.params.id)
 
-            const check = await db.cousetype.findUnique({
+            const check = await db.couseType.findUnique({
                 where:{
                     id: id
                 }
@@ -81,7 +81,7 @@ module.exports = {
 
             if(!check) return res.status(404).json(utils.error("type not found"))
 
-            const type = await db.cousetype.update({
+            const type = await db.couseType.update({
                 where:{
                     id: id
                 },
@@ -103,7 +103,7 @@ module.exports = {
 
             const id = parseInt(req.params.id)
 
-            const check = await db.cousetype.findUnique({
+            const check = await db.couseType.findUnique({
                 where:{
                     id: id
                 }
@@ -111,7 +111,7 @@ module.exports = {
 
             if(!check) return res.status(404).json(utils.error("type not found"))
 
-            await db.cousetype.delete({
+            await db.couseType.delete({
                 where: {
                     id: id
                 }
