@@ -64,7 +64,9 @@ async function seedData()  {
             name: faker.person.fullName(),
             email: faker.internet.email(),
             phone: faker.number.int({ max: 100000000 }),
-            password: bcrypt.hashSync("12345678", bcrypt.genSaltSync(10)), 
+            password: bcrypt.hashSync("12345678", bcrypt.genSaltSync(10)),
+            city: faker.location.city(),
+            country: faker.location.country(), 
             verified: faker.datatype.boolean(0.7),
             roleId: faker.number.int({ min: 1, max: 3 }), 
         }
