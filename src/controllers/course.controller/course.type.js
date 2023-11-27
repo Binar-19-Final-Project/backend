@@ -98,7 +98,7 @@ module.exports = {
             return res.status(500).json(utils.error("Internal Server Error"))
         }
     },
-    destroy: async (req, res) => {
+    delete: async (req, res) => {
         try {
 
             const id = parseInt(req.params.id)
