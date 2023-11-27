@@ -1,5 +1,5 @@
-const db = require('../../../prisma/connection')
-const responseApi = require('../../utils/responseApi')
+const db = require('../../../prisma/connection'),
+    utils = require('../../utils/utils')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -7,11 +7,11 @@ module.exports = {
             
             const data = await db.coursePromo.findMany()
 
-            return res.status(200).json(responseApi.success("Success fetch data promo", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data promo", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -26,21 +26,24 @@ module.exports = {
                 }
             })
 
-            if(check) return res.status(400).json(responseApi.error("Name already taken"))
+            if(check) return res.status(409).json(utils.apiError("Nama promo sudah terdaftar"))
             
+            const nameSlug = await utils.createSlug(name)
+
             const data = await db.coursePromo.create({
                 data: {
                     name: name,
+                    slug: nameSlug,
                     discount: parseFloat(discount),
                     expiredAt: expiredAt
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success create promo", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil membuat promo", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -55,13 +58,13 @@ module.exports = {
                 }
             })
 
-            if(!data) return res.status(404).json(responseApi.error("Promo not found"))
+            if(!data) return res.status(404).json(utils.apiError("Promo tidak ditemukkan"))
 
-            return res.status(200).json(responseApi.success("Success fetch promo by id", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data promo berdasarkan id", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -77,7 +80,9 @@ module.exports = {
                 }
             })
 
-            if(!check) return res.status(404).json(responseApi.error("Promo not found"))
+            if(!check) return res.status(404).json(utils.apiError("Promo tidak ditemukkan"))
+
+            const nameSlug = await utils.createSlug(name);
 
             const data = await db.coursePromo.update({
                 where:{
@@ -85,16 +90,17 @@ module.exports = {
                 },
                 data: {
                     name: name,
+                    slug: nameSlug,
                     discount: parseFloat(discount),
                     expiredAt: expiredAt
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success update promo", data))
+            return res.status(200).json(utils.apiSuccess("Promo berhasil diubah", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
@@ -109,7 +115,7 @@ module.exports = {
                 }
             })
 
-            if(!check) return res.status(404).json(responseApi.error("Promo not found"))
+            if(!check) return res.status(404).json(utils.apiError("Promo tidak ditemukkan"))
 
             await db.coursePromo.delete({
                 where: {
@@ -117,13 +123,12 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(responseApi.success("Success delete promo"))            
+            return res.status(200).json(utils.apiSuccess("Promo berhasil dihapus"))            
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(responseApi.error("Internal Server Error"))
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
-  
 }
