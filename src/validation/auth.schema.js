@@ -32,7 +32,10 @@ module.exports = {
   ],
 
   otp: [
-    body("email").notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
-    body("otp").notEmpty().withMessage("Otp tidak boleh kosong"),
+    body("email")
+        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+    body("otp")
+        .notEmpty().withMessage("Otp tidak boleh kosong")
+        .isLength({ min: 6 }).withMessage("Otp berisi 6 angka"),
   ]
 };
