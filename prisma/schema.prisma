@@ -170,7 +170,7 @@ model Course {
 model CourseModule {
   id            Int            @id @default(autoincrement())
   title         String
-  slug          String         @unique
+  slug          String         
   duration      Int
   totalChapter  Int            @map("total_chapter")
   courseId      Int            @map("course_id")

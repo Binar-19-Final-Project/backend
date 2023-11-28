@@ -1,9 +1,11 @@
-const course = require('./course')
-const instructor = require('./course.instructor')
-const promo = require('./course.promo')
+const course = require('./course'),
+    instructor = require('./course.instructor'),
+    promo = require('./course.promo'),
+    courseModule = require('./course.module')
 
 module.exports = {
     course,
     instructor,
-    promo
+    promo,
+    courseModule
 }

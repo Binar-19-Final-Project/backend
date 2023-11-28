@@ -82,6 +82,14 @@ module.exports = {
 
             if(!check) return res.status(404).json(utils.apiError("Promo tidak ditemukkan"))
 
+            const checkName = await db.coursePromo.findFirst({
+                where: {
+                    name: name
+                }
+            })
+
+            if(checkName) return res.status(409).json(utils.apiError("Nama promo sudah terdaftar"))
+
             const nameSlug = await utils.createSlug(name);
 
             const data = await db.coursePromo.update({
