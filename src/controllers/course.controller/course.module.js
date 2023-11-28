@@ -7,7 +7,7 @@ module.exports = {
             
             const data = await db.courseModule.findMany()
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data module", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data modul", data))
 
         } catch (error) {
             console.log(error)
