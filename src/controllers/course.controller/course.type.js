@@ -17,20 +17,15 @@ module.exports = {
     },
     getById: async(req, res)=>{
         try {
-            const {id} = req.params
+            const id = parseInt(req.params.id)
             const type = await db.courseType.findUnique({
                 where : {
-                    id : parseInt(id)
-                },
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
+                    id : id
                 }
             })
-            if(!type){
-                return res.status(404).json(utils.error("type not found"))
-            }
+            if(!type) return res.status(404).json(utils.apiError("Tipe tidak ditemukkan"))
+            
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data Tipe berdasarkan id", type))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.error("Internal Server Error"))
