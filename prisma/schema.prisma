@@ -141,7 +141,8 @@ model Course {
   description       String               @db.Text
   price             Float
   rating            Float
-  duration          Int
+  duration          Float
+  taken             Int
   imageUrl          String               @map("image_url")
   instructorId      Int                  @map("course_instructor_id")
   instructor        CourseInstructor     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
