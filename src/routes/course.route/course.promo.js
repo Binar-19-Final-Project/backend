@@ -1,5 +1,5 @@
 const express = require('express'),
-    schema = require('../../validation/course.promo.schema'),
+    schema = require('../../validation/course.schema'),
     validate = require('../../middlewares/validation'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
