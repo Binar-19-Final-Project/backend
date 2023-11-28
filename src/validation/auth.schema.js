@@ -63,4 +63,9 @@ module.exports = {
             return true;
         }),
   ],
+
+  resendOtp: [
+    body("email")
+        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+  ],
 };

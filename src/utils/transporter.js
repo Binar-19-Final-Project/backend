@@ -24,7 +24,7 @@ module.exports = {
       const send = await transporter.sendMail(mailOptions)
       return send.response
     } catch (error) {
-      console.log(err)
+      console.log(error)
       throw new Error(`${error.message}`)
     }
   },
