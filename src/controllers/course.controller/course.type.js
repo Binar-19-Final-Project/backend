@@ -6,13 +6,7 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             
-            const type = await db.couseType.findMany({
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
-                }
-            })
+            const type = await db.courseType.findMany()
 
             return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
 
@@ -24,7 +18,7 @@ module.exports = {
     getById: async(req, res)=>{
         try {
             const {id} = req.params
-            const type = await db.couseType.findUnique({
+            const type = await db.courseType.findUnique({
                 where : {
                     id : parseInt(id)
                 },
@@ -49,7 +43,7 @@ module.exports = {
 
             const nameSlug = await utils.createSlug(name)
 
-            const data = await db.couseType.create({
+            const data = await db.courseType.create({
                 data:{
                     name : name,
                     slug : nameSlug,
@@ -72,7 +66,7 @@ module.exports = {
             const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
-            const check = await db.couseType.findUnique({
+            const check = await db.courseType.findUnique({
                 where:{
                     id: id
                 }
@@ -80,7 +74,7 @@ module.exports = {
 
             if(!check) return res.status(404).json(utils.error("type not found"))
 
-            const type = await db.couseType.update({
+            const type = await db.courseType.update({
                 where:{
                     id: id
                 },
@@ -102,7 +96,7 @@ module.exports = {
 
             const id = parseInt(req.params.id)
 
-            const check = await db.couseType.findUnique({
+            const check = await db.courseType.findUnique({
                 where:{
                     id: id
                 }
@@ -110,7 +104,7 @@ module.exports = {
 
             if(!check) return res.status(404).json(utils.error("type not found"))
 
-            await db.couseType.delete({
+            await db.courseType.delete({
                 where: {
                     id: id
                 }
