@@ -5,13 +5,14 @@ const jwt = require("jsonwebtoken"),
 
 module.exports = {
 
-    apiSuccess: (msg, data) => {
-        const response = {}
-        response.error = false
-        response.message = msg
-        response.data = data
-        
-        return response
+    apiSuccess: (msg, data, extraData = {}) => {
+        const response = {
+            error: false,
+            message: msg,
+            ...extraData, 
+            data: data
+          };
+          return response;
     },
 
     apiError: (msg) => {
