@@ -1,10 +1,10 @@
 const db = require('../../prisma/connection'),
-    utils = require('./utils')
-    transporter = require('./transporter'),
-    { NODEMAILER_EMAIL } = require('../config')
+    utils = require('./utils'),
+    emailHelper = require('../helpers/email'),
+    transporter = require('./transporter')
 
 module.exports = {
-    sendOtp: async(email) => {
+    sendOtp: async(email, confEmail) => {
         try {
 
             const existOtp = await db.otp.findFirst({
@@ -23,19 +23,18 @@ module.exports = {
 
             const otp = await utils.generateOtp()
 
-            const mailOptions = {
-                from: NODEMAILER_EMAIL,
-                to: email,
-                subject: "Verifikasi OTP",
-                html: `<p>Verifikasi OTP</p>
-                    <p style="color: tomato; font-size:25px; letter-spacing: 2px;"><b>${otp}</b></p>
-                    <p>This code <b>expires in 1 hour(s)</b>.</p>`,
+            let mailOptions
+
+            if (confEmail === 'register') {
+                mailOptions = await emailHelper.register(email, otp)
+            } else if(confEmail === 'request-reset-password') {
+                mailOptions = await emailHelper.requestResetPassword(email, otp)
             }
 
             await transporter.sendEmail(mailOptions)
 
             const hashedOtp = await utils.createHashData(otp)
-            const expiredAt = new Date(Date.now() + 60000)
+            const expiredAt = new Date(Date.now() + 600000)
 
             await db.otp.create({
                 data: {
@@ -91,7 +90,7 @@ module.exports = {
                         }
                     })
 
-                return utils.apiError("Verifikasi otp berhasil")
+                return utils.apiSuccess("Verifikasi otp berhasil")
             } else {
                 return utils.apiError("Otp tidak valid atau tidak cocok")
             }

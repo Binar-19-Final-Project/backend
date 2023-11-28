@@ -93,7 +93,7 @@ module.exports = {
                 }
             })
 
-            if(!checkOtp) return res.status(404).json(utils.apiError('Otp untuk tidak ditemukan. Silahkan kirim ulang kembali'))
+            if(!checkOtp) return res.status(404).json(utils.apiError('Otp tidak ditemukan. Silahkan kirim ulang kembali'))
 
             const verifyOtp = await otpUtils.verifyOtp(email, otp)
 
@@ -114,6 +114,75 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
         }
+    },
+
+    requestResetPassword: async(req, res) => {
+        try {
+            const { email } = req.body
+
+            const checkEmail = await db.user.findUnique({
+                where: {
+                    email: email
+                }
+            })
+
+            if(checkEmail) {
+                await otpUtils.sendOtp(email, 'request-reset-password')
+                return res.status(200).json(utils.apiSuccess("Silahkan cek email untuk kode verifikasi Otp"))
+            } else {
+                return res.status(404).json(utils.apiError("Email tidak terdaftar"))
+            }
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+             
+    },
+
+    resetPassword: async (req, res) => {
+       try {
+            const { email, otp, password } = req.body
+
+            const checkEmail = await db.user.findUnique({
+                where: {
+                    email: email
+                }
+            })
+
+            if(!checkEmail) return res.status(404).json(utils.apiError("Email tidak terdaftar"))
+
+            const checkOtp = await db.otp.findFirst({
+                where: {
+                    email: email
+                }
+            })
+
+            if(!checkOtp) {
+                return res.status(404).json(utils.apiError('Otp tidak ditemukan. Silahkan kirim ulang kembali'))
+            }
+            
+            const hashPassword = await utils.createHashData(password) 
+            const verifyOtp = await otpUtils.verifyOtp(email, otp)
+
+            if (verifyOtp.error === true) {
+                return res.status(409).json(utils.apiError(verifyOtp.message)) 
+            } else {
+                await db.user.update({
+                    where: {
+                        email: email
+                    }, data: {
+                        password: hashPassword
+                    }
+                })
+                return res.status(200).json(utils.apiSuccess("Reset password berhasil")) 
+            }
+
+       } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+       }
+        
     },
 
     profile: async (req, res) => {
@@ -140,7 +209,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Data user berhasil diambil", data))
         } catch (error) {
             console.log(error);
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
       }
 }
