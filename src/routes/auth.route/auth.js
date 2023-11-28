@@ -7,6 +7,7 @@ const express = require('express'),
 
 router.post('/register',  validate(schema.register), controller.auth.register)
 router.post('/login',  validate(schema.login), controller.auth.login)
+router.post('/verify-user',  validate(schema.otp), controller.auth.verifyUser)
 router.get('/profile', verifyToken, controller.auth.profile)
 
 module.exports = router
