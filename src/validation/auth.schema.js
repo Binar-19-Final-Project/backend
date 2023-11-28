@@ -30,4 +30,12 @@ module.exports = {
         .isLength({ min: 8 }).withMessage("Password minimal 8 karakter")
         .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password harus mengandung setidaknya satu huruf kapital dan satu angka"),
   ],
+
+  otp: [
+    body("email")
+        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+    body("otp")
+        .notEmpty().withMessage("Otp tidak boleh kosong")
+        .isLength({ min: 6 }).withMessage("Otp berisi 6 angka"),
+  ]
 };
