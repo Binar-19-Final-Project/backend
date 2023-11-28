@@ -6,14 +6,7 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             
-            const category = await db.courseCategory.findMany({
-                select : {
-                    id: true,
-                    name : true,
-                    is_published : true,
-                    slug : true
-                }
-            })
+            const category = await db.courseCategory.findMany()
 
             return res.status(200).json(utils.apiSuccess("Berhasil Menampilkan Semua Data Kategori", category))
 
