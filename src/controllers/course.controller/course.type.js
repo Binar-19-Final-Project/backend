@@ -1,6 +1,5 @@
 const db = require('../../../prisma/connection'),
-    utils = require('../../utils/utils'),
-    slugify = require('slugify')
+    utils = require('../../utils/utils')
 
 
 module.exports = {
@@ -48,12 +47,12 @@ module.exports = {
 
             const {name} = req.body
 
-            const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
+            const nameSlug = await utils.createSlug(name)
 
             const data = await db.couseType.create({
                 data:{
                     name : name,
-                    slug : slug,
+                    slug : nameSlug,
                 }
             })
 
@@ -70,7 +69,7 @@ module.exports = {
         try {
 
             const {name} = req.body
-            const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
+            const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
             const check = await db.couseType.findUnique({
@@ -87,7 +86,7 @@ module.exports = {
                 },
                 data:{
                     name : name,
-                    slug : slug,
+                    slug : nameSlug,
                 }
             })
 
