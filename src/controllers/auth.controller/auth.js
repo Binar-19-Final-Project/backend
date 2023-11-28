@@ -1,6 +1,6 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
-    sendOtp = require('../../utils/send.otp')
+    otpUtils = require('../../utils/otp')
 
 module.exports = {
     register: async (req, res) => {
@@ -17,7 +17,7 @@ module.exports = {
 
             const hashPassword = await utils.createHashData(password)
 
-            const emailSent = await sendOtp.send(email)
+            const emailSent = await otpUtils.sendOtp(email)
 
             if(emailSent) {
                 const user = await db.user.create({
@@ -77,6 +77,39 @@ module.exports = {
             }
 
             return res.status(200).json(utils.apiSuccess("Login berhasil", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+        }
+    },
+
+    verifyUser: async (req, res) => {
+        try {
+            const {email, otp} = req.body
+
+            const checkOtp = await db.otp.findFirst({
+                where: {
+                    email: email
+                }
+            })
+
+            if(!checkOtp) return res.status(404).json(utils.apiError('Otp untuk tidak ditemukan. Silahkan kirim ulang kembali'))
+
+            const verifyOtp = await otpUtils.verifyOtp(email, otp)
+
+            if (verifyOtp.error === true) {
+                    return res.status(409).json(utils.apiError(verifyOtp.message)) 
+                } else {
+                    await db.user.update({
+                        where: {
+                            email: email
+                        }, data: {
+                            verified: true
+                        }
+                    })
+                    return res.status(200).json(utils.apiSuccess("User berhasil diverifikasi")) 
+                }
+
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError('Kesalahan pada internal server'))

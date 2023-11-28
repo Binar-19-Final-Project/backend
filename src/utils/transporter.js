@@ -11,19 +11,21 @@ const config = {
     user: NODEMAILER_EMAIL,
     pass: NODEMAILER_PASS,
   },
-};
+}
+
+const transporter = nodemailer.createTransport(config)
 
 module.exports = {
   create: () => nodemailer.createTransport(config),
+  
 
-  send: async (mailOptions) => {
+  sendEmail: async (mailOptions) => {
     try {
-      const transporter = nodemailer.createTransport(config);
-      const send = await transporter.sendMail(mailOptions);
-      return send.response;
+      const send = await transporter.sendMail(mailOptions)
+      return send.response
     } catch (error) {
-      console.log(err);
-      throw new Error(`${error.message}`);
+      console.log(err)
+      throw new Error(`${error.message}`)
     }
   },
-};
+}
