@@ -92,10 +92,10 @@ async function seedData()  {
     }
 
     /* Course Category Seeder */
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       let courseCategoryName
         do {
-          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development'])
+          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development', 'Machine Learning'])
         } while (usedCourseCategoryName.has(courseCategoryName))
 
         usedCourseCategoryName.add(courseCategoryName)
@@ -115,6 +115,7 @@ async function seedData()  {
         const seedCategoryCourse = {
           name: courseCategoryName,
           slug: slug,
+          urlPhoto: faker.image.urlLoremFlickr({ category: 'business' })
         }
   
       await db.courseCategory.create({ data: seedCategoryCourse })

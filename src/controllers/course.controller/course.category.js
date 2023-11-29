@@ -52,8 +52,6 @@ module.exports = {
                 }
             })
 
-            
-
             return res.status(200).json(utils.apiSuccess("Berhasil buat Kategori", data))
 
         } catch (error) {
