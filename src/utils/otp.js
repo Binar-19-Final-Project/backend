@@ -29,8 +29,10 @@ module.exports = {
                 mailOptions = await emailHelper.register(email, otp)
             } else if(confEmail === 'request-reset-password') {
                 mailOptions = await emailHelper.requestResetPassword(email, otp)
+            } else if(confEmail === 'resend-otp') {
+                mailOptions = await emailHelper.resendOtp(email, otp)
             }
-
+            
             await transporter.sendEmail(mailOptions)
 
             const hashedOtp = await utils.createHashData(otp)

@@ -73,4 +73,9 @@ module.exports = {
         })
         .isString().withMessage("tipe data string"),
   ],
+
+  resendOtp: [
+    body("email")
+        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+  ],
 };

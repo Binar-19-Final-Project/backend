@@ -133,7 +133,7 @@ module.exports = {
 
             if(checkEmail) {
                 await otpUtils.sendOtp(email, 'request-reset-password')
-                return res.status(200).json(utils.apiSuccess("Silahkan cek email untuk kode verifikasi Otp"))
+                return res.status(200).json(utils.apiSuccess("Periksa email masuk untuk kode verifikasi Otp"))
             } else {
                 return res.status(404).json(utils.apiError("Email tidak terdaftar"))
             }
@@ -148,14 +148,6 @@ module.exports = {
     resetPassword: async (req, res) => {
        try {
             const { email, otp, password } = req.body
-
-            const checkEmail = await db.user.findUnique({
-                where: {
-                    email: email
-                }
-            })
-
-            if(!checkEmail) return res.status(404).json(utils.apiError("Email tidak terdaftar"))
 
             const checkOtp = await db.otp.findFirst({
                 where: {
@@ -188,6 +180,22 @@ module.exports = {
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
        }
         
+    },
+
+    resendOtp: async (req, res) => {
+        try {
+            const { email } = req.body
+
+            const emailSent = await otpUtils.sendOtp(email, 'resend-otp')
+
+            if(emailSent) {
+                return res.status(200).json(utils.apiSuccess("Otp berhasil dikirim ulang. Periksa email masuk"))
+            }
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     },
 
     profile: async (req, res) => {
