@@ -1,4 +1,5 @@
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer"),
+  utils = require('./utils')
 
 const {NODEMAILER_SERVICE, NODEMAILER_HOST, NODEMAILER_PORT, NODEMAILER_EMAIL, NODEMAILER_PASS } = require('../config')
 

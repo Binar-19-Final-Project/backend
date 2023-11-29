@@ -17,9 +17,9 @@ module.exports = {
 
             const hashPassword = await utils.createHashData(password)
 
-            const emailSent = await otpUtils.sendOtp(email)
+            const emailSent = await otpUtils.sendOtp(email, 'register')
 
-            if(emailSent) {
+            if (emailSent) {
                 const user = await db.user.create({
                     data: {
                         name: name,
@@ -43,6 +43,8 @@ module.exports = {
                 }
 
                 return res.status(201).json(utils.apiSuccess("Pendaftaran akun berhasil. Periksa email masuk untuk kode verifikasi Otp", data))
+            } else {
+                return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
             }
 
         } catch (error) {
@@ -53,21 +55,24 @@ module.exports = {
 
     login: async (req, res) => {
         try {
+
+            const { email } = req.body
+
             const user = await db.user.findUnique({
                 where: {
-                  email: req.body.email,
+                  email: email,
                 },
               })
 
             if (!user) return res.status(400).json(utils.apiError("Email tidak terdaftar"))
 
-            const verified = user.verified
-
-            if (!verified) return res.status(409).json(utils.apiError("Akun belum terverifikasi"))
-
             const verifyPassword = await utils.verifyHashData(req.body.password, user.password)
 
             if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
+
+            const verified = user.verified
+
+            if (!verified) return res.status(409).json(utils.apiError("Akun belum terverifikasi", { email }))
 
             const payload = { id: user.id }
             const token = utils.createJwt(payload)
@@ -97,18 +102,18 @@ module.exports = {
 
             const verifyOtp = await otpUtils.verifyOtp(email, otp)
 
-            if (verifyOtp.error === true) {
-                    return res.status(409).json(utils.apiError(verifyOtp.message)) 
-                } else {
-                    await db.user.update({
-                        where: {
-                            email: email
-                        }, data: {
-                            verified: true
-                        }
-                    })
-                    return res.status(200).json(utils.apiSuccess("User berhasil diverifikasi")) 
-                }
+            if (verifyOtp.status === 'success') {
+                 await db.user.update({
+                    where: {
+                         email: email
+                     }, data: {
+                           verified: true
+                    }
+                })
+                return res.status(200).json(utils.apiSuccess("User berhasil diverifikasi")) 
+            } else {
+                return res.status(409).json(utils.apiError(verifyOtp.message)) 
+            }
 
         } catch (error) {
             console.log(error)
@@ -157,9 +162,7 @@ module.exports = {
             const hashPassword = await utils.createHashData(password) 
             const verifyOtp = await otpUtils.verifyOtp(email, otp)
 
-            if (verifyOtp.error === true) {
-                return res.status(409).json(utils.apiError(verifyOtp.message)) 
-            } else {
+            if (verifyOtp.status === 'success') {
                 await db.user.update({
                     where: {
                         email: email
@@ -167,7 +170,9 @@ module.exports = {
                         password: hashPassword
                     }
                 })
-                return res.status(200).json(utils.apiSuccess("Reset password berhasil")) 
+                return res.status(200).json(utils.apiSuccess("Reset password berhasil"))  
+            } else {
+                return res.status(409).json(utils.apiError(verifyOtp.message))
             }
 
        } catch (error) {

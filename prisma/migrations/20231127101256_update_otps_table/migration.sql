@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `otps` MODIFY `otp` VARCHAR(191) NOT NULL;
