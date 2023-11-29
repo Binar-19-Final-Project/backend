@@ -1,4 +1,5 @@
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer"),
+  utils = require('./utils')
 
 const {NODEMAILER_SERVICE, NODEMAILER_HOST, NODEMAILER_PORT, NODEMAILER_EMAIL, NODEMAILER_PASS } = require('../config')
 
@@ -24,7 +25,7 @@ module.exports = {
       const send = await transporter.sendMail(mailOptions)
       return send.response
     } catch (error) {
-      console.log(err)
+      console.log(error)
       throw new Error(`${error.message}`)
     }
   },

@@ -7,20 +7,21 @@ module.exports = {
 
     apiSuccess: (msg, data, extraData = {}) => {
         const response = {
-            error: false,
+            status: 'success',
             message: msg,
             ...extraData, 
-            data: data
-          };
-          return response;
+            value: data
+          }
+          return response
     },
 
-    apiError: (msg) => {
-        const response = {}
-        response.error = true
-        response.message = msg
-        
-        return response
+    apiError: (msg, errors) => {
+        const response = {
+            status: 'error',
+            message: msg,
+            errors: errors, 
+          }
+          return response
     },
 
     exclude: (model, keys) => {
