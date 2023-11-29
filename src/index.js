@@ -1,13 +1,15 @@
 const express = require("express"),
   { PORT } = require('./config'),
   bodyParser = require("body-parser"),
-  cors = require('cors')
+  cors = require('cors'),
+  router = require('./routes'),
   app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json())
 app.use(cors())
+app.use('/api/v1', router)
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening at port: ${PORT}`)
