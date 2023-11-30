@@ -241,7 +241,7 @@ async function seedData()  {
     }
 
      /* Course Content Seeder */
-     for (let i = 0; i < 60; i++) {
+     for (let i = 0; i < 1000; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -252,7 +252,7 @@ async function seedData()  {
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
           isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
-          moduleId: faker.number.int({ min: 1, max: 20 }),
+          moduleId: faker.number.int({ min: 1, max: 200 }),
       }
   
       await db.courseContent.create({ data: seedCourseContents })

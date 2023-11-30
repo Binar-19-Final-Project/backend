@@ -15,7 +15,7 @@ module.exports = {
             if (search) {
                 whereCondition.OR = [
                   { title: { contains: search } },
-                ];
+                ]
             }
 
             if (category) {
@@ -26,7 +26,7 @@ module.exports = {
                             in: categories
                         }
                     }
-                };
+                }
             }
 
             if (type) {
@@ -45,7 +45,7 @@ module.exports = {
                             in: levels
                         }
                     }
-                };
+                }
             }
             
 
@@ -79,12 +79,12 @@ module.exports = {
                 skip: skip,
                 where: whereCondition,
                 include: {
-                    courseModule: true,
                     courseCategory: true,
                     courseLevel: true,
                     courseType: true,
                     coursePromo: true,
-                    instructor: true
+                    instructor: true,
+                    courseModule: true
                 },
                orderBy: orderByCondition
             })
@@ -94,14 +94,14 @@ module.exports = {
             const totalPage = Math.ceil(resultCount / limit)
 
             const data = courses.map((course) => {
-                const originalPrice = course.price;
+                const originalPrice = course.price
                 const promoName = course.coursePromo ? course.coursePromo.name : null
                 const discount = course.coursePromo ? course.coursePromo.discount : null
                 const totalModule = course.courseModule.length
               
-                let totalPrice = originalPrice;
+                let totalPrice = originalPrice
                 if (discount) {
-                  const discountAmount = (originalPrice * discount) / 100;
+                  const discountAmount = (originalPrice * discount) / 100
                   totalPrice = originalPrice - discountAmount
                 }
               
@@ -110,7 +110,7 @@ module.exports = {
                   title: course.title,
                   slug: course.slug,
                   description: course.description,
-                  price: originalPrice,
+                  originalPrice: originalPrice,
                   rating: course.rating,
                   duration: course.duration,
                   taken: course.taken,
@@ -168,6 +168,93 @@ module.exports = {
                 }
             ))
 
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    readById: async (req, res) => {
+        try {
+            const { id } = req.params
+
+            const course = await db.course.findUnique({
+                where: {
+                    id: parseInt(id)
+                },
+                include: {
+                    courseCategory: true,
+                    courseLevel: true,
+                    courseType: true,
+                    coursePromo: true,
+                    instructor: true,
+                    courseModule: {
+                        include: {
+                            courseContent: true
+                        }
+                    }
+                }
+            })
+
+            if (!course) {
+                return res.status(404).json(utils.apiError("Tidak ada data course"))
+            }
+
+            const originalPrice = course.price
+            const promoName = course.coursePromo ? course.coursePromo.name : null
+            const discount = course.coursePromo ? course.coursePromo.discount : null
+            const totalModule = course.courseModule.length
+
+            let totalPrice = originalPrice
+            if (discount) {
+                const discountAmount = (originalPrice * discount) / 100
+                totalPrice = originalPrice - discountAmount
+            }
+            
+            const data = {
+                id: course.id,
+                title: course.title,
+                slug: course.slug,
+                description: course.description,
+                originalPrice: originalPrice,
+                rating: course.rating,
+                duration: course.duration,
+                taken: course.taken,
+                imageUrl: course.imageUrl,
+                category: course.courseCategory.name,
+                type: course.courseType.name,
+                level: course.courseLevel.name,
+                instructor: course.instructor.name,
+                totalModule: totalModule,
+                namePromo: promoName,
+                discount: discount,
+                totalPrice: totalPrice,
+                publishedAt: course.createdAt,
+                updatedAt: course.updatedAt,
+                modules: course.courseModule.map((module) => {
+                    const totalDuration = module.courseContent.reduce((total, content) => {
+                        return total + content.duration
+                    }, 0)
+
+                    const totalContent = module.courseContent.length
+
+                    return {
+                        id: module.id,
+                        title: module.title,
+                        slug: module.slug,
+                        duration: totalDuration, 
+                        totalContent: totalContent,
+                        contents: module.courseContent.map((content) => ({
+                            title: content.title,
+                            slug: content.slug,
+                            urlVideo: content.videoUrl,
+                            duration: content.duration,
+                        }))
+                    }
+                })
+            }
+
+            return res.status(200).json(utils.apiSuccess("Data course berdasarkan id berhasil diambil", data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
