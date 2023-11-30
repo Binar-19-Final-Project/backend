@@ -8,16 +8,13 @@ const validate = (validations) => {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      const errorMessage = errors.array().reduce((acc, error) => {
-        const { path, msg } = error
-        if (!acc[path]) {
-          acc[path] = { messages: [] }
-        }
-        acc[path].messages.push(msg)
-        return acc
-      }, {})
+      let errorMessage
+        errors.array().forEach((error) => {
+          errorMessage = error.msg
+        })
   
-      return res.status(422).json(utils.apiError("Data yang diberikan tidak valid", errorMessage))
+      return res.status(422).json(utils.apiError(errorMessage))
+
     }
 
     return next()
