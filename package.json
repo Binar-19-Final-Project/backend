@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "migrate": "prisma migrate deploy"
+    "migrate": "npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
