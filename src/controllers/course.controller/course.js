@@ -66,12 +66,64 @@ module.exports = {
                 ]
             }
 
-            if(popular) {
-                orderByCondition = [
-                    {
-                        taken: 'desc'
+            if (popular) {
+                const popularCourses = await db.course.findMany({
+                    where: whereCondition,
+                    include: {
+                        courseCategory: true,
+                        courseLevel: true,
+                        courseType: true,
+                        coursePromo: true,
+                        instructor: true,
+                        courseModule: true
+                    },
+                    orderBy: orderByCondition
+                })
+            
+                const groupedByCategory = {}
+                popularCourses.forEach(course => {
+                    const category = course.courseCategory.name
+                    if (!groupedByCategory[category]) {
+                        groupedByCategory[category] = []
                     }
-                ]
+
+                    const originalPrice = course.price
+                    const promoName = course.coursePromo ? course.coursePromo.name : null
+                    const discount = course.coursePromo ? course.coursePromo.discount : null
+                    const totalModule = course.courseModule.length
+
+                    groupedByCategory[category].push({
+                        id: course.id,
+                        title: course.title,
+                        slug: course.slug,
+                        description: course.description,
+                         originalPrice: originalPrice,
+                        rating: course.rating,
+                        duration: course.duration,
+                        taken: course.taken,
+                        imageUrl: course.imageUrl,
+                        category: course.courseCategory.name,
+                        type: course.courseType.name,
+                        level: course.courseLevel.name,
+                        instructor: course.instructor.name,
+                        totalModule: totalModule,
+                        namePromo: promoName,
+                        discount: discount,
+                        publishedAt: course.createdAt
+                    })
+                })
+
+                let message = "Berhasil mengambil data course"
+            
+                if (popular) {
+                    message += ` popular berdasarkan kategori`
+                }
+
+                if (category) {
+                    message += ` berdasarkan kategori '${category}'`
+                }
+            
+                return res.status(200).json(utils.apiSuccess(message, groupedByCategory ))
             }
             
             const courses = await db.course.findMany({
