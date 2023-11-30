@@ -4,34 +4,76 @@ const db = require('../../../prisma/connection'),
 module.exports = {
     read: async(req, res) => {
         try {
-            let { category, page = 1, limit = 10, search, popular, promo } = req.query
+            let { page = 1, limit = 10, search, category, level, type, popular, promo, latest } = req.query
+
+            /* Pagination */
             let skip = ( page - 1 ) * limit
 
+            /* Where Condition */
             let whereCondition = {}
-            if (category) {
-                whereCondition = {
-                    courseCategory: {
-                        slug: category
-                    }
-                }
-            }
 
             if (search) {
                 whereCondition.OR = [
                   { title: { contains: search } },
-                ];
+                ]
             }
 
-            const getCoursePromo = promo && promo.toLowerCase() === 'true'
-
-            if (promo) {
+            if (category) {
+                const categories = Array.isArray(category) ? category : [category]
                 whereCondition = {
-                    isPromo: getCoursePromo
+                    courseCategory: {
+                        slug: {
+                            in: categories
+                        }
+                    }
                 }
             }
 
-            const orderByPopular = popular && popular.toLowerCase() === 'true'
+            if (type) {
+                whereCondition = {
+                    courseType: {
+                        name: type
+                    }
+                }
+            }
 
+            if (level) {
+                const levels = Array.isArray(level) ? level : [level]
+                whereCondition = {
+                    courseLevel: {
+                        slug: {
+                            in: levels
+                        }
+                    }
+                }
+            }
+            
+
+            if (promo) {
+                whereCondition = {
+                    isPromo: true
+                }
+            }
+
+            /* Order by Condition */
+            let orderByCondition = []
+
+            if(latest) {
+                orderByCondition = [
+                    {
+                        createdAt: 'desc'
+                    }
+                ]
+            }
+
+            if(popular) {
+                orderByCondition = [
+                    {
+                        taken: 'desc'
+                    }
+                ]
+            }
+            
             const courses = await db.course.findMany({
                 take: parseInt(limit),
                 skip: skip,
@@ -41,44 +83,26 @@ module.exports = {
                     courseLevel: true,
                     courseType: true,
                     coursePromo: true,
-                    instructor: true
+                    instructor: true,
+                    courseModule: true
                 },
-                orderBy: orderByPopular ? { taken: 'desc' } : undefined
+               orderBy: orderByCondition
             })
 
             const resultCount = await db.course.count({ where: whereCondition }) 
 
             const totalPage = Math.ceil(resultCount / limit)
 
-            // const data = courses.map((course) => ({
-            //     id: course.id,
-            //     title: course.title,
-            //     slug: course.slug,
-            //     description: course.description,
-            //     price: course.price,
-            //     rating: course.rating,
-            //     duration: course.duration,
-            //     taken: course.taken,
-            //     imageUrl: course.imageUrl,
-            //     category: course.courseCategory.name,
-            //     type: course.courseType.name,
-            //     level: course.courseLevel.name,
-            //     instructor: course.instructor.name,
-            //     namePromo: course.coursePromo.name,
-            //     discount: course.coursePromo.discount,
-            //     totalPrice: ,
-            //     publishedAt: course.createdAt
-            // }))
-
             const data = courses.map((course) => {
-                const originalPrice = course.price;
-                const promoName = course.coursePromo ? course.coursePromo.name : null;
-                const discount = course.coursePromo ? course.coursePromo.discount : null;
+                const originalPrice = course.price
+                const promoName = course.coursePromo ? course.coursePromo.name : null
+                const discount = course.coursePromo ? course.coursePromo.discount : null
+                const totalModule = course.courseModule.length
               
-                let totalPrice = originalPrice;
+                let totalPrice = originalPrice
                 if (discount) {
-                  const discountAmount = (originalPrice * discount) / 100;
-                  totalPrice = originalPrice - discountAmount;
+                  const discountAmount = (originalPrice * discount) / 100
+                  totalPrice = originalPrice - discountAmount
                 }
               
                 return {
@@ -86,7 +110,7 @@ module.exports = {
                   title: course.title,
                   slug: course.slug,
                   description: course.description,
-                  price: originalPrice,
+                  originalPrice: originalPrice,
                   rating: course.rating,
                   duration: course.duration,
                   taken: course.taken,
@@ -95,12 +119,13 @@ module.exports = {
                   type: course.courseType.name,
                   level: course.courseLevel.name,
                   instructor: course.instructor.name,
+                  totalModule: totalModule,
                   namePromo: promoName,
                   discount: discount,
                   totalPrice: totalPrice,
                   publishedAt: course.createdAt
-                };
-              });
+                }
+              })
               
 
             let message = "Berhasil mengambil data course"
@@ -113,8 +138,24 @@ module.exports = {
                 message += ` berdasarkan kategori '${category}'`
             }
 
+            if (level) {
+                message += ` berdasarkan level '${level}'`
+            }
+
+            if (promo) {
+                message += ` berdasarkan promo`
+            }
+
+            if (popular) {
+                message += ` berdasarkan popular`
+            }
+
+            if (latest) {
+                message += ` berdasarkan terbaru`
+            }
+
             if (resultCount === 0) {
-                message = "Course tidak ditemukan";
+                return res.status(404).json(utils.apiError("Tidak ada data course"))
             }
 
             return res.status(200).json(utils.apiSuccess(
@@ -127,6 +168,93 @@ module.exports = {
                 }
             ))
 
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    readById: async (req, res) => {
+        try {
+            const { id } = req.params
+
+            const course = await db.course.findUnique({
+                where: {
+                    id: parseInt(id)
+                },
+                include: {
+                    courseCategory: true,
+                    courseLevel: true,
+                    courseType: true,
+                    coursePromo: true,
+                    instructor: true,
+                    courseModule: {
+                        include: {
+                            courseContent: true
+                        }
+                    }
+                }
+            })
+
+            if (!course) {
+                return res.status(404).json(utils.apiError("Tidak ada data course"))
+            }
+
+            const originalPrice = course.price
+            const promoName = course.coursePromo ? course.coursePromo.name : null
+            const discount = course.coursePromo ? course.coursePromo.discount : null
+            const totalModule = course.courseModule.length
+
+            let totalPrice = originalPrice
+            if (discount) {
+                const discountAmount = (originalPrice * discount) / 100
+                totalPrice = originalPrice - discountAmount
+            }
+            
+            const data = {
+                id: course.id,
+                title: course.title,
+                slug: course.slug,
+                description: course.description,
+                originalPrice: originalPrice,
+                rating: course.rating,
+                duration: course.duration,
+                taken: course.taken,
+                imageUrl: course.imageUrl,
+                category: course.courseCategory.name,
+                type: course.courseType.name,
+                level: course.courseLevel.name,
+                instructor: course.instructor.name,
+                totalModule: totalModule,
+                namePromo: promoName,
+                discount: discount,
+                totalPrice: totalPrice,
+                publishedAt: course.createdAt,
+                updatedAt: course.updatedAt,
+                modules: course.courseModule.map((module) => {
+                    const totalDuration = module.courseContent.reduce((total, content) => {
+                        return total + content.duration
+                    }, 0)
+
+                    const totalContent = module.courseContent.length
+
+                    return {
+                        id: module.id,
+                        title: module.title,
+                        slug: module.slug,
+                        duration: totalDuration, 
+                        totalContent: totalContent,
+                        contents: module.courseContent.map((content) => ({
+                            title: content.title,
+                            slug: content.slug,
+                            urlVideo: content.videoUrl,
+                            duration: content.duration,
+                        }))
+                    }
+                })
+            }
+
+            return res.status(200).json(utils.apiSuccess("Data course berdasarkan id berhasil diambil", data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
