@@ -28,5 +28,20 @@ module.exports = {
     body("courseId").notEmpty().withMessage("Course id wajib diisi"),
     body("courseId").isInt().withMessage("Course id harus berupa angka"),
     body("courseId").isInt({min: 1}).withMessage("Course id tidak boleh kurang dari 1")
+  ],
+
+  content: [
+    body("title").notEmpty().withMessage("Judul wajib diisi"),
+    body("title").isString().withMessage("Judul harus berupa karakter"),
+    body("videoUrl").notEmpty().withMessage("Link video wajib diisi"),
+    body("videoUrl").isURL().withMessage("Link video harus berupa link valid"),
+    body("duration").notEmpty().withMessage("Durasi wajib diisi"),
+    body("duration").isInt().withMessage("Durasi harus berupa menit"),
+    body("duration").isInt({min: 1}).withMessage("Durasi minimal 1 menit"),
+    body("isFree").notEmpty().withMessage("Type konten wajib diisi"),
+    body("isFree").isBoolean().withMessage("Type konten harus berupa boolean"),
+    body("moduleId").notEmpty().withMessage("Module id wajib diisi"),
+    body("moduleId").isInt().withMessage("Module id harus berupa angka"),
+    body("moduleId").isInt({min: 1}).withMessage("Module id tidak boleh kurang dari 1")
   ]
 };
