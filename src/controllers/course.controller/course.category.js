@@ -14,6 +14,7 @@ module.exports = {
                     slug : true
                 }
             })
+            const category = await db.courseCategory.findMany()
 
             return res.status(200).json(utils.apiSuccess("Berhasil Menampilkan Semua Data Kategori", category))
 

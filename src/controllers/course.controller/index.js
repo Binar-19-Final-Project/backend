@@ -2,6 +2,7 @@ const course = require('./course'),
     instructor = require('./course.instructor'),
     promo = require('./course.promo'),
     courseModule = require('./course.module'),
+    courseCategory = require('./course.category'),
     courseType = require("./course.type")
 
 module.exports = {
@@ -9,5 +10,6 @@ module.exports = {
     instructor,
     promo,
     courseModule,
-    courseType
+    courseType,
+    courseCategory
 }
