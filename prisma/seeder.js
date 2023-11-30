@@ -92,10 +92,10 @@ async function seedData()  {
     }
 
     /* Course Category Seeder */
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       let courseCategoryName
         do {
-          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development'])
+          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development', 'Machine Learning'])
         } while (usedCourseCategoryName.has(courseCategoryName))
 
         usedCourseCategoryName.add(courseCategoryName)
@@ -115,6 +115,7 @@ async function seedData()  {
         const seedCategoryCourse = {
           name: courseCategoryName,
           slug: slug,
+          urlPhoto: faker.image.urlLoremFlickr({ category: 'business' })
         }
   
       await db.courseCategory.create({ data: seedCategoryCourse })
@@ -223,7 +224,7 @@ async function seedData()  {
     }
 
     /* Course Module Seeder */
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 200; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -240,7 +241,7 @@ async function seedData()  {
     }
 
      /* Course Content Seeder */
-     for (let i = 0; i < 60; i++) {
+     for (let i = 0; i < 1000; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -251,7 +252,7 @@ async function seedData()  {
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
           isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
-          moduleId: faker.number.int({ min: 1, max: 20 }),
+          moduleId: faker.number.int({ min: 1, max: 200 }),
       }
   
       await db.courseContent.create({ data: seedCourseContents })
