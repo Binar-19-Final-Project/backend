@@ -45,6 +45,6 @@ module.exports = {
     body("moduleId").isInt({min: 1}).withMessage("Module id tidak boleh kurang dari 1")
   ],
   category:[
-    body("name").notEmpty().withMessage("Judul wajib diisi"),
+    body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
   ]
 };
