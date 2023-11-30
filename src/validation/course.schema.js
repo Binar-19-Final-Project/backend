@@ -28,5 +28,10 @@ module.exports = {
     body("courseId").notEmpty().withMessage("Course id wajib diisi"),
     body("courseId").isInt().withMessage("Course id harus berupa angka"),
     body("courseId").isInt({min: 1}).withMessage("Course id tidak boleh kurang dari 1")
+  ],
+
+  category: [
+    body("name").notEmpty().withMessage("Nama kategori wajib diisi")
   ]
+
 };

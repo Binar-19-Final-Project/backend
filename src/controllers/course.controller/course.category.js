@@ -47,13 +47,9 @@ module.exports = {
                 }
             })
 
-<<<<<<< HEAD
             
 
             return res.status(200).json(utils.apiSuccess("Berhasil Menambah Kategori", data))
-=======
-            return res.status(200).json(utils.apiSuccess("Berhasil buat Kategori", data))
->>>>>>> db01c4a7ead19ce02d542af2e9a7567e5209b100
 
         } catch (error) {
             console.log(error)
