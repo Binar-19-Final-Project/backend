@@ -5,5 +5,6 @@ const express = require('express'),
     router = express.Router()
 
 router.get('/', controller.course.read)
+router.get('/:id', controller.course.readById)
 
 module.exports = router

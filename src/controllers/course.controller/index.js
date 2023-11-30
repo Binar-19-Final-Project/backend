@@ -3,11 +3,15 @@ const course = require('./course'),
     promo = require('./course.promo'),
     courseModule = require('./course.module'),
     content = require('./course.content')
+    courseCategory = require('./course.category'),
+    courseType = require("./course.type")
 
 module.exports = {
     course,
     instructor,
     promo,
     courseModule,
-    content
+    content,
+    courseType,
+    courseCategory
 }
