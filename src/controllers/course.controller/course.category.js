@@ -49,7 +49,7 @@ module.exports = {
 
             
 
-            return res.status(200).json(utils.apiSuccess("Berhasil buat Kategori", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil Menambah Kategori", data))
 
         } catch (error) {
             console.log(error)
