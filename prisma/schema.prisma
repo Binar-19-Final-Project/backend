@@ -186,12 +186,12 @@ model CourseModule {
 model CourseContent {
   id                 Int                      @id @default(autoincrement())
   title              String
-  slug          String         @unique
+  slug               String         
   videoUrl           String
   duration           Int
   finished           Boolean                  @default(false)
   isFree             Boolean                  @default(true) @map("is_free")
-  moduleId           Int                      @map("course_id")
+  moduleId           Int                      @map("course_module_id")
   courseModule       CourseModule             @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   learningProgresses CourseLearningProgress[]
   createdAt          DateTime                 @default(now()) @map("created_at")
