@@ -23,5 +23,3 @@ const { validationResult } = require("express-validator"),
 
 module.exports = validate
 
-
-module.exports = validate
