@@ -200,7 +200,7 @@ module.exports = {
 
             const bcryptResetToken = await utils.createHashData(email)
 
-            bcryptResetToken.replace(/\//g, "")
+            bcryptResetToken.replace(/\//g, "-")
 
             await db.user.update({
                 data:{

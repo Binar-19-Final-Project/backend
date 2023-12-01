@@ -1,4 +1,4 @@
-const { NODEMAILER_EMAIL, LOCAL_URL, RAILWAY_URL } = require('../config')
+const { NODEMAILER_EMAIL, LOCAL_URL, RAILWAY_URL, PORT } = require('../config')
 
 module.exports = {
     register: async (email, otp) => {
@@ -48,12 +48,12 @@ module.exports = {
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
                 <h2 style="color: #333; text-align: center;">Reset Password</h2>
                 <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
-                    <span style="color: tomato;">Click <a href="${LOCAL_URL}/reset-password/${resetToken}">here</a> to reset your password</span>
+                    <span style="color: tomato;">Click <a href="${LOCAL_URL}:${PORT}/reset-password/${resetToken}">here</a> to reset your password</span>
                 </div>
                 <h2 style="color: #333; text-align: center;">Or copy this link</h2>
                 <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
                     <p>
-                        ${LOCAL_URL}/reset-password/${resetToken}
+                        ${LOCAL_URL}:${PORT}/reset-password/${resetToken}
                     </p>
                 </div>
             </div>
