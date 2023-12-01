@@ -5,7 +5,8 @@ const express = require("express"),
     moduleRoute = require('./course.module'),
     contentRoute = require('./course.content'),
     typeRoute = require("./course.type"),
-    categoryRoute = require("./course.category")
+    categoryRoute = require("./course.category"),
+    levelRoute = require("./course.level"),
     router = express.Router()
     
 router.use('/course', courseRoute)
@@ -15,5 +16,6 @@ router.use('/course-module', moduleRoute)
 router.use('/course-content', contentRoute)
 router.use('/course-type', typeRoute)
 router.use("/course-category", categoryRoute)
+router.use("/course-level", levelRoute)
 
 module.exports = router

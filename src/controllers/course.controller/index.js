@@ -4,7 +4,8 @@ const course = require('./course'),
     courseModule = require('./course.module'),
     content = require('./course.content')
     courseCategory = require('./course.category'),
-    courseType = require("./course.type")
+    courseType = require("./course.type"),
+    courseLevel = require("./course.level")
 
 module.exports = {
     course,
@@ -13,5 +14,6 @@ module.exports = {
     courseModule,
     content,
     courseType,
-    courseCategory
+    courseCategory,
+    courseLevel
 }

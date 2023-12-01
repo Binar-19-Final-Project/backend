@@ -52,5 +52,9 @@ module.exports = {
   category : [
     body("name").notEmpty().withMessage("Nama kategori wajib diisi"),
     body("name").isString().withMessage("Nama kategori harus berupa karakter"),
+  ],
+  level : [
+    body("name").notEmpty().withMessage("Nama level wajib diisi"),
+    body("name").isString().withMessage("Nama level harus berupa karakter"),
   ]
 };
