@@ -33,7 +33,7 @@ module.exports = {
                     courseLevel: true,
                     courseType: true,
                     coursePromo: true,
-                    instructor: true,
+                    courseInstructor: true,
                     courseModule: {
                         include: {
                             courseContent: true
@@ -75,7 +75,7 @@ module.exports = {
                   category: course.courseCategory.name,
                   type: course.courseType.name,
                   level: course.courseLevel.name,
-                  instructor: course.instructor.name,
+                  instructor: course.courseInstructor.name,
                   totalModule: totalModule,
                   namePromo: promoName,
                   discount: discount,
@@ -123,7 +123,7 @@ module.exports = {
                     courseLevel: true,
                     courseType: true,
                     coursePromo: true,
-                    instructor: true,
+                    courseInstructor: true,
                     courseModule: {
                         include: {
                             courseContent: true
@@ -167,7 +167,7 @@ module.exports = {
                 category: course.courseCategory.name,
                 type: course.courseType.name,
                 level: course.courseLevel.name,
-                instructor: course.instructor.name,
+                instructor: course.courseInstructor.name,
                 totalModule: totalModule,
                 namePromo: promoName,
                 discount: discount,
@@ -213,7 +213,7 @@ module.exports = {
         //             courseLevel: true,
         //             courseType: true,
         //             coursePromo: true,
-        //             instructor: true,
+        //             courseInstructor: true,
         //             courseModule: true
         //         },
         //         orderBy: {
@@ -246,7 +246,7 @@ module.exports = {
         //             category: course.courseCategory.name,
         //             type: course.courseType.name,
         //             level: course.courseLevel.name,
-        //             instructor: course.instructor.name,
+        //             instructor: course.courseInstructor.name,
         //             totalModule: totalModule,
         //             namePromo: promoName,
         //             discount: discount,
