@@ -27,11 +27,7 @@ module.exports = {
                         email: email,
                         phone: BigInt(phone),
                         password: hashPassword,
-                        photoProfile: {
-                            create: {
-                                urlPhoto: "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
-                            }
-                        }
+                        photoProfile: "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
                     }
                 })
 
@@ -290,7 +286,7 @@ module.exports = {
                 phone: parseInt(user.phone),
                 city: user.city,
                 country: user.country,
-                photoProfile: user.photoProfile.urlPhoto
+                photoProfile: user.photoProfile
             }
     
             return res.status(200).json(utils.apiSuccess("Data user berhasil diambil", data))
