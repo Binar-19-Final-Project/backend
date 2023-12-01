@@ -19,10 +19,10 @@ module.exports = {
             filter = await courseUtils.filterPromo(filter, promo)
 
             /* Order By */
-            let orderBy = []
+            const orderBy = await courseUtils.orderBy(popular, latest)
 
-            orderBy = await courseUtils.orderByLatest(latest)
-            orderBy = await courseUtils.orderByPopular(popular)
+            // orderBy = await courseUtils.orderByLatest(latest)
+            // orderBy = await courseUtils.orderByPopular(popular)
 
             const courses = await db.course.findMany({
                 take: parseInt(limit),
