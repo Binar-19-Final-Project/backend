@@ -274,9 +274,6 @@ module.exports = {
             const user = await db.user.findUnique({
                 where: {
                     id: id
-                },
-                include: {
-                    photoProfile: true
                 }
             })
         
