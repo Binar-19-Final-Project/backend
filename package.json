@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "resetDb": "node db.reset.js",
+    "seed": "npx prisma db seed",
     "migrate": "prisma migrate deploy"
   },
   "keywords": [],

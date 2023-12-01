@@ -48,5 +48,9 @@ module.exports = {
   type : [
     body("name").notEmpty().withMessage("Nama tipe wajib diisi"),
     body("name").isString().withMessage("Nama tipe harus berupa karakter"),
+  ],
+  category : [
+    body("name").notEmpty().withMessage("Nama kategori wajib diisi"),
+    body("name").isString().withMessage("Nama kategori harus berupa karakter"),
   ]
 };

@@ -28,31 +28,44 @@ model User {
   password          String
   city              String?
   country           String?
+  photoProfile      String?                 @map("photo_prfile")
+  imageFilename     String?                 @map("image_filename")
   resetToken        String?                 @map("reset_token") @db.Text
   roleId            Int                     @default(1) @map("role_id")
   verified          Boolean                 @default(false)
-  photoProfile      PhotoProfile?
-  userWishlist      UserCourseWishlist?
+  userWishlist      UserCourseWishlist[]
   order             Order[]
   transaction       Transaction[]
-  coursePurchased   CoursePurchased?
-  learningProgress  CourseLearningProgress?
+  userCourse        UserCourse[]
   courseTestimonial CourseTestimonial[]
+  notification      Notification[]
   createdAt         DateTime                @default(now()) @map("created_at")
   updatedAt         DateTime                @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
-model CoursePurchased {
+model Notification {
   id          Int      @id @default(autoincrement())
-  progress    Int
-  userId      Int      @unique @map("user_id")
+  message     String
+  userId      Int      @map("user_id")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course      Course[]
   purchasedAt DateTime @default(now()) @map("purchased_at")
 
-  @@map("course_purchased")
+  @@map("notifications")
+}
+
+model UserCourse {
+  id                 Int              @id @default(autoincrement())
+  userId             Int              @map("user_id")
+  user               User             @relation(fields: [userId], references: [id])
+  courseId           Int              @map("course_id")
+  course             Course           @relation(fields: [courseId], references: [id])
+  userLearningProgress UserLearningProgress[]
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+
+  @@map("user_courses")
 }
 
 model Otp {
@@ -63,17 +76,6 @@ model Otp {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("otps")
-}
-
-model PhotoProfile {
-  id        Int      @id @default(autoincrement())
-  urlPhoto  String?   @map("url_photo")
-  userId    Int      @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("photo_profiles")
 }
 
 model CourseCategory {
@@ -114,7 +116,9 @@ model CourseLevel {
 model CourseInstructor {
   id        Int      @id @default(autoincrement())
   name      String
-  slug      String   @unique
+  slug      String   
+  photoProfile      String?                 @map("photo_profile")
+  imageFilename     String?                 @map("image_filename")
   course    Course[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -142,11 +146,11 @@ model Course {
   description       String               @db.Text
   price             Float
   rating            Float
-  duration          Float
   taken             Int
   imageUrl          String               @map("image_url")
-  instructorId      Int                  @map("course_instructor_id")
-  instructor        CourseInstructor     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  imageFilename     String?              @map("image_filename")
+  courseInstructorId      Int                  @map("course_instructor_id")
+  courseInstructor        CourseInstructor     @relation(fields: [courseInstructorId], references: [id], onDelete: Cascade)
   courseTypeId      Int                  @map("course_type_id")
   courseType        CourseType           @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
   courseCategoryId  Int                  @map("course_category_id")
@@ -160,7 +164,7 @@ model Course {
   courseModule      CourseModule[]
   userWishlist      UserCourseWishlist[]
   order             Order[]
-  purchashed        CoursePurchased[]
+  userCourse        UserCourse[]
   courseTestimonial CourseTestimonial[]
   createdAt         DateTime             @default(now()) @map("created_at")
   updatedAt         DateTime             @updatedAt @map("updated_at")
@@ -172,7 +176,6 @@ model CourseModule {
   id            Int            @id @default(autoincrement())
   title         String
   slug          String         
-  duration      Int
   totalChapter  Int            @map("total_chapter")
   courseId      Int            @map("course_id")
   course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -187,31 +190,30 @@ model CourseContent {
   id                 Int                      @id @default(autoincrement())
   title              String
   slug               String         
-  videoUrl           String
+  videoUrl           String                   @map("video_url")
   duration           Int
-  finished           Boolean                  @default(false)
+  completed           Boolean                  @default(false)
   isFree             Boolean                  @default(true) @map("is_free")
   moduleId           Int                      @map("course_module_id")
   courseModule       CourseModule             @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  learningProgresses CourseLearningProgress[]
+  userLearningProgress UserLearningProgress[]
   createdAt          DateTime                 @default(now()) @map("created_at")
   updatedAt          DateTime                 @updatedAt @map("updated_at")
 
   @@map("course_contents")
 }
 
-model CourseLearningProgress {
-  id          Int           @id @default(autoincrement())
-  progress    Float         @default(0)
-  isCompleted Boolean       @default(false)
-  userId      Int           @unique @map("user_id")
-  user        User          @relation(fields: [userId], references: [id])
-  contentId   Int           @map("course_content_id")
-  content     CourseContent @relation(fields: [contentId], references: [id])
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+model UserLearningProgress {
+  id              Int              @id @default(autoincrement())
+  progress        Float
+  contentId       Int              @map("content_id")
+  content         CourseContent    @relation(fields: [contentId], references: [id])
+  userCourseId    Int              @map("user_course_id")
+  userCourse      UserCourse       @relation(fields: [userCourseId], references: [id])
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
 
-  @@map("course_learning_progress")
+  @@map("user_learning_progresses")
 }
 
 model CourseTestimonial {
@@ -230,7 +232,7 @@ model CourseTestimonial {
 
 model UserCourseWishlist {
   id        Int      @id @default(autoincrement())
-  userId    Int      @unique @map("user_id")
+  userId    Int      @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId  Int      @map("course_id")
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
