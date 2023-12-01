@@ -21,8 +21,8 @@ module.exports = {
             /* Order By */
             let orderBy = []
 
-            orderBy = await courseUtils.orderByLatest(orderBy, latest)
-            orderBy = await courseUtils.orderByPopular(orderBy, popular)
+            orderBy = await courseUtils.orderByLatest(latest)
+            orderBy = await courseUtils.orderByPopular(popular)
 
             const courses = await db.course.findMany({
                 take: parseInt(limit),
