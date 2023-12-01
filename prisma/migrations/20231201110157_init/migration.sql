@@ -18,6 +18,8 @@ CREATE TABLE `users` (
     `password` VARCHAR(191) NOT NULL,
     `city` VARCHAR(191) NULL,
     `country` VARCHAR(191) NULL,
+    `photo_prfile` VARCHAR(191) NULL,
+    `image_filename` VARCHAR(191) NULL,
     `reset_token` TEXT NULL,
     `role_id` INTEGER NOT NULL DEFAULT 1,
     `verified` BOOLEAN NOT NULL DEFAULT false,
@@ -29,13 +31,23 @@ CREATE TABLE `users` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `course_purchased` (
+CREATE TABLE `notifications` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `progress` INTEGER NOT NULL,
+    `message` VARCHAR(191) NOT NULL,
     `user_id` INTEGER NOT NULL,
     `purchased_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `course_purchased_user_id_key`(`user_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `user_courses` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `course_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -51,22 +63,11 @@ CREATE TABLE `otps` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `photo_profiles` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `url_photo` VARCHAR(191) NULL,
-    `user_id` INTEGER NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `photo_profiles_user_id_key`(`user_id`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `course_categories` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
+    `urlPhoto` VARCHAR(191) NOT NULL,
     `is_published` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -104,10 +105,11 @@ CREATE TABLE `course_instructors` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
+    `photo_profile` VARCHAR(191) NULL,
+    `image_filename` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `course_instructors_slug_key`(`slug`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -133,9 +135,9 @@ CREATE TABLE `courses` (
     `description` TEXT NOT NULL,
     `price` DOUBLE NOT NULL,
     `rating` DOUBLE NOT NULL,
-    `duration` DOUBLE NOT NULL,
     `taken` INTEGER NOT NULL,
     `image_url` VARCHAR(191) NOT NULL,
+    `image_filename` VARCHAR(191) NULL,
     `course_instructor_id` INTEGER NOT NULL,
     `course_type_id` INTEGER NOT NULL,
     `course_category_id` INTEGER NOT NULL,
@@ -155,7 +157,6 @@ CREATE TABLE `course_modules` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
-    `duration` INTEGER NOT NULL,
     `total_chapter` INTEGER NOT NULL,
     `course_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -169,29 +170,26 @@ CREATE TABLE `course_contents` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
-    `videoUrl` VARCHAR(191) NOT NULL,
+    `video_url` VARCHAR(191) NOT NULL,
     `duration` INTEGER NOT NULL,
-    `finished` BOOLEAN NOT NULL DEFAULT false,
+    `completed` BOOLEAN NOT NULL DEFAULT false,
     `is_free` BOOLEAN NOT NULL DEFAULT true,
-    `course_id` INTEGER NOT NULL,
+    `course_module_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `course_contents_slug_key`(`slug`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `course_learning_progress` (
+CREATE TABLE `user_learning_progresses` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `progress` DOUBLE NOT NULL DEFAULT 0,
-    `isCompleted` BOOLEAN NOT NULL DEFAULT false,
-    `user_id` INTEGER NOT NULL,
-    `course_content_id` INTEGER NOT NULL,
+    `progress` DOUBLE NOT NULL,
+    `content_id` INTEGER NOT NULL,
+    `user_course_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `course_learning_progress_user_id_key`(`user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -215,7 +213,6 @@ CREATE TABLE `user_course_wishlist` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `user_course_wishlist_user_id_key`(`user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -247,20 +244,14 @@ CREATE TABLE `transactions` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `_CourseToCoursePurchased` (
-    `A` INTEGER NOT NULL,
-    `B` INTEGER NOT NULL,
-
-    UNIQUE INDEX `_CourseToCoursePurchased_AB_unique`(`A`, `B`),
-    INDEX `_CourseToCoursePurchased_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- AddForeignKey
+ALTER TABLE `notifications` ADD CONSTRAINT `notifications_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `course_purchased` ADD CONSTRAINT `course_purchased_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `user_courses` ADD CONSTRAINT `user_courses_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `photo_profiles` ADD CONSTRAINT `photo_profiles_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `user_courses` ADD CONSTRAINT `user_courses_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `courses` ADD CONSTRAINT `courses_course_instructor_id_fkey` FOREIGN KEY (`course_instructor_id`) REFERENCES `course_instructors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -281,13 +272,13 @@ ALTER TABLE `courses` ADD CONSTRAINT `courses_course_promo_id_fkey` FOREIGN KEY 
 ALTER TABLE `course_modules` ADD CONSTRAINT `course_modules_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `course_contents` ADD CONSTRAINT `course_contents_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `course_modules`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `course_contents` ADD CONSTRAINT `course_contents_course_module_id_fkey` FOREIGN KEY (`course_module_id`) REFERENCES `course_modules`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `course_learning_progress` ADD CONSTRAINT `course_learning_progress_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user_learning_progresses` ADD CONSTRAINT `user_learning_progresses_content_id_fkey` FOREIGN KEY (`content_id`) REFERENCES `course_contents`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `course_learning_progress` ADD CONSTRAINT `course_learning_progress_course_content_id_fkey` FOREIGN KEY (`course_content_id`) REFERENCES `course_contents`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user_learning_progresses` ADD CONSTRAINT `user_learning_progresses_user_course_id_fkey` FOREIGN KEY (`user_course_id`) REFERENCES `user_courses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -312,9 +303,3 @@ ALTER TABLE `transactions` ADD CONSTRAINT `transactions_order_id_fkey` FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE `transactions` ADD CONSTRAINT `transactions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_CourseToCoursePurchased` ADD CONSTRAINT `_CourseToCoursePurchased_A_fkey` FOREIGN KEY (`A`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_CourseToCoursePurchased` ADD CONSTRAINT `_CourseToCoursePurchased_B_fkey` FOREIGN KEY (`B`) REFERENCES `course_purchased`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

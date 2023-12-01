@@ -18,7 +18,6 @@ async function seedData()  {
       /* Delete all data in table */
     await db.$transaction([db.user.deleteMany()])
     await db.$transaction([db.role.deleteMany()])
-    await db.$transaction([db.photoProfile.deleteMany()])
     await db.$transaction([db.courseCategory.deleteMany()])
     await db.$transaction([db.courseType.deleteMany()])
     await db.$transaction([db.courseLevel.deleteMany()])
@@ -31,7 +30,6 @@ async function seedData()  {
       /* Reset ID to 1 again */
     await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE photo_profiles AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
@@ -66,29 +64,13 @@ async function seedData()  {
             phone: faker.number.int({ max: 100000000 }),
             password: bcrypt.hashSync("12345678", bcrypt.genSaltSync(10)),
             city: faker.location.city(),
-            country: faker.location.country(), 
+            country: faker.location.country(),
+            photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
             verified: faker.datatype.boolean(0.7),
             roleId: faker.number.int({ min: 1, max: 3 }), 
         }
     
         await db.user.create({ data: seedUsers })
-    }
-
-    /* Photo Profile Seeder */
-    for (let i = 0; i < 10; i++) {
-      let userId
-        do {
-          userId = faker.number.int({ min: 1, max: 10 })
-        } while (usedUserId.has(userId))
-    
-        usedUserId.add(userId)
-
-      const seedPhotoProfiles = {
-          urlPhoto: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
-          userId: userId, 
-      }
-  
-      await db.photoProfile.create({ data: seedPhotoProfiles })
     }
 
     /* Course Category Seeder */
@@ -99,18 +81,8 @@ async function seedData()  {
         } while (usedCourseCategoryName.has(courseCategoryName))
 
         usedCourseCategoryName.add(courseCategoryName)
-      
-        // const slug = {
-        //   'Product Management': 'product-management',
-        //   'UI / UX Design': 'ui-ux-design',
-        //   'Web Development': 'web-development',
-        //   'Android Development': 'android-development',
-        //   'iOS Development': 'ios-development'
-        // }
 
         const slug = slugify(courseCategoryName, { lower: true, remove: /[*+~.()'"!:@]/g })
-
-        // const courseCategorySlug = slug[courseCategoryName]
     
         const seedCategoryCourse = {
           name: courseCategoryName,
@@ -164,10 +136,12 @@ async function seedData()  {
 
       const name = faker.person.fullName()
       const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
+      
 
       const seedInsctructor = {
           name: name,
-          slug: slug
+          slug: slug,
+          photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
       }
   
       await db.courseInstructor.create({ data: seedInsctructor })
@@ -206,10 +180,9 @@ async function seedData()  {
         description: faker.commerce.productDescription(),
         price: faker.number.int({ min: 100000, max: 1000000 }),
         rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
-        duration: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
         taken: faker.number.int({ min: 10, max: 100 }),
         imageUrl: "https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg",
-        instructorId: faker.number.int({ min: 1, max: 5 }),
+        courseInstructorId: faker.number.int({ min: 1, max: 5 }),
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
         courseLevelId: faker.number.int({ min: 1, max: 3 }),
@@ -231,8 +204,7 @@ async function seedData()  {
 
       const seedCourseModules = {
           title: title,
-          slug: slug,
-          duration: faker.number.int({ min: 1, max: 30 }), 
+          slug: slug, 
           totalChapter: faker.number.int({ min: 1, max: 10 }), 
           courseId: faker.number.int({ min: 1, max: 30 })
       }
@@ -250,6 +222,7 @@ async function seedData()  {
           title: title,
           slug: slug,
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
+          duration: faker.number.int({ min: 1, max: 30 }),
           isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 200 }),
