@@ -56,7 +56,7 @@ module.exports = {
     login: async (req, res) => {
         try {
 
-            const { email } = req.body
+            const { email, password } = req.body
 
             const user = await db.user.findUnique({
                 where: {
@@ -66,7 +66,7 @@ module.exports = {
 
             if (!user) return res.status(400).json(utils.apiError("Email tidak terdaftar"))
 
-            const verifyPassword = await utils.verifyHashData(req.body.password, user.password)
+            const verifyPassword = await utils.verifyHashData(password, user.password)
 
             if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
 
