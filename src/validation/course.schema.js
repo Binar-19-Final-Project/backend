@@ -43,5 +43,10 @@ module.exports = {
     body("moduleId").notEmpty().withMessage("Module id wajib diisi"),
     body("moduleId").isInt().withMessage("Module id harus berupa angka"),
     body("moduleId").isInt({min: 1}).withMessage("Module id tidak boleh kurang dari 1")
+  ],
+
+  type : [
+    body("name").notEmpty().withMessage("Nama tipe wajib diisi"),
+    body("name").isString().withMessage("Nama tipe harus berupa karakter"),
   ]
 };
