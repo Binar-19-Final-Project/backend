@@ -3,23 +3,24 @@ const { validationResult } = require("express-validator"),
 
 const validate = (validations) => {
   return async (req, res, next) => {
-    await Promise.all(validations.map((validation) => validation.run(req)))
+    const errors = []
 
-    const errors = validationResult(req)
+    await Promise.all(
+      validations.map(async (validation) => {
+        await validation.run(req)
+        const errorMessages = validationResult(req)
+        if (!errorMessages.isEmpty()) {
+          errors.push(errorMessages.array()[0].msg)
+        }
+      })
+    )
 
-    if (!errors.isEmpty()) {
-      let errorMessage
-        errors.array().forEach((error) => {
-          errorMessage = error.msg
-        })
-  
-      return res.status(422).json(utils.apiError(errorMessage))
-
+    if (errors.length !== 0) {
+      return res.status(422).json(utils.apiError(errors[0]))
     }
 
     return next()
   }
-
 }
 
 module.exports = validate
