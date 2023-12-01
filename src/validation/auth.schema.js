@@ -52,12 +52,7 @@ module.exports = {
   ],
 
   resetPassword: [
-    body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
-    body("otp")
-        .notEmpty().withMessage("Otp tidak boleh kosong")
-        .isLength({ min: 6, max: 6}).withMessage("Otp berisi 6 angka")
-        .isString().withMessage("Tipe data string"),
+    // body("resetToken").notEmpty("Reset token tidak boleh kosong"),
     body("password")
         .notEmpty().withMessage("Password tidak boleh kosong")
         .isLength({ min: 8 }).withMessage("Password minimal 8 karakter")
