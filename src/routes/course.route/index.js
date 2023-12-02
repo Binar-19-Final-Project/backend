@@ -7,6 +7,7 @@ const express = require("express"),
     typeRoute = require("./course.type"),
     categoryRoute = require("./course.category"),
     levelRoute = require("./course.level"),
+    userWishlist = require("./course.user.whislist"),
     router = express.Router()
     
 router.use('/course', courseRoute)
@@ -17,5 +18,6 @@ router.use('/course-content', contentRoute)
 router.use('/course-type', typeRoute)
 router.use("/course-category", categoryRoute)
 router.use("/course-level", levelRoute)
+router.use("/course-user-whishlist", userWishlist)
 
 module.exports = router
