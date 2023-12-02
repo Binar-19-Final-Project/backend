@@ -35,7 +35,7 @@ module.exports = {
     create: async (req, res) => {
         try {
 
-            const {name, isPublished} = req.body
+            const {name, isPublished, urlPhoto} = req.body
 
             const nameSlug = await utils.createSlug(name)
 
@@ -43,7 +43,8 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    isPublished : isPublished
+                    isPublished : isPublished,
+                    urlPhoto : urlPhoto
                 }
             })
 
@@ -59,7 +60,7 @@ module.exports = {
     update: async (req, res) => {
         try {
 
-            const {name, isPublished} = req.body
+            const {name, isPublished, urlPhoto} = req.body
             const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
@@ -78,7 +79,7 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    isPublished : isPublished
+                    urlPhoto : urlPhoto
                 }
             })
 
