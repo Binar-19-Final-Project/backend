@@ -69,7 +69,14 @@ module.exports = {
 
             const verified = user.verified
 
-            if (!verified) return res.status(409).json(utils.apiError("Akun belum terverifikasi", { email }))
+            if (!verified) {
+                const emailSent = await otpUtils.sendOtp(email, 'register')
+                if (emailSent) {
+                    return res.status(409).json(utils.apiError("Akun belum terverifikasi. Periksa email masuk untuk verifikasi kode Otp", { email }))
+                } else {
+                    return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+                }
+            }
 
             const payload = { id: user.id }
             const token = utils.createJwt(payload)
@@ -274,9 +281,6 @@ module.exports = {
             const user = await db.user.findUnique({
                 where: {
                     id: id
-                },
-                include: {
-                    photoProfile: true
                 }
             })
         

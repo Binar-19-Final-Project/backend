@@ -69,7 +69,10 @@ module.exports = {
         return filter
     },
 
-    orderByLatest: async (orderBy, latest) => {
+    orderBy: async (popular, latest) => {
+
+        let orderBy = []
+
         if(latest) {
             orderBy = [
                 {
@@ -78,10 +81,6 @@ module.exports = {
             ]
         }
 
-        return orderBy
-    },
-
-    orderByPopular: async (orderBy, popular) => {
         if(popular) {
             orderBy = [
                 {
@@ -89,7 +88,10 @@ module.exports = {
                 }
             ]
         }
+
+        return orderBy
     },
+
 
     messageResponse: async ({ search, category, level, type, promo, popular, latest }) => {
         let message = "Berhasil mengambil data course"
