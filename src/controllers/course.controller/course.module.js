@@ -2,46 +2,24 @@ const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils')
 
 module.exports = {
-    getAll: async (req, res) => {
-        try {
-            
-            const data = await db.courseModule.findMany()
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data modul", data))
+    getAllCourseModuleByCourseId: async (req, res) => {
 
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
+        const { courseId } = req.params
 
-    getById: async (req, res) => {
         try {
 
-            const id = parseInt(req.params.id)
-
-            const data = await db.courseModule.findUnique({
-                where:{
-                    id: id
+            const checkCourse = await db.course.findUnique({
+                where: {
+                    id: parseInt(courseId)
                 }
             })
 
-            if(!data) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data modul berdasarkan id", data))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
-    getAllCourseModuleByIdCourse: async (req, res) => {
-        const { courseId } = req.params
-        try {
             const modules = await db.courseModule.findMany({
                 where: { 
-                        courseId: parseInt(courseId), 
+                    courseId: parseInt(courseId), 
                 },
                 include: {
                     courseContent: {
@@ -69,34 +47,47 @@ module.exports = {
                 }))
             }))
 
-            
-
             if (!modules) {
-                return res.status(404).json({ message: 'Content not found' })
+                if(!data) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
             }
-            return res.json(data)
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data modul berdasarkan id course", data))
+
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ error: 'Internal server error' })
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
     getCourseModuleByIdAndCourseId: async (req, res) => {
-        const { moduleId, courseId } = req.params
+
+        const { courseId, moduleId } = req.params
+        
         try {
+
+            const checkCourse = await db.course.findUnique({
+                where: {
+                    id: parseInt(courseId)
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+
             const module = await db.courseModule.findUnique({
-            where: {
-                id: parseInt(moduleId),  
-                courseId: parseInt(courseId), 
-            },
+                where: {
+                    id: parseInt(moduleId),
+                    courseId: parseInt(courseId)
+                },
                 include: {
                     courseContent: {
                         orderBy: {
                             sequence: 'asc'
-                          }
+                        }
                     }
                 }
             })
+
+            if(!module) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
 
             const totalContent = module.courseContent.length
 
@@ -119,21 +110,18 @@ module.exports = {
                 }))
             }
 
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data modul berdasarkan id dan course id", data))
 
-                if (!module) {
-                return res.status(404).json({ message: 'Content not found' })
-            }
-            return res.json(data)
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ error: 'Internal server error' })
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
     
-    create: async (req, res) => {
+    createCourseModule: async (req, res) => {
         try {
 
-            const {title, totalChapter, courseId} = req.body
+            const {title, courseId} = req.body
 
             const checkTitle = await db.courseModule.findFirst({
                 where:{
@@ -158,7 +146,6 @@ module.exports = {
                 data: {
                     title: title,
                     slug: titleSlug,
-                    totalChapter: totalChapter,
                     courseId: courseId
                 }
             })
@@ -171,10 +158,10 @@ module.exports = {
         }
     },
 
-    update: async (req, res) => {
+    updateCourseModule: async (req, res) => {
         try {
 
-            const {title, duration, totalChapter, courseId} = req.body
+            const {title, courseId} = req.body
             const id = parseInt(req.params.id)
 
             const checkModule = await db.courseModule.findUnique({
@@ -215,8 +202,6 @@ module.exports = {
                 data: {
                     title: title,
                     slug: titleSlug,
-                    duration: duration,
-                    totalChapter: totalChapter
                 }
             })
 
@@ -228,7 +213,7 @@ module.exports = {
         }
     },
 
-    delete: async (req, res) => {
+    deleteCourseModule: async (req, res) => {
         try {
 
             const id = parseInt(req.params.id)

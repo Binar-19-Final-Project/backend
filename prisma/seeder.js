@@ -205,7 +205,6 @@ async function seedData()  {
       const seedCourseModules = {
           title: title,
           slug: slug, 
-          totalChapter: faker.number.int({ min: 1, max: 10 }), 
           courseId: faker.number.int({ min: 1, max: 30 })
       }
   
