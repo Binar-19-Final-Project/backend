@@ -3,7 +3,7 @@ const express = require("express"),
     courseRoute = require('./course.route'),
     router = express.Router()
     
-router.use(authRoute)
+router.use("/auth", authRoute)
 router.use("/courses", courseRoute)
 
 module.exports = router
