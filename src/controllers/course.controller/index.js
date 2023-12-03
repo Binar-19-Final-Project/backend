@@ -1,19 +1,18 @@
-const course = require('./course'),
-    instructor = require('./course.instructor'),
-    promo = require('./course.promo'),
-    courseModule = require('./course.module'),
-    content = require('./course.content')
-    courseCategory = require('./course.category'),
-    courseType = require("./course.type"),
-    courseLevel = require("./course.level")
+const course = require("./course"),
+  courseInstructor = require("./course.instructor"),
+  coursePromo = require("./course.promo"),
+  courseModule = require("./course.module"),
+  courseContent = require("./course.content"),
+  courseCategory = require("./course.category"),
+  courseType = require("./course.type"),
+  courseLevel = require("./course.level");
 
 module.exports = {
-    course,
-    instructor,
-    promo,
-    courseModule,
-    content,
-    courseType,
-    courseCategory,
-    courseLevel
-}
+  course,
+  courseInstructor,
+  coursePromo,
+  courseModule,
+  content,
+  courseType,
+  courseCategory,
+};
