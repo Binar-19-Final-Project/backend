@@ -17,21 +17,16 @@ module.exports = {
     },
     getById: async(req, res)=>{
         try {
-            const {id} = req.params
+            const id = parseInt(req.params.id)
             const category = await db.courseCategory.findUnique({
                 where : {
-                    id : parseInt(id)
-                },
-                select : {
-                    id: true,
-                    name : true,
-                    is_published : true,
-                    slug : true
+                    id : id
                 }
             })
             if(!category){
                 return res.status(404).json(utils.apiError("Kategori tidak di temukan"))
             }
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data kategori berdasarkan id", category))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
@@ -40,7 +35,7 @@ module.exports = {
     create: async (req, res) => {
         try {
 
-            const {name} = req.body
+            const {name, isPublished, urlPhoto} = req.body
 
             const nameSlug = await utils.createSlug(name)
 
@@ -48,11 +43,14 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    is_published : false
+                    isPublished : isPublished,
+                    urlPhoto : urlPhoto
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Berhasil buat Kategori", data))
+            
+
+            return res.status(200).json(utils.apiSuccess("Berhasil Menambah Kategori", data))
 
         } catch (error) {
             console.log(error)
@@ -62,7 +60,7 @@ module.exports = {
     update: async (req, res) => {
         try {
 
-            const {name} = req.body
+            const {name, isPublished, urlPhoto} = req.body
             const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
@@ -81,7 +79,7 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    is_published : false
+                    urlPhoto : urlPhoto
                 }
             })
 
