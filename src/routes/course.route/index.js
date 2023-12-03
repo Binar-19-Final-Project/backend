@@ -14,6 +14,6 @@ router.use('/course', promoRoute)
 router.use('/course', moduleRoute)
 router.use('/course', contentRoute)
 router.use('/course', typeRoute)
-router.use('/course', categoryRoute)
+router.use('/category', categoryRoute)
 
 module.exports = router

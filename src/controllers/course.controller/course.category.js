@@ -79,6 +79,7 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
+                    isPublished : isPublished,
                     urlPhoto : urlPhoto
                 }
             })
