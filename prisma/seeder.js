@@ -222,7 +222,7 @@ async function seedData()  {
           title: title,
           slug: slug,
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
-          duration: faker.number.int({ min: 1, max: 30 }),
+          sequence: faker.number.int({ min: 1, max: 8 }),
           isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 200 }),
@@ -248,6 +248,24 @@ async function seedData()  {
         };
     
         await db.courseTestimonial.create({ data: seedCourseTestimonial });
+      }
+    }
+
+    /* User Course Seeder */
+    for (let i = 0; i < 60; i++) {
+      let userId = faker.number.int({ min: 1, max: 10 })
+      let courseId = faker.number.int({ min: 1, max: 30 })
+      const pair = `${userId}-${courseId}`
+    
+      if (!existingPairs.has(pair)) {
+        existingPairs.add(pair);
+    
+        const seedUserCourse = {
+          userId,
+          courseId,
+        };
+    
+        await db.userCourse.create({ data: seedUserCourse });
       }
     }
 

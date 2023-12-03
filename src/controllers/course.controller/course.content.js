@@ -15,6 +15,49 @@ module.exports = {
         }
     },
 
+    getById: async (req, res) => {
+        try {
+
+            const id = parseInt(req.params.id)
+
+            const data = await db.courseContent.findUnique({
+                where:{
+                    id: id
+                }
+            })
+
+            if(!data) return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data konten berdasarkan id", data))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    getCourseContentByIdModuleAndCourse: async (req, res) => {
+        const { contentId, moduleId, courseId } = req.params
+        try {
+            const courseContent = await db.courseContent.findFirst({
+            where: {
+                id: parseInt(contentId), 
+                moduleId: parseInt(moduleId), 
+                courseModule: {
+                courseId: parseInt(courseId), 
+                },
+            },
+            })
+                if (!courseContent) {
+                return res.status(404).json({ message: 'Content not found' })
+            }
+            return res.json(courseContent)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ error: 'Internal server error' })
+        }
+    },
+
     create: async (req, res) => {
         try {
 
@@ -58,26 +101,6 @@ module.exports = {
         }
     },
 
-    getById: async (req, res) => {
-        try {
-
-            const id = parseInt(req.params.id)
-
-            const data = await db.courseContent.findUnique({
-                where:{
-                    id: id
-                }
-            })
-
-            if(!data) return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
-
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data konten berdasarkan id", data))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
 
     update: async (req, res) => {
         try {
@@ -113,7 +136,7 @@ module.exports = {
 
             if(checkTitle) return res.status(409).json(utils.apiError("Judul konten sudah terdaftar"))
 
-            const titleSlug = await utils.createSlug(title);
+            const titleSlug = await utils.createSlug(title)
 
             const data = await db.courseContent.update({
                 where:{

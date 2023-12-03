@@ -46,5 +46,6 @@ module.exports = {
   ],
   category:[
     body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
+    body("urlPhoto").notEmpty().withMessage("Url Foto wajib diisi"),
   ]
 };

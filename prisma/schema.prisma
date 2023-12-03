@@ -176,7 +176,6 @@ model CourseModule {
   id            Int            @id @default(autoincrement())
   title         String
   slug          String         
-  totalChapter  Int            @map("total_chapter")
   courseId      Int            @map("course_id")
   course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseContent CourseContent[]
@@ -189,10 +188,10 @@ model CourseModule {
 model CourseContent {
   id                 Int                      @id @default(autoincrement())
   title              String
-  slug               String         
+  slug               String
+  sequence           Int         
   videoUrl           String                   @map("video_url")
   duration           Int
-  completed           Boolean                  @default(false)
   isFree             Boolean                  @default(true) @map("is_free")
   moduleId           Int                      @map("course_module_id")
   courseModule       CourseModule             @relation(fields: [moduleId], references: [id], onDelete: Cascade)

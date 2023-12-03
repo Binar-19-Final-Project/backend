@@ -4,10 +4,10 @@ const express = require('express'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
 
-router.get('/', controller.promo.getAll)
-router.post('/', validate(schema.promo), controller.promo.create)
-router.get('/:id', controller.promo.getById)
-router.put('/:id', validate(schema.promo), controller.promo.update)
-router.delete('/:id', controller.promo.delete)
+router.get('/promo', controller.coursePromo.getAll)
+router.post('/promo', validate(schema.promo), controller.coursePromo.create)
+router.get('/promo/:id', controller.coursePromo.getById)
+router.put('/promo/:id', validate(schema.promo), controller.coursePromo.update)
+router.delete('/promo/:id', controller.coursePromo.delete)
 
 module.exports = router

@@ -9,11 +9,11 @@ const express = require("express"),
     router = express.Router()
     
 router.use('/course', courseRoute)
-router.use('/course-instructor', instructorRoute)
-router.use('/course-promo', promoRoute)
-router.use('/course-module', moduleRoute)
-router.use('/course-content', contentRoute)
-router.use('/course-type', typeRoute)
-router.use("/course-category", categoryRoute)
+router.use('/course', instructorRoute)
+router.use('/course', promoRoute)
+router.use('/course', moduleRoute)
+router.use('/course', contentRoute)
+router.use('/course', typeRoute)
+router.use('/course', categoryRoute)
 
 module.exports = router

@@ -6,7 +6,6 @@ async function resetDatabase() {
   try {
     await prisma.$transaction([prisma.user.deleteMany()])
     await prisma.$transaction([prisma.role.deleteMany()])
-    await prisma.$transaction([prisma.photoProfile.deleteMany()])
     await prisma.$transaction([prisma.courseCategory.deleteMany()])
     await prisma.$transaction([prisma.courseType.deleteMany()])
     await prisma.$transaction([prisma.courseLevel.deleteMany()])
@@ -19,7 +18,6 @@ async function resetDatabase() {
       /* Reset ID to 1 again */
     await prisma.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     await prisma.$queryRaw`ALTER TABLE roles AUTO_INCREMENT = 1`
-    await prisma.$queryRaw`ALTER TABLE photo_profiles AUTO_INCREMENT = 1`
     await prisma.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
     await prisma.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
     await prisma.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
