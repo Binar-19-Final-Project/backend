@@ -4,10 +4,10 @@ const express = require('express'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
 
-router.get('/', controller.instructor.read)
-router.post('/', validate(schema.instructor), controller.instructor.create)
-router.get('/:id', controller.instructor.readById)
-router.put('/:id', validate(schema.instructor), controller.instructor.update)
-router.delete('/:id', controller.instructor.delete)
+router.get('/', controller.courseInstructor.read)
+router.post('/', validate(schema.instructor), controller.courseInstructor.create)
+router.get('/:id', controller.courseInstructor.readById)
+router.put('/:id', validate(schema.instructor), controller.courseInstructor.update)
+router.delete('/:id', controller.courseInstructor.delete)
 
 module.exports = router

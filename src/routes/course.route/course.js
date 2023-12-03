@@ -4,7 +4,10 @@ const express = require('express'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
 
-router.get('/', controller.course.read)
-router.get('/:id', controller.course.readById)
+router.get('/', controller.course.getCourses)
+router.get('/:id', controller.course.getCourseById)
+
+router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)
+router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModuleByIdAndCourseId)
 
 module.exports = router

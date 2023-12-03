@@ -3,7 +3,7 @@ const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils')
 
 module.exports = {
-    read: async(req, res) => {
+    getCourses: async(req, res) => {
         try {
             let { page = 1, limit = 10, search, category, level, type, popular, popularByCategory, promo, latest } = req.query
 
@@ -36,7 +36,11 @@ module.exports = {
                     courseInstructor: true,
                     courseModule: {
                         include: {
-                            courseContent: true
+                            courseContent: {
+                                orderBy: {
+                                    sequence: 'asc'
+                                  }
+                            }
                         }
                     }
                 },
@@ -110,7 +114,7 @@ module.exports = {
         }
     },
 
-    readById: async (req, res) => {
+    getCourseById: async (req, res) => {
         try {
             const { id } = req.params
 
@@ -126,7 +130,11 @@ module.exports = {
                     courseInstructor: true,
                     courseModule: {
                         include: {
-                            courseContent: true
+                            courseContent: {
+                                orderBy: {
+                                    sequence: 'asc'
+                                  }
+                            }
                         }
                     }
                 }
@@ -188,9 +196,12 @@ module.exports = {
                         duration: totalDurationContent, 
                         totalContent: totalContent,
                         contents: module.courseContent.map((content) => ({
+                            id: content.id,
+                            sequence: content.sequence,
                             title: content.title,
                             slug: content.slug,
                             urlVideo: content.videoUrl,
+                            isFree: content.isFree,
                             duration: content.duration,
                         }))
                     }
@@ -202,7 +213,123 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
-    }
+    },
+
+    // getAllCourseModuleByIdCourse: async (req, res) => {
+    //     const { courseId } = req.params
+    //     try {
+    //         const modules = await db.courseModule.findMany({
+    //             where: { 
+    //                     courseId: parseInt(courseId), 
+    //             },
+    //             include: {
+    //                 courseContent: {
+    //                     orderBy: {
+    //                         sequence: 'asc'
+    //                       }
+    //                 }
+    //             }
+    //         })
+
+    //         const data = modules.map((module) => ({
+    //             id: module.id,
+    //             title: module.title,
+    //             slug: module.slug,
+    //             totalContent: module.totalChapter,
+    //             courseId: module.courseId,
+    //             contents: module.courseContent.map((content) => ({
+    //                 id: content.id,
+    //                 sequence: content.sequence,
+    //                 title: content.title,
+    //                 slug: content.slug,
+    //                 duration: content.duration,
+    //                 videoUrl: content.videoUrl,
+    //                 isFree: content.isFree
+    //             }))
+    //         }))
+
+            
+
+    //         if (!modules) {
+    //             return res.status(404).json({ message: 'Content not found' })
+    //         }
+    //         return res.json(data)
+    //     } catch (error) {
+    //         console.log(error)
+    //         return res.status(500).json({ error: 'Internal server error' })
+    //     }
+    // },
+
+    // getCourseModuleByIdAndCourseId: async (req, res) => {
+    //     const { moduleId, courseId } = req.params
+    //     try {
+    //         const module = await db.courseModule.findUnique({
+    //         where: {
+    //             id: parseInt(moduleId),  
+    //             courseId: parseInt(courseId), 
+    //         },
+    //             include: {
+    //                 courseContent: {
+    //                     orderBy: {
+    //                         sequence: 'asc'
+    //                       }
+    //                 }
+    //             }
+    //         })
+
+    //         const totalContent = module.courseContent.length
+
+    //         const data = {
+    //             id: module.id,
+    //             sequence: module.sequence,
+    //             id: module.id,
+    //             title: module.title,
+    //             slug: module.slug,
+    //             totalContent: totalContent,
+    //             courseId: module.courseId,
+    //             contents: module.courseContent.map((content) => ({
+    //                 id: content.id,
+    //                 sequence: content.sequence,
+    //                 title: content.title,
+    //                 slug: content.slug,
+    //                 duration: content.duration,
+    //                 videoUrl: content.videoUrl,
+    //                 isFree: content.isFree
+    //             }))
+    //         }
+
+
+    //             if (!module) {
+    //             return res.status(404).json({ message: 'Content not found' })
+    //         }
+    //         return res.json(data)
+    //     } catch (error) {
+    //         console.log(error)
+    //         return res.status(500).json({ error: 'Internal server error' })
+    //     }
+    // },
+
+    // getCourseContentByIdModuleAndCourse: async (req, res) => {
+    //     const { contentId, moduleId, courseId } = req.params
+    //     try {
+    //         const courseContent = await db.courseContent.findFirst({
+    //         where: {
+    //             id: parseInt(contentId), 
+    //             moduleId: parseInt(moduleId), 
+    //             courseModule: {
+    //             courseId: parseInt(courseId), 
+    //             },
+    //         },
+    //         })
+    //             if (!courseContent) {
+    //             return res.status(404).json({ message: 'Content not found' })
+    //         }
+    //         return res.json(courseContent)
+    //     } catch (error) {
+    //         console.log(error)
+    //         return res.status(500).json({ error: 'Internal server error' })
+    //     }
+    // },
 }
 
 //     if (popularByCategory) {
