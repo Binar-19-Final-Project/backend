@@ -125,67 +125,6 @@ module.exports = {
         }
     },
 
-    // requestResetPassword: async(req, res) => {
-    //     try {
-    //         const { email } = req.body
-
-    //         const checkEmail = await db.user.findUnique({
-    //             where: {
-    //                 email: email
-    //             }
-    //         })
-
-    //         if(checkEmail) {
-    //             await otpUtils.sendOtp(email, 'request-reset-password')
-    //             return res.status(200).json(utils.apiSuccess("Periksa email masuk untuk kode verifikasi Otp"))
-    //         } else {
-    //             return res.status(404).json(utils.apiError("Email tidak terdaftar"))
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error);
-    //         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-    //     }
-             
-    // },
-
-    // resetPassword: async (req, res) => {
-    //    try {
-    //         const { email, otp, password } = req.body
-
-    //         const checkOtp = await db.otp.findFirst({
-    //             where: {
-    //                 email: email
-    //             }
-    //         })
-
-    //         if(!checkOtp) {
-    //             return res.status(404).json(utils.apiError('Otp tidak ditemukan. Silahkan kirim ulang kembali'))
-    //         }
-            
-    //         const hashPassword = await utils.createHashData(password) 
-    //         const verifyOtp = await otpUtils.verifyOtp(email, otp)
-
-    //         if (verifyOtp.status === 'success') {
-    //             await db.user.update({
-    //                 where: {
-    //                     email: email
-    //                 }, data: {
-    //                     password: hashPassword
-    //                 }
-    //             })
-    //             return res.status(200).json(utils.apiSuccess("Reset password berhasil"))  
-    //         } else {
-    //             return res.status(409).json(utils.apiError(verifyOtp.message))
-    //         }
-
-    //    } catch (error) {
-    //         console.log(error);
-    //         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-    //    }
-        
-    // },
-
     requestResetPassword: async (req, res) => {
         try {
             

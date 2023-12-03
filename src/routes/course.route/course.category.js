@@ -2,10 +2,10 @@ const express = require('express'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
 
-router.get('/', controller.courseCategory.getAll)
-router.post('/',  controller.courseCategory.create)
-router.get('/:id', controller.courseCategory.getById)
-router.put('/:id',  controller.courseCategory.update)
-router.delete('/:id', controller.courseCategory.delete)
+router.get('/category', controller.courseCategory.getAll)
+router.post('/category',  controller.courseCategory.create)
+router.get('/category/:id', controller.courseCategory.getById)
+router.put('/category/:id',  controller.courseCategory.update)
+router.delete('/category/:id', controller.courseCategory.delete)
 
 module.exports = router
