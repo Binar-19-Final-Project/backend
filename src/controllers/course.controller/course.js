@@ -201,6 +201,7 @@ module.exports = {
                             title: content.title,
                             slug: content.slug,
                             urlVideo: content.videoUrl,
+                            isFree: content.isFree,
                             duration: content.duration,
                         }))
                     }
