@@ -4,6 +4,6 @@ const express = require("express"),
     router = express.Router()
     
 router.use(authRoute)
-router.use(courseRoute)
+router.use("/courses", courseRoute)
 
 module.exports = router
