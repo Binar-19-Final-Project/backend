@@ -7,7 +7,7 @@ module.exports = {
         try {
             const id  = res.user.id
 
-            const ordersHistory = await db.order.findMany({
+            const historyOrders = await db.order.findMany({
                 where: {
                     userId: parseInt(id)
                 },
@@ -28,7 +28,7 @@ module.exports = {
             })
 
 
-            const data = ordersHistory.map((orderHistory) => {
+            const data = historyOrders.map((orderHistory) => {
                 const totalModule = orderHistory.course.courseModule.length 
 
                 let totalDuration = 0 
@@ -59,9 +59,9 @@ module.exports = {
             })
                 
     
-            if(!ordersHistory) return res.status(404).json(utils.apiError("Riwayat order tidak ditemukan"))
+            if(!historyOrders) return res.status(404).json(utils.apiError("Riwayat order tidak ditemukan"))
 
-            return res.status(200).json(utils.apiSuccess('Berhasil mengambil riwayat order berdasarkan id', data))
+            return res.status(200).json(utils.apiSuccess('Berhasil mengambil riwayat order berdasarkan id user', data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
