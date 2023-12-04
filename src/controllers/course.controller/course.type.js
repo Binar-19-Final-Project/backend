@@ -6,40 +6,29 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             
-            const type = await db.couseType.findMany({
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
-                }
-            })
+            const type = await db.courseType.findMany()
 
-            return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
+            return res.status(200).json(utils.apiSuccess("Berhasil menampilkan semua data tipe", type))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Kesalahan dalam server"))
         }
     },
     getById: async(req, res)=>{
         try {
-            const {id} = req.params
-            const type = await db.couseType.findUnique({
+            const id = parseInt(req.params.id)
+            const type = await db.courseType.findUnique({
                 where : {
-                    id : parseInt(id)
-                },
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
+                    id : id
                 }
             })
-            if(!type){
-                return res.status(404).json(utils.error("type not found"))
-            }
+            if(!type) return res.status(404).json(utils.apiError("Tipe tidak ditemukkan"))
+            
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data Tipe berdasarkan id", type))
         } catch (error) {
             console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Kesalahan dalam server"))
         }
     },
     create: async (req, res) => {
@@ -49,7 +38,7 @@ module.exports = {
 
             const nameSlug = await utils.createSlug(name)
 
-            const data = await db.couseType.create({
+            const data = await db.courseType.create({
                 data:{
                     name : name,
                     slug : nameSlug,
@@ -58,11 +47,11 @@ module.exports = {
 
             
 
-            return res.status(200).json(utils.apiSuccess("Berhasil buat type", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil membuat tipe", data))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Kesalahan dalam server"))
         }
     },
     update: async (req, res) => {
@@ -72,15 +61,15 @@ module.exports = {
             const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
-            const check = await db.couseType.findUnique({
+            const check = await db.courseType.findUnique({
                 where:{
                     id: id
                 }
             })
 
-            if(!check) return res.status(404).json(utils.error("type not found"))
+            if(!check) return res.status(404).json(utils.error("tipe tidak di temukan"))
 
-            const type = await db.couseType.update({
+            const type = await db.courseType.update({
                 where:{
                     id: id
                 },
@@ -90,11 +79,11 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Success update type", type))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengubah tipe", type))
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Kesalahan dalam server"))
         }
     },
     delete: async (req, res) => {
@@ -102,25 +91,25 @@ module.exports = {
 
             const id = parseInt(req.params.id)
 
-            const check = await db.couseType.findUnique({
+            const check = await db.courseType.findUnique({
                 where:{
                     id: id
                 }
             })
 
-            if(!check) return res.status(404).json(utils.error("type not found"))
+            if(!check) return res.status(404).json(utils.error("Tipe tidak di temukan"))
 
-            await db.couseType.delete({
+            await db.courseType.delete({
                 where: {
                     id: id
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Success delete type"))            
+            return res.status(200).json(utils.apiSuccess("Berhasil menghapus tipe"))            
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
+            return res.status(500).json(utils.error("Kesalahan dalam server"))
         }
     },
 

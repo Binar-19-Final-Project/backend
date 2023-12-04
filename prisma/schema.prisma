@@ -58,9 +58,9 @@ model Notification {
 model UserCourse {
   id                 Int              @id @default(autoincrement())
   userId             Int              @map("user_id")
-  user               User             @relation(fields: [userId], references: [id])
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId           Int              @map("course_id")
-  course             Course           @relation(fields: [courseId], references: [id])
+  course             Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userLearningProgress UserLearningProgress[]
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
