@@ -2,6 +2,7 @@ const express = require('express'),
     schema = require('../../validation/auth.schema'),
     validate = require('../../middlewares/validation'),
     { verifyToken } = require('../../middlewares/verify.token'),
+    checkRole = require('../../middlewares/check.role'),
     controller = require('../../controllers/auth'),
     router = express.Router()
 
@@ -12,5 +13,6 @@ router.post('/request-reset-password',  validate(schema.requestResetPassword), c
 router.post('/reset-password',  validate(schema.resetPassword), controller.auth.resetPassword)
 router.post('/resend-otp',  validate(schema.resendOtp), controller.auth.resendOtp)
 router.get('/profile', verifyToken, controller.auth.profile)
+router.post('/change-password', [verifyToken, validate(schema.changePassword), checkRole('user')], controller.auth.changePassword)
 
 module.exports = router
