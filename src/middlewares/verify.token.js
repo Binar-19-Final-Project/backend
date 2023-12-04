@@ -19,7 +19,7 @@ const verifyToken = async (req, res, next) => {
 
     res.user = jwtPayload
 
-    next()
+    return next()
   } catch (error) {
     console.log(error)
     if (error instanceof jwt.TokenExpiredError) {

@@ -1,15 +1,18 @@
 const express = require('express'),
     schema = require('../../validation/course.schema'),
     validate = require('../../middlewares/validation'),
+    { verifyToken } = require('../../middlewares/verify.token'),
+    checkRole = require('../../middlewares/check.role'),
+    { premiumContent } = require('../../middlewares/premium.content'),
     controller = require('../../controllers/course.controller'),
     router = express.Router()
 
 router.get('/', controller.course.getCourses)
 router.get('/:id', controller.course.getCourseById)
 
-// router.get('/:courseId/module', controller.course.getAllCourseModuleByIdCourse)
-// router.get('/:courseId/module/:moduleId', controller.course.getCourseModuleByIdAndCourseId)
+router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)
+router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModuleByIdAndCourseId)
 
-// router.get('/:courseId/module/:moduleId/content/:contentId', controller.course.getCourseContentByIdModuleAndCourse)
+router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, premiumContent, controller.courseContent.getCourseContentByIdModuleAndCourse)
 
 module.exports = router

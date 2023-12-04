@@ -5,15 +5,17 @@ const express = require("express"),
     moduleRoute = require('./course.module'),
     contentRoute = require('./course.content'),
     typeRoute = require("./course.type"),
-    categoryRoute = require("./course.category")
+    categoryRoute = require("./course.category"),
     router = express.Router()
-    
-router.use('/course', courseRoute)
-router.use('/course', instructorRoute)
-router.use('/course', promoRoute)
-router.use('/course', moduleRoute)
-router.use('/course', contentRoute)
-router.use('/course', typeRoute)
-router.use('/course', categoryRoute)
+
+router.use('/instructors', instructorRoute)
+router.use('/promos', promoRoute)
+router.use('/contents', contentRoute)
+router.use('/types', typeRoute)
+router.use('/categories', categoryRoute)
+router.use('/modules', moduleRoute)
+router.use('/', courseRoute)
 
 module.exports = router
+
+/* upadate */
