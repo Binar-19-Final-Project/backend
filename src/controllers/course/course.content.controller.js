@@ -2,50 +2,20 @@ const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils')
 
 module.exports = {
-    getAll: async (req, res) => {
-        try {
-            
-            const data = await db.courseContent.findMany()
-
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data konten", data))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
-    getById: async (req, res) => {
-        try {
-
-            const id = parseInt(req.params.id)
-
-            const data = await db.courseContent.findUnique({
-                where:{
-                    id: id
-                }
-            })
-
-            if(!data) return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
-
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data konten berdasarkan id", data))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
 
     getCourseContentByIdModuleAndCourse: async (req, res) => {
+
         const { contentId, moduleId, courseId } = req.params
+
         try {
+
             const courseContent = await db.courseContent.findFirst({
                 where: {
                     id: parseInt(contentId), 
                     moduleId: parseInt(moduleId), 
                     courseModule: {
-                            courseId: parseInt(courseId),
-                        },
+                        courseId: parseInt(courseId),
+                    },
                 },
                 include: {
                     courseModule: true,
@@ -58,7 +28,7 @@ module.exports = {
             })
 
             if (!courseContent) {
-                return res.status(404).json(utils.apiError("Content tidak ditemukan"))
+                return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
             const data = {
@@ -73,14 +43,15 @@ module.exports = {
                 courseId: courseContent.courseModule.courseId
             }
 
-            return res.status(200).json(utils.apiSuccess("Behasil mengambil data content", data))
+            return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data))
+            
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 
-    create: async (req, res) => {
+    createCourseContent: async (req, res) => {
         try {
 
             const {title, videoUrl, duration, isFree, moduleId} = req.body
@@ -93,6 +64,14 @@ module.exports = {
             })
 
             if(checkTitle) return res.status(409).json(utils.apiError("Judul konten sudah terdaftar"))
+
+            const courseContent = await db.courseContent.findMany({
+                where: {
+                    moduleId: moduleId
+                }
+            })
+
+            const sequence = courseContent.length
 
             const checkModule = await db.courseModule.findUnique({
                 where:{
@@ -108,6 +87,7 @@ module.exports = {
                 data: {
                     title: title,
                     slug: titleSlug,
+                    sequence: sequence,
                     duration: duration,
                     videoUrl: videoUrl,
                     isFree: isFree,
@@ -123,11 +103,10 @@ module.exports = {
         }
     },
 
-
-    update: async (req, res) => {
+    updateCourseContent: async (req, res) => {
         try {
 
-            const {title, videoUrl, duration, isFree, moduleId} = req.body
+            const {title, sequence, videoUrl, duration, isFree, moduleId} = req.body
             const id = parseInt(req.params.id)
 
             const checkContent = await db.courseContent.findUnique({
@@ -168,6 +147,7 @@ module.exports = {
                 data: {
                     title: title,
                     slug: titleSlug,
+                    sequence: sequence,
                     duration: duration,
                     videoUrl: videoUrl,
                     isFree: isFree,
@@ -183,7 +163,7 @@ module.exports = {
         }
     },
 
-    delete: async (req, res) => {
+    deleteCourseContent: async (req, res) => {
         try {
 
             const id = parseInt(req.params.id)
