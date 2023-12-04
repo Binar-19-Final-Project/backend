@@ -9,41 +9,16 @@ const premiumContent = async (req, res, next) => {
         }
     })
 
-    const content = await db.courseContent.findFirst({
+    const content = await db.courseContent.findUnique({
         where: {
-            id: parseInt(req.params.contentId), 
-            moduleId: parseInt(req.params.moduleId), 
-            courseModule: {
-                    courseId: parseInt(req.params.courseId),
-                },
-        },
-        include: {
-            courseModule: true,
-            courseModule: {
-                include: {
-                    course: true
-                }
-            }
+          id: parseInt(req.params.contentId)
         }
-    })
-
-    const user = await db.user.findUnique({
-        where: {
-            id: res.user.id
-        }
-    })
-
-    const role = await db.role.findUnique({
-        where: {
-            id: user.roleId
-        }
-    })
-
+      })
 
     if(content) {
         if(content.isFree === true) {
             return next()
-        } else if (content.isFree === false && userCourse || role.name === 'admin') {
+        } else if (content.isFree === false && userCourse) {
             return next()
         } else {
             return res.status(403).json(utils.apiError("Ini adalah content premium. Silahkan order course ini terlebih dahulu"))
