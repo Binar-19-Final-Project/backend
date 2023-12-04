@@ -13,16 +13,16 @@ module.exports = {
             /* Filter */
             let filter = {}
 
-            filter = await courseUtils.filterSearch(filter, search)
+            /* filter = await courseUtils.filterSearch(filter, search)
             filter = await courseUtils.filterCategory(filter, category)
             filter = await courseUtils.filterLevel(filter, level)
-            filter = await courseUtils.filterPromo(filter, promo)
+            filter = await courseUtils.filterType(filter, type)
+            filter = await courseUtils.filterPromo(filter, promo) */
+
+            filter = await courseUtils.filterWhereCondition(filter, search, category, level, type, promo)
 
             /* Order By */
-            const orderBy = await courseUtils.orderBy(popular, latest)
-
-            // orderBy = await courseUtils.orderByLatest(latest)
-            // orderBy = await courseUtils.orderByPopular(popular)
+            const orderBy = await courseUtils.filterOrderBy(popular, latest)
 
             const courses = await db.course.findMany({
                 take: parseInt(limit),

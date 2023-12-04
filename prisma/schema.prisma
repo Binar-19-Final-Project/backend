@@ -58,6 +58,8 @@ model UserNotification {
 
 model UserCourse {
   id                   Int                    @id @default(autoincrement())
+  progress             Int
+  status               String      
   userId               Int                    @map("user_id")
   user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId             Int                    @map("course_id")
@@ -205,7 +207,7 @@ model CourseContent {
 
 model UserLearningProgress {
   id           Int           @id @default(autoincrement())
-  progress     Float
+  progress     Int
   contentId    Int           @map("content_id")
   content      CourseContent @relation(fields: [contentId], references: [id])
   userCourseId Int           @map("user_course_id")
