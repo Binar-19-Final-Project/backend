@@ -40,21 +40,43 @@ module.exports = {
         const { contentId, moduleId, courseId } = req.params
         try {
             const courseContent = await db.courseContent.findFirst({
-            where: {
-                id: parseInt(contentId), 
-                moduleId: parseInt(moduleId), 
-                courseModule: {
-                courseId: parseInt(courseId), 
+                where: {
+                    id: parseInt(contentId), 
+                    moduleId: parseInt(moduleId), 
+                    courseModule: {
+                            courseId: parseInt(courseId),
+                        },
                 },
-            },
+                include: {
+                    courseModule: true,
+                    courseModule: {
+                        include: {
+                            course: true
+                        }
+                    }
+                }
             })
-                if (!courseContent) {
-                return res.status(404).json({ message: 'Content not found' })
+
+            if (!courseContent) {
+                return res.status(404).json(utils.apiError("Content tidak ditemukan"))
             }
-            return res.json(courseContent)
+
+            const data = {
+                id: courseContent.id,
+                title: courseContent.title,
+                slug: courseContent.slug,
+                sequence: courseContent.sequence,
+                videoUrl: courseContent.videoUrl,
+                duration: courseContent.duration,
+                isFree: courseContent.isFree,
+                moduleId: courseContent.moduleId,
+                courseId: courseContent.courseModule.courseId
+            }
+
+            return res.status(200).json(utils.apiSuccess("Behasil mengambil data content", data))
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ error: 'Internal server error' })
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
 

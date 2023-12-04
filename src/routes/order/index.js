@@ -1,7 +1,7 @@
 const express = require("express"),
-    authRoute = require('./auth'),
+    orderRoute = require('./order.route'),
     router = express.Router()
     
-router.use(authRoute)
+router.use(orderRoute)
 
 module.exports = router
