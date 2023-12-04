@@ -270,6 +270,21 @@ async function seedData()  {
       }
     }
 
+    /* Course Content Seeder */
+    for (let i = 0; i < 60; i++) {
+
+
+      const seedUserOrders = {
+          orderCode: faker.string.nanoid(),
+          price: faker.number.int({ min: 100000, max: 1000000 }),
+          status: faker.helpers.arrayElement(['Success', 'Cancel', 'Pending']),
+          paymentMethod: faker.helpers.arrayElement(['BRI', 'BCA', 'Permata', 'BNI']),
+          userId: faker.number.int({ min: 1, max: 10 }),
+          courseId: faker.number.int({ min: 1, max: 30 })
+      }
+  
+      await db.order.create({ data: seedUserOrders })
+    }
 
     /* Disconnect Prisma Connection */
     await db.$disconnect()

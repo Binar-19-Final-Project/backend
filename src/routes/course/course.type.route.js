@@ -1,5 +1,5 @@
 const express = require('express'),
-    controller = require('../../controllers/course.controller'),
+    controller = require('../../controllers/course'),
     router = express.Router()
 
 router.get('/', controller.courseType.getAll)

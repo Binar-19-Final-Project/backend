@@ -1,7 +1,7 @@
 const express = require('express'),
     schema = require('../../validation/course.schema'),
     validate = require('../../middlewares/validation'),
-    controller = require('../../controllers/course.controller'),
+    controller = require('../../controllers/course'),
     router = express.Router()
 
 router.get('/', controller.courseCategory.getAll)
