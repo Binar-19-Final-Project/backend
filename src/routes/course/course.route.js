@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     checkRole = require('../../middlewares/check.role'),
     { premiumContent } = require('../../middlewares/premium.content'),
-    controller = require('../../controllers/course.controller'),
+    controller = require('../../controllers/course'),
     router = express.Router()
 
 router.get('/', controller.course.getCourses)
