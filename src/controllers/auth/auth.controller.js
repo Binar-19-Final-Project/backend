@@ -237,5 +237,44 @@ module.exports = {
             console.log(error);
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
-      }
+    },
+
+    changePassword: async (req, res) => {
+
+        try {
+            
+            const userId = res.user.id
+            const {oldPassword, newPassword} = req.body
+
+            const user = await db.user.findUnique({
+                where:{
+                    id: userId
+                }
+            })
+
+            if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
+
+            const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
+
+            if(!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
+
+            const hashPassword = await utils.createHashData(newPassword)
+
+            await db.user.update({
+                where:{
+                    id: userId
+                },
+                data: {
+                    password: hashPassword
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+
+    }
 }
