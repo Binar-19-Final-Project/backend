@@ -13,4 +13,6 @@ router.get('/:id', controller.course.getCourseById)
 router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)
 router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModuleByIdAndCourseId)
 
+router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, premiumContent, controller.courseContent.getCourseContentByIdModuleAndCourse)
+
 module.exports = router

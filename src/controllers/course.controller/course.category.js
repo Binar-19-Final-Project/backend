@@ -1,5 +1,6 @@
-const db = require("../../../prisma/connection"),
-  utils = require("../../utils/utils");
+const db = require('../../../prisma/connection'),
+    utils = require('../../utils/utils')
+
 
 module.exports = {
     getAll: async (req, res) => {
@@ -16,21 +17,16 @@ module.exports = {
     },
     getById: async(req, res)=>{
         try {
-            const {id} = req.params
+            const id = parseInt(req.params.id)
             const category = await db.courseCategory.findUnique({
                 where : {
-                    id : parseInt(id)
-                },
-                select : {
-                    id: true,
-                    name : true,
-                    is_published : true,
-                    slug : true
+                    id : id
                 }
             })
             if(!category){
                 return res.status(404).json(utils.apiError("Kategori tidak di temukan"))
             }
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data kategori berdasarkan id", category))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
@@ -39,7 +35,7 @@ module.exports = {
     create: async (req, res) => {
         try {
 
-            const {name} = req.body
+            const {name, isPublished, urlPhoto} = req.body
 
             const nameSlug = await utils.createSlug(name)
 
@@ -47,11 +43,14 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    is_published : false
+                    isPublished : isPublished,
+                    urlPhoto : urlPhoto
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Berhasil buat Kategori", data))
+            
+
+            return res.status(200).json(utils.apiSuccess("Berhasil Menambah Kategori", data))
 
         } catch (error) {
             console.log(error)
@@ -61,20 +60,17 @@ module.exports = {
     update: async (req, res) => {
         try {
 
-            const {name} = req.body
+            const {name, isPublished, urlPhoto} = req.body
             const nameSlug = await utils.createSlug(name)
             const id = parseInt(req.params.id)
 
-      const check = await db.courseCategory.findUnique({
-        where: {
-          id: id,
-        },
-      });
+            const check = await db.courseCategory.findUnique({
+                where:{
+                    id: id
+                }
+            })
 
-      if (!check)
-        return res
-          .status(404)
-          .json(utils.apiError("Kategori Tidak di temukan"));
+            if(!check) return res.status(404).json(utils.apiError("Kategori Tidak di temukan"))
 
             const category = await db.courseCategory.update({
                 where:{
@@ -83,7 +79,7 @@ module.exports = {
                 data:{
                     name : name,
                     slug : nameSlug,
-                    is_published : false
+                    urlPhoto : urlPhoto
                 }
             })
 
@@ -99,31 +95,27 @@ module.exports = {
 
             const id = parseInt(req.params.id)
 
-      const check = await db.courseCategory.findUnique({
-        where: {
-          id: id,
-        },
-      });
+            const check = await db.courseCategory.findUnique({
+                where:{
+                    id: id
+                }
+            })
 
-      if (!check)
-        return res
-          .status(404)
-          .json(utils.apiError("Kategori tidak di temukan"));
+            if(!check) return res.status(404).json(utils.apiError("Kategori tidak di temukan"))
 
-      await db.courseCategory.delete({
-        where: {
-          id: id,
-        },
-      });
+            await db.courseCategory.delete({
+                where: {
+                    id: id
+                }
+            })
 
-      return res
-        .status(200)
-        .json(utils.apiSuccess("Berhasil menghapus kategori"));
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json(utils.apiError("Kesalahan pada Internal Server"));
-    }
-  },
-};
+            return res.status(200).json(utils.apiSuccess("Berhasil menghapus kategori"))            
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
+        }
+    },
+
+  
+}
