@@ -8,14 +8,12 @@ const express = require("express"),
     categoryRoute = require("./course.category.route"),
     router = express.Router()
 
-router.use('/', courseRoute)
 router.use('/modules', moduleRoute)
 router.use('/instructors', instructorRoute)
 router.use('/contents', contentRoute)
 router.use('/promos', promoRoute)
 router.use('/types', typeRoute)
 router.use('/categories', categoryRoute)
+router.use('/', courseRoute)
 
 module.exports = router
-
-/* upadate */
