@@ -41,7 +41,9 @@ const premiumContent = async (req, res, next) => {
 
 
     if(content) {
-        if(content.isFree === true) {
+        if(content.isDemo === true) {
+            return next()
+        } else if(content.isFree === true && userCourse || role.name === 'admin') {
             return next()
         } else if (content.isFree === false && userCourse || role.name === 'admin') {
             return next()

@@ -1,7 +1,6 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
-    userCourseUtils = require('../../utils/userCourse.utils'),
-    courseFilters = require('../../utils/course.filter')
+    filter = require('../../utils/filter')
 
 module.exports = {
     getUserCoursesById: async(req, res) => {
@@ -14,17 +13,17 @@ module.exports = {
             /* Pagination */
             let skip = ( page - 1 ) * limit
 
-            let filter = {}
+            let whereCondition = {}
 
-            filter = courseFilters.filterWhereCondition(userId, filter, category, level, learningStatus, promo, popular, latest)
+            whereCondition = filter.userCourse.filterWhereCondition(userId, whereCondition, category, level, learningStatus, promo, popular, latest)
 
             /* Order By */
-            const orderBy = await userCourseUtils.orderBy(popular, latest)
+            const orderBy = await filter.userCourse.filterOrderBy(popular, latest)
 
             const userCourses = await db.userCourse.findMany({
                 take: parseInt(limit),
                 skip: skip,
-                where: filter,
+                where: whereCondition,
                 include: {
                     userLearningProgress: true,
                     course:  {
@@ -55,13 +54,13 @@ module.exports = {
                 })
 
                 return {
-                    id: userCourse.id,
+                    userCourseId: userCourse.id,
                     progress: userCourse.progress,
                     status: userCourse.status,
                     userId: userCourse.userId,
                     orderAt: userCourse.createdAt,
                     courses: {
-                        id: userCourse.course.id,
+                        courseId: userCourse.course.id,
                         name: userCourse.course.title,
                         category: userCourse.course.courseCategory.name,
                         instructor: userCourse.course.courseInstructor.name,
@@ -76,14 +75,14 @@ module.exports = {
 
 
             /* Total Data & Total Page after Pagination */
-            const resultCount = await db.userCourse.count({ where: filter }) 
+            const resultCount = await db.userCourse.count({ where: whereCondition }) 
             const totalPage = Math.ceil(resultCount / limit)
 
             if (resultCount === 0) {
                 return res.status(404).json(utils.apiError("Data tidak ditemukan"))
             }
 
-            const message = await userCourseUtils.messageResponse({ search, category, level, promo, popular, latest })
+            const message = await filter.message.filterMessage({ search, category, level, promo, popular, latest })
 
             return res.status(200).json(utils.apiSuccess(
                 message,

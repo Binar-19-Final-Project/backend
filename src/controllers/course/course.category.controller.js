@@ -25,6 +25,9 @@ module.exports = {
         where: {
           id: id,
         },
+        include: {
+          course: true
+        }
       });
       if (!category) {
         return res

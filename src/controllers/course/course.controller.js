@@ -1,6 +1,7 @@
 const db = require('../../../prisma/connection'),
-    courseUtils = require('../../utils/course.utils'),
-    utils = require('../../utils/utils')
+    courseUtils = require('../../utils/filter/course.filter.j'),
+    utils = require('../../utils/utils'),
+    filter = require('../../utils/filter')
 
 module.exports = {
     getCourses: async(req, res) => {
@@ -11,7 +12,7 @@ module.exports = {
             let skip = ( page - 1 ) * limit
 
             /* Filter */
-            let filter = {}
+            let whereCondition = {}
 
             /* filter = await courseUtils.filterSearch(filter, search)
             filter = await courseUtils.filterCategory(filter, category)
@@ -19,15 +20,15 @@ module.exports = {
             filter = await courseUtils.filterType(filter, type)
             filter = await courseUtils.filterPromo(filter, promo) */
 
-            filter = await courseUtils.filterWhereCondition(filter, search, category, level, type, promo)
+            whereCondition = await filter.course.filterWhereCondition(whereCondition, search, category, level, type, promo)
 
             /* Order By */
-            const orderBy = await courseUtils.filterOrderBy(popular, latest)
+            const orderBy = await filter.course.filterOrderBy(popular, latest)
 
             const courses = await db.course.findMany({
                 take: parseInt(limit),
                 skip: skip,
-                where: filter,
+                where: whereCondition,
                 include: {
                     courseCategory: true,
                     courseLevel: true,
@@ -89,14 +90,14 @@ module.exports = {
             })
 
             /* Total Data & Total Page after Pagination */
-            const resultCount = await db.course.count({ where: filter }) 
+            const resultCount = await db.course.count({ where: whereCondition }) 
             const totalPage = Math.ceil(resultCount / limit)
 
             if (resultCount === 0) {
                 return res.status(404).json(utils.apiError("Tidak ada data course"))
             }
 
-            const message = await courseUtils.messageResponse({ search, category, level, type, promo, popular, latest })
+            const message = await filter.message.filterMessage({ search, category, level, type, promo, popular, latest })
 
             return res.status(200).json(utils.apiSuccess(
                 message,
@@ -163,7 +164,7 @@ module.exports = {
             }
             
             const data = {
-                id: course.id,
+                courseId: course.id,
                 title: course.title,
                 slug: course.slug,
                 description: course.description,
@@ -190,17 +191,16 @@ module.exports = {
                     const totalContent = module.courseContent.length
 
                     return {
-                        id: module.id,
+                        moduleId: module.id,
                         title: module.title,
                         slug: module.slug,
                         duration: totalDurationContent, 
                         totalContent: totalContent,
                         contents: module.courseContent.map((content) => ({
-                            id: content.id,
+                            contentId: content.id,
                             sequence: content.sequence,
                             title: content.title,
                             slug: content.slug,
-                            urlVideo: content.videoUrl,
                             isFree: content.isFree,
                             duration: content.duration,
                         }))

@@ -55,6 +55,9 @@ module.exports = {
             const data = await db.coursePromo.findUnique({
                 where:{
                     id: id
+                },
+                include: {
+                    course: true
                 }
             })
 

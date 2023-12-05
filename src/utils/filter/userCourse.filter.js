@@ -35,5 +35,29 @@ module.exports = {
         }
 
         return filter
-    }
+    },
+
+    filterOrderBy: async (popular, latest) => {
+
+        let orderBy = []
+
+        if(latest) {
+            orderBy = [
+                {
+                    createdAt: 'desc'
+                }
+            ]
+        }
+
+        if(popular) {
+            orderBy = [
+                {
+                    taken: 'desc'
+                }
+            ]
+        }
+
+        return orderBy
+    },
+
 }

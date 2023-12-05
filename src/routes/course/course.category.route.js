@@ -5,8 +5,8 @@ const express = require('express'),
     router = express.Router()
 
 router.get('/', controller.courseCategory.getAll)
-router.post('/',  controller.courseCategory.create)
 router.get('/:id', controller.courseCategory.getById)
+router.post('/',  controller.courseCategory.create)
 router.put('/:id',  controller.courseCategory.update)
 router.delete('/:id', controller.courseCategory.delete)
 

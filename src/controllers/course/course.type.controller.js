@@ -28,15 +28,15 @@ module.exports = {
                 where : {
                     id : parseInt(id)
                 },
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
-                }
+                
             })
+
             if(!type){
                 return res.status(404).json(utils.error("type not found"))
             }
+
+            return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
+
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.error("Internal Server Error"))

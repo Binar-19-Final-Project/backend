@@ -32,9 +32,9 @@ module.exports = {
             }
 
             const data = {
-                id: courseContent.id,
+                contentId: courseContent.id,
                 title: courseContent.title,
-                slug: courseContent.slug,
+                slug: courseContent.slug, 
                 sequence: courseContent.sequence,
                 videoUrl: courseContent.videoUrl,
                 duration: courseContent.duration,
