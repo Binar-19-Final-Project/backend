@@ -3,7 +3,7 @@ const express = require("express"),
     userWishlistRoutes = require('./user.wishlist.route'),
     router = express.Router()
     
-    router.use(userCourseRoutes)
-    router.use(userWishlistRoutes)
+    router.use('/user-courses', userCourseRoutes)
+    router.use('/wishlists', userWishlistRoutes)
 
 module.exports = router

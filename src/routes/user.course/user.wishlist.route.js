@@ -4,7 +4,7 @@ const express = require('express'),
     controller = require('../../controllers/user.course'),
     router = express.Router()
 
-router.get('/', controller.userWishlist.getAll)
+router.get('/wishlist', controller.userWishlist.getAll)
 // router.post('/', validate(schema.type), controller.courseType.create)
 // router.get('/:id', controller.courseType.getById)
 // router.put('/:id', validate(schema.type), controller.courseType.update)
