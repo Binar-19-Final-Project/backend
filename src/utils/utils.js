@@ -32,7 +32,7 @@ module.exports = {
 
     createJwt: (payload) => {
         try {
-            return jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: "6h"})
+            return jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: "20h"})
         } catch (error) {
             console.log(error)
         }
@@ -71,5 +71,11 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+
+    formatDate: async (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const date = new Date(dateString)
+        return date.toLocaleDateString('id-ID', options)
+    },
 }
