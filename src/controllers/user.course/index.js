@@ -1,5 +1,7 @@
-const userCourse = require('./user.course.controller')
+const userCourse = require('./user.course.controller'),
+    userWishlist = require('./user.whislist.controller')
 
 module.exports = {
-    userCourse
+    userCourse,
+    userWishlist
 }
