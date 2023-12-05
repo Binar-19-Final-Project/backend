@@ -201,7 +201,7 @@ async function seedData()  {
     }
 
     /* Course Module Seeder */
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -216,7 +216,7 @@ async function seedData()  {
     }
 
      /* Course Content Seeder */
-     for (let i = 0; i < 400; i++) {
+     for (let i = 0; i < 1000; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
