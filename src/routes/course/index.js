@@ -8,13 +8,13 @@ const express = require("express"),
     categoryRoute = require("./course.category.route"),
     router = express.Router()
 
-router.use('/instructors', instructorRoute)
-router.use('/promos', promoRoute)
-router.use('/types', typeRoute)
-router.use('/categories', categoryRoute)
-router.use('/contents', contentRoute)
-router.use('/modules', moduleRoute)
-router.use('/', courseRoute)
+router.use('/courses', courseRoute)
+router.use('/course-modules', moduleRoute)
+router.use('/course-contents', contentRoute)
+router.use('/course-instructors', instructorRoute)
+router.use('/course-categories', categoryRoute)
+router.use('/course-promos', promoRoute)
+router.use('/course-types', typeRoute)
 
 
 module.exports = router
