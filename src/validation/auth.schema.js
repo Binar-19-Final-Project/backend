@@ -91,5 +91,30 @@ module.exports = {
             }
             return true;
         })
+  ],
+
+  updateProfile: [
+    body("name")
+        .notEmpty().withMessage("Nama tidak boleh kosong")
+        .matches(/^[a-zA-Z\s'-]+$/).withMessage("Nama tidak boleh mengandung karakter spesial")
+        .isString().withMessage("tipe data nama string"),
+    body("email")
+        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+    body("phone")
+        .notEmpty().withMessage("Nomor telepon tidak boleh kosong").isInt().withMessage("Nomor telepon tidak valid")
+        .isInt().withMessage("tipe data phone integer"),
+    body("country")
+        .optional({values: null}),
+    body("city")
+        .optional({values: null})
+  ],
+
+  updateProfilePhoto: [
+    body("photoProfile")
+        .optional({values: null})
+        // .custom((value, { req }) => {
+        //     console.log(req.file.originalname)
+        //     return true
+        // })
   ]
 };

@@ -46,6 +46,8 @@ CREATE TABLE `user_notifications` (
 -- CreateTable
 CREATE TABLE `user_courses` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `progress` INTEGER NOT NULL,
+    `status` VARCHAR(191) NOT NULL,
     `user_id` INTEGER NOT NULL,
     `course_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -186,7 +188,7 @@ CREATE TABLE `course_contents` (
 -- CreateTable
 CREATE TABLE `user_learning_progresses` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `progress` DOUBLE NOT NULL,
+    `progress` INTEGER NOT NULL,
     `content_id` INTEGER NOT NULL,
     `user_course_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),

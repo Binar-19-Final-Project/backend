@@ -15,7 +15,6 @@ router.use("/types", typeRoute);
 router.use("/categories", categoryRoute);
 router.use("/contents", contentRoute);
 router.use("/modules", moduleRoute);
-router.use("/level", levelRoute);
 router.use("/", courseRoute);
 
 module.exports = router;

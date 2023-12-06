@@ -1,7 +1,7 @@
 const express = require("express"),
-    orderRoute = require('./order.route'),
+    userProfileRoute = require('./user.profile.route'),
     router = express.Router()
     
-router.use('/orders', orderRoute)
+router.use(userProfileRoute)
 
 module.exports = router
