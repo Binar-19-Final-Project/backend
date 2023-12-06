@@ -1,7 +1,8 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
     otpUtils = require('../../utils/otp'),
-    resetUtils = require('../../utils/reset-password')
+    resetUtils = require('../../utils/reset-password'),
+    imageKit = require('../../utils/imageKit')
 
 module.exports = {
     register: async (req, res) => {
@@ -214,7 +215,7 @@ module.exports = {
         }
     },
 
-    profile: async (req, res) => {
+    getProfile: async (req, res) => {
         try {
             const { id } = res.user
             const user = await db.user.findUnique({
@@ -275,6 +276,100 @@ module.exports = {
             console.log(error);
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
+    },
 
+    updateProfile: async (req, res) => {
+        try {
+
+            const {name, email, phone, city, country} = req.body
+
+            const checkName = await db.user.findFirst({
+                where: {
+                    name: name
+                }
+            })
+
+            if(checkName) return res.status(409).json(utils.apiError("Nama sudah terdaftar"))
+
+            const checkEmail = await db.user.findFirst({
+                where: {
+                    email: email
+                }
+            })
+
+            if(checkEmail) return res.status(409).json(utils.apiError("Email sudah terdaftar"))
+
+            const checkPhone = await db.user.findFirst({
+                where: {
+                    phone: phone
+                }
+            })
+
+            if(checkPhone) return res.status(409).json(utils.apiError("Nomor telepon sudah terdaftar"))
+
+            await db.user.update({
+                where: {
+                    id: res.user.id
+                },
+                data: {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    country: country,
+                    city: city
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Profile berhasil diperbarui"))
+        
+            
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    updateProfilePhoto: async (req, res) => {
+        try {
+
+            const photoProfile = req.file
+            const allowedMimes = [
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/webp'
+            ]
+            const allowedSizeMb = 2
+
+            if(typeof photoProfile === 'undefined') return res.status(400).json(utils.apiError("Foto profile tidak boleh kosong"))
+
+            if(!allowedMimes.includes(photoProfile.mimetype)) return res.status(400).json(utils.apiError("Foto profile harus berupa gambar"))
+
+            if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Foto profile tidak boleh lebih dari 2mb"))
+
+            const stringFile = photoProfile.buffer.toString('base64')
+            const originalFileName = photoProfile.originalname
+
+            const uploadFile = await imageKit.upload({
+                fileName: originalFileName,
+                file: stringFile
+            })
+
+            await db.user.update({
+                where: {
+                    id: res.user.id
+                },
+                data: {
+                    photoProfile: uploadFile.url,
+                    imageFilename: originalFileName
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Foto profile berhasil diperbarui"))
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     }
 }
