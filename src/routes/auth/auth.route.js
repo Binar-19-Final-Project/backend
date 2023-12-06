@@ -12,7 +12,6 @@ router.post('/verify-user',  validate(schema.verifyUser), controller.auth.verify
 router.post('/request-reset-password',  validate(schema.requestResetPassword), controller.auth.requestResetPassword)
 router.post('/reset-password',  validate(schema.resetPassword), controller.auth.resetPassword)
 router.post('/resend-otp',  validate(schema.resendOtp), controller.auth.resendOtp)
-router.get('/profile', verifyToken, controller.auth.profile)
 router.post('/change-password', [verifyToken, validate(schema.changePassword), checkRole('user')], controller.auth.changePassword)
 
 module.exports = router

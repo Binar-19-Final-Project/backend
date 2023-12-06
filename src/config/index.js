@@ -1,4 +1,4 @@
-const dotEnv = require("dotenv");
+const dotEnv = require("dotenv")
 dotEnv.config();
 
 module.exports = {
@@ -14,6 +14,12 @@ module.exports = {
   NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
   NODEMAILER_PASS: process.env.NODEMAILER_PASS,
 
+  /* Url Configuration */
   RAILWAY_URL: process.env.RAILWAY_URL,
-  LOCAL_URL: process.env.LOCAL_URL
+  LOCAL_URL: process.env.LOCAL_URL,
+
+  /* ImageKit Configuration */
+  IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
+  IMAGEKIT_SECRET_KEY: process.env.IMAGEKIT_SECRET_KEY,
+  IMAGEKIT_URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
 };
