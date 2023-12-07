@@ -23,7 +23,7 @@ const verifyToken = async (req, res, next) => {
   } catch (error) {
     console.log(error)
     if (error instanceof jwt.TokenExpiredError) {
-        return res.status(500).json(utils.apiError("Silahkan login ulang"))
+        return res.status(401).json(utils.apiError("Silahkan login ulang"))
     } else {
         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
     }
