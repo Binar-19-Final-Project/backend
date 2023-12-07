@@ -26,8 +26,8 @@ module.exports = {
           id: id,
         },
         include: {
-          course: true
-        }
+          course: true,
+        },
       });
       if (!category) {
         return res
@@ -51,7 +51,7 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      const { name } = req.body;
+      const { name, urlPhoto, is_published } = req.body;
 
       const nameSlug = await utils.createSlug(name);
 
@@ -59,7 +59,8 @@ module.exports = {
         data: {
           name: name,
           slug: nameSlug,
-          is_published: false,
+          is_published: is_published,
+          urlPhoto: urlPhoto,
         },
       });
 
@@ -75,7 +76,7 @@ module.exports = {
   },
   update: async (req, res) => {
     try {
-      const { name } = req.body;
+      const { name, urlPhoto, is_published } = req.body;
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
 
@@ -90,28 +91,31 @@ module.exports = {
           .status(404)
           .json(utils.apiError("Kategori Tidak di temukan"));
 
-            const category = await db.courseCategory.update({
-                where:{
-                    id: id
-                },
-                data:{
-                    name : name,
-                    slug : nameSlug,
-                    urlPhoto : urlPhoto
-                }
-            })
+      const category = await db.courseCategory.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: name,
+          slug: nameSlug,
+          isPublished: is_published,
+          urlPhoto: urlPhoto,
+        },
+      });
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengubah kategori", category))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
-        }
-    },
-    delete: async (req, res) => {
-        try {
-
-            const id = parseInt(req.params.id)
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Berhasil mengubah kategori", category));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json(utils.apiError("Kesalahan pada Internal Server"));
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
 
       const check = await db.courseCategory.findUnique({
         where: {
