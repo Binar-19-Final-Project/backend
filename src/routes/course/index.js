@@ -9,12 +9,13 @@ const express = require("express"),
   levelRoute = require("./course.level.route"),
   router = express.Router();
 
-router.use("/instructors", instructorRoute);
-router.use("/promos", promoRoute);
-router.use("/types", typeRoute);
-router.use("/categories", categoryRoute);
-router.use("/contents", contentRoute);
-router.use("/modules", moduleRoute);
-router.use("/", courseRoute);
+router.use("/courses", courseRoute)
+router.use("/course-modules", moduleRoute)
+router.use("/course-contents", contentRoute)
+router.use("/course-instructors", instructorRoute)
+router.use("/course-promos", promoRoute)
+router.use("/course-types", typeRoute)
+router.use("/course-categories", categoryRoute)
+router.use("/course-levels", levelRoute)
 
 module.exports = router;
