@@ -183,7 +183,8 @@ model CourseContent {
   sequence             Int
   videoUrl             String                 @map("video_url")
   duration             Int
-  isFree               Boolean                @default(true) @map("is_free")
+  isFree               Boolean                @map("is_free")
+  isDemo               Boolean                @map("is_demo")
   moduleId             Int                    @map("course_module_id")
   courseModule         CourseModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   userLearningProgress UserLearningProgress[]

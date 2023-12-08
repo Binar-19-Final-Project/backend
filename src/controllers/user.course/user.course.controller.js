@@ -62,6 +62,8 @@ module.exports = {
                     courses: {
                         courseId: userCourse.course.id,
                         name: userCourse.course.title,
+                        description: userCourse.course.description,
+                        imageUrl: userCourse.course.imageUrl,
                         category: userCourse.course.courseCategory.name,
                         instructor: userCourse.course.courseInstructor.name,
                         level: userCourse.course.courseLevel.name,
