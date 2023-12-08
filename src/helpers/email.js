@@ -76,7 +76,7 @@ module.exports = {
                 <p style="color: #555; text-align: center;">This code expires in 10 minute(s).</p>
                 <p style="color: #FF0000; text-align: center;"><i>Do not share this verification code with anyone.</i></p>
             </div>
-        `,
+            `,
         }
     },
 }
