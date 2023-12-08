@@ -4,7 +4,6 @@ const express = require("express"),
     orderRoute = require('./order'),
     userCoursesRoute = require('./user.course'),
     userProfileRoute = require('./user.profile'),
-    checkAccessContentRoute = require('./check.access.content'),
     notificationRoute = require('./notification'),
     router = express.Router()
     
@@ -12,7 +11,6 @@ router.use("/auth", authRoute)
 router.use(courseRoute)
 router.use(orderRoute)
 router.use(userCoursesRoute)
-router.use(checkAccessContentRoute)
 router.use("/profile", userProfileRoute)
 router.use("/notifications", notificationRoute)
 
