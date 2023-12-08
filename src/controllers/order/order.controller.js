@@ -49,6 +49,7 @@ module.exports = {
                     courses: {
                         name: orderHistory.course.title,
                         category: orderHistory.course.courseCategory.name,
+                        imageUrl: orderHistory.course.imageUrl,
                         instructor: orderHistory.course.courseInstructor.name,
                         level: orderHistory.course.courseLevel.name,
                         rating: orderHistory.course.rating,

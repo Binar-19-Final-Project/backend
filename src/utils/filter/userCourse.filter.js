@@ -1,6 +1,6 @@
 
 module.exports = {
-    filterWhereCondition: (userId, filter, category, level, promo) => {
+    filterWhereCondition: (userId, filter, category, level, promo, learningStatus) => {
         filter.userId = userId
 
         if (!filter.course) {
@@ -25,13 +25,20 @@ module.exports = {
             }
         }
 
-        /* if (learningStatus) {
-            const learningStatussess = Array.isArray(learningStatus) ? learningStatus : [learningStatus]
-            filter
-        } */
-
         if (promo) {
-            filter.course.isPromo = true
+            filter.course = {
+                isPromo: true
+            }
+            
+        }
+
+        if (learningStatus) {
+            /* const learningStatussess = Array.isArray(learningStatus) ? learningStatus : [learningStatus] */
+            if(learningStatus === 'In Progress') {
+                filter.status = 'In Progress'
+            } else if (learningStatus === 'Selesai') {
+                filter.status = 'Selesai'
+            } 
         }
 
         return filter
@@ -44,7 +51,9 @@ module.exports = {
         if(latest) {
             orderBy = [
                 {
-                    createdAt: 'desc'
+                    course: {
+                        createdAt: 'desc'
+                    }
                 }
             ]
         }
@@ -52,7 +61,9 @@ module.exports = {
         if(popular) {
             orderBy = [
                 {
-                    taken: 'desc'
+                    course: {
+                        taken: 'desc'
+                    }
                 }
             ]
         }

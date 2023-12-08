@@ -177,8 +177,20 @@ CREATE TABLE `course_contents` (
     `sequence` INTEGER NOT NULL,
     `video_url` VARCHAR(191) NOT NULL,
     `duration` INTEGER NOT NULL,
-    `is_free` BOOLEAN NOT NULL DEFAULT true,
+    `is_free` BOOLEAN NOT NULL,
+    `is_demo` BOOLEAN NOT NULL,
     `course_module_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `status_learning_progresses` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `slug` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -191,6 +203,7 @@ CREATE TABLE `user_learning_progresses` (
     `progress` INTEGER NOT NULL,
     `content_id` INTEGER NOT NULL,
     `user_course_id` INTEGER NOT NULL,
+    `status_learning_progress_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -282,6 +295,9 @@ ALTER TABLE `user_learning_progresses` ADD CONSTRAINT `user_learning_progresses_
 
 -- AddForeignKey
 ALTER TABLE `user_learning_progresses` ADD CONSTRAINT `user_learning_progresses_user_course_id_fkey` FOREIGN KEY (`user_course_id`) REFERENCES `user_courses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `user_learning_progresses` ADD CONSTRAINT `user_learning_progresses_status_learning_progress_id_fkey` FOREIGN KEY (`status_learning_progress_id`) REFERENCES `status_learning_progresses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

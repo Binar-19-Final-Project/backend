@@ -14,12 +14,6 @@ module.exports = {
             /* Filter */
             let whereCondition = {}
 
-            /* filter = await courseUtils.filterSearch(filter, search)
-            filter = await courseUtils.filterCategory(filter, category)
-            filter = await courseUtils.filterLevel(filter, level)
-            filter = await courseUtils.filterType(filter, type)
-            filter = await courseUtils.filterPromo(filter, promo) */
-
             whereCondition = await filter.course.filterWhereCondition(whereCondition, search, category, level, type, promo)
 
             /* Order By */
@@ -201,7 +195,7 @@ module.exports = {
                             sequence: content.sequence,
                             title: content.title,
                             slug: content.slug,
-                            isFree: content.isFree,
+                            isDemo: content.isDemo,
                             duration: content.duration,
                         }))
                     }

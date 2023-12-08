@@ -10,8 +10,12 @@ module.exports = {
 
             const userCourse = await db.userCourse.findFirst({
                 where: {
-                    userId: parseInt(id),
-                    courseId: parseInt(courseId)
+                    user: {
+                        id: id
+                    },
+                    course: {
+                        id: parseInt(courseId)
+                    }
                 },
                 include: {
                     course: {
@@ -26,17 +30,30 @@ module.exports = {
                                         }
                                     }
                                 }
+                                
                             }
                         }
                     }
                 }
             })
-
-            if(!userCourse) {
-                return res.status(403).json(utils.apiError('Tidak mempunyai access ke content ini'))
-            } else {
+            
+            if(userCourse) {
                 return res.status(200).json(utils.apiSuccess('User dapat mengakses content ini'))
+            } else {
+                const content = await db.courseContent.findFirst({
+                    where: {
+                        id: parseInt(contentId)
+                    }
+                })
+
+                if (content.isDemo === true) {
+                    return res.status(200).json(utils.apiSuccess('User dapat mengakses content ini'))
+                } else {
+                    return res.status(403).json(utils.apiError('Tidak mempunyai access ke content ini. Silahkan order / enroll course terlebih dahulu', content))
+                }
             }
+
+            
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))

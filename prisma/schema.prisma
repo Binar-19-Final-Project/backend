@@ -205,10 +205,10 @@ model CourseContent {
 
   @@map("course_contents")
 }
-
 model UserLearningProgress {
   id           Int           @id @default(autoincrement())
   progress     Int
+  isFinished   Boolean      @map("is_finished") @default(false)
   contentId    Int           @map("content_id")
   content      CourseContent @relation(fields: [contentId], references: [id])
   userCourseId Int           @map("user_course_id")
@@ -218,6 +218,7 @@ model UserLearningProgress {
 
   @@map("user_learning_progresses")
 }
+
 
 model CourseTestimonial {
   id          Int    @id @default(autoincrement())

@@ -226,7 +226,7 @@ async function seedData()  {
           slug: slug,
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
           sequence: faker.number.int({ min: 1, max: 8 }),
-          isDemo: faker.datatype.boolean(0.7),
+          isDemo: faker.datatype.boolean(0.3),
           isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 200 }),
