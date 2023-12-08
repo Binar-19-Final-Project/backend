@@ -1,5 +1,6 @@
 const db = require('../../../prisma/connection'),
-    utils = require('../../utils/utils')
+    utils = require('../../utils/utils'),
+    notification = require('../../utils/notification')
 
 module.exports = {
 
@@ -65,14 +66,6 @@ module.exports = {
 
             if(checkTitle) return res.status(409).json(utils.apiError("Judul konten sudah terdaftar"))
 
-            const courseContent = await db.courseContent.findMany({
-                where: {
-                    moduleId: moduleId
-                }
-            })
-
-            const sequence = courseContent.length
-
             const checkModule = await db.courseModule.findUnique({
                 where:{
                     id: moduleId
@@ -80,6 +73,14 @@ module.exports = {
             })
 
             if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
+
+            const courseContent = await db.courseContent.findMany({
+                where: {
+                    moduleId: moduleId
+                }
+            })
+
+            const sequence = courseContent.length
 
             const titleSlug = await utils.createSlug(title)
 
@@ -95,6 +96,20 @@ module.exports = {
                 }
             })
 
+            const userCourses = await db.userCourse.findMany({
+                where: {
+                    courseId: checkModule.courseId
+                },
+                include: {
+                    course: true
+                }
+            })
+
+            userCourses.forEach( async (item, index, array) => {
+                const sendNotification = await notification.createNotification('create-content', item, 'Kelas yang kamu ikuti terdapat konten baru', item.userId)
+                if(!sendNotification) console.log("Gagal mengirim notifikasi")
+            })
+            
             return res.status(200).json(utils.apiSuccess("Berhasil membuat konten", data))
 
         } catch (error) {
@@ -153,6 +168,20 @@ module.exports = {
                     isFree: isFree,
                     moduleId: moduleId
                 }
+            })
+
+            const userCourses = await db.userCourse.findMany({
+                where: {
+                    courseId: checkModule.courseId
+                },
+                include: {
+                    course: true
+                }
+            })
+
+            userCourses.forEach( async (item, index, array) => {
+                const sendNotification = await notification.createNotification('create-content', item, 'Kelas yang kamu ikuti terdapat konten baru', item.userId)
+                if(!sendNotification) console.log("Gagal mengirim notifikasi")
             })
 
             return res.status(200).json(utils.apiSuccess("Konten berhasil diubah", data))

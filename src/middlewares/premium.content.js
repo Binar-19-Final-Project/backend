@@ -43,10 +43,8 @@ const premiumContent = async (req, res, next) => {
     if(content) {
         if(content.isDemo === true) {
             return next()
-        } else if(content.isFree === true && userCourse || role.name === 'admin') {
-            return next()
-        } else if (content.isFree === false && userCourse || role.name === 'admin') {
-            return next()
+        } else if(userCourse || role.name === 'admin') {
+            return next() 
         } else {
             return res.status(403).json(utils.apiError("Ini adalah content premium. Silahkan order course ini terlebih dahulu"))
         }

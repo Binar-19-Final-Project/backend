@@ -14,12 +14,6 @@ module.exports = {
             /* Filter */
             let whereCondition = {}
 
-            /* filter = await courseUtils.filterSearch(filter, search)
-            filter = await courseUtils.filterCategory(filter, category)
-            filter = await courseUtils.filterLevel(filter, level)
-            filter = await courseUtils.filterType(filter, type)
-            filter = await courseUtils.filterPromo(filter, promo) */
-
             whereCondition = await filter.course.filterWhereCondition(whereCondition, search, category, level, type, promo)
 
             /* Order By */
@@ -35,6 +29,7 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -129,6 +124,7 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -183,6 +179,11 @@ module.exports = {
                 totalPrice: totalPrice,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
+                groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
+                requirements: course.courseRequirement.map((requirement) => ({
+                    requirementId: requirement.id,
+                    requirements: requirement.requirements
+                })),
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
                         return total + content.duration
@@ -201,7 +202,7 @@ module.exports = {
                             sequence: content.sequence,
                             title: content.title,
                             slug: content.slug,
-                            isFree: content.isFree,
+                            isDemo: content.isDemo,
                             duration: content.duration,
                         }))
                     }

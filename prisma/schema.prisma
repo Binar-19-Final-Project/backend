@@ -37,23 +37,11 @@ model User {
   order             Order[]
   userCourse        UserCourse[]
   courseTestimonial CourseTestimonial[]
-  userNotification  UserNotification[]
+  notification      Notification[]
   createdAt         DateTime             @default(now()) @map("created_at")
   updatedAt         DateTime             @updatedAt @map("updated_at")
 
   @@map("users")
-}
-
-model UserNotification {
-  id        Int      @id @default(autoincrement())
-  message   String
-  read      Boolean  @default(false)
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("user_notifications")
 }
 
 model UserCourse {
@@ -165,6 +153,7 @@ model Course {
   isPromo            Boolean              @default(false) @map("is_promo")
   isPublished        Boolean              @default(true) @map("is_published")
   courseModule       CourseModule[]
+  courseRequirement  CourseRequirement[]
   userWishlist       UserCourseWishlist[]
   order              Order[]
   userCourse         UserCourse[]
@@ -173,6 +162,17 @@ model Course {
   updatedAt          DateTime             @updatedAt @map("updated_at")
 
   @@map("courses")
+}
+
+model CourseRequirement {
+  id            Int             @id @default(autoincrement())
+  requirements  String
+  courseId      Int             @map("course_id")
+  course        Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("course_requirements")
 }
 
 model CourseModule {
@@ -195,7 +195,7 @@ model CourseContent {
   sequence             Int
   videoUrl             String                 @map("video_url")
   duration             Int
-  isFree               Boolean                @default(true) @map("is_free")
+  isDemo               Boolean                @map("is_demo") @default(false)
   moduleId             Int                    @map("course_module_id")
   courseModule         CourseModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   userLearningProgress UserLearningProgress[]
@@ -204,10 +204,10 @@ model CourseContent {
 
   @@map("course_contents")
 }
-
 model UserLearningProgress {
   id           Int           @id @default(autoincrement())
   progress     Int
+  isFinished   Boolean      @map("is_finished") @default(false)
   contentId    Int           @map("content_id")
   content      CourseContent @relation(fields: [contentId], references: [id])
   userCourseId Int           @map("user_course_id")
@@ -217,6 +217,7 @@ model UserLearningProgress {
 
   @@map("user_learning_progresses")
 }
+
 
 model CourseTestimonial {
   id          Int    @id @default(autoincrement())
@@ -260,10 +261,14 @@ model Order {
   @@map("orders")
 }
 
-
 model Notification {
   id        Int      @id @default(autoincrement())
-  message   String
+  type      String
+  data      Json?
+  message   String?
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readAt    DateTime? @map("read_at")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
