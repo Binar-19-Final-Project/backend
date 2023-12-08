@@ -26,6 +26,7 @@ async function seedData()  {
     await db.$transaction([db.course.deleteMany()])
     await db.$transaction([db.courseModule.deleteMany()])
     await db.$transaction([db.courseContent.deleteMany()])
+    await db.$transaction([db.courseRequirement.deleteMany()])
     await db.$transaction([db.courseTestimonial.deleteMany()])
     await db.$transaction([db.userCourse.deleteMany()])
     await db.$transaction([db.order.deleteMany()])
@@ -40,7 +41,8 @@ async function seedData()  {
     await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_testimonials AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_requirements AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
@@ -200,6 +202,17 @@ async function seedData()  {
       await db.course.create({ data: seedCourse })
     }
 
+    /* Course Requirement Seeder */
+    for (let i = 0; i < 80; i++) {
+
+      const seedCourseRequirements = {
+          requirements: faker.lorem.text(),
+          courseId: faker.number.int({ min: 1, max: 30 })
+      }
+  
+      await db.courseRequirement.create({ data: seedCourseRequirements })
+    }
+
     /* Course Module Seeder */
     for (let i = 0; i < 200; i++) {
 
@@ -227,7 +240,6 @@ async function seedData()  {
           videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
           sequence: faker.number.int({ min: 1, max: 8 }),
           isDemo: faker.datatype.boolean(0.3),
-          isFree: faker.datatype.boolean(0.7),
           duration: faker.number.int({ min: 1, max: 10 }),
           moduleId: faker.number.int({ min: 1, max: 200 }),
       }

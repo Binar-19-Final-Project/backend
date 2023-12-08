@@ -29,6 +29,7 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -123,6 +124,7 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -177,6 +179,11 @@ module.exports = {
                 totalPrice: totalPrice,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
+                groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
+                requirements: course.courseRequirement.map((requirement) => ({
+                    requirementId: requirement.id,
+                    requirements: requirement.requirements
+                })),
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
                         return total + content.duration

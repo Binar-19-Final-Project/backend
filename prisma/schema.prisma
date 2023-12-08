@@ -153,6 +153,7 @@ model Course {
   isPromo            Boolean              @default(false) @map("is_promo")
   isPublished        Boolean              @default(true) @map("is_published")
   courseModule       CourseModule[]
+  courseRequirement  CourseRequirement[]
   userWishlist       UserCourseWishlist[]
   order              Order[]
   userCourse         UserCourse[]
@@ -161,6 +162,17 @@ model Course {
   updatedAt          DateTime             @updatedAt @map("updated_at")
 
   @@map("courses")
+}
+
+model CourseRequirement {
+  id            Int             @id @default(autoincrement())
+  requirements  String
+  courseId      Int             @map("course_id")
+  course        Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("course_requirements")
 }
 
 model CourseModule {
@@ -183,8 +195,7 @@ model CourseContent {
   sequence             Int
   videoUrl             String                 @map("video_url")
   duration             Int
-  isFree               Boolean                @map("is_free")
-  isDemo               Boolean                @map("is_demo")
+  isDemo               Boolean                @map("is_demo") @default(false)
   moduleId             Int                    @map("course_module_id")
   courseModule         CourseModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   userLearningProgress UserLearningProgress[]
