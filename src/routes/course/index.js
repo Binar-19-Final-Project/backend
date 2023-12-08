@@ -18,4 +18,4 @@ router.use("/course-types", typeRoute)
 router.use("/course-categories", categoryRoute)
 router.use("/course-levels", levelRoute)
 
-module.exports = router;
+module.exports = router

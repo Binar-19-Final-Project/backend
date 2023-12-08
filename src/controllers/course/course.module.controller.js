@@ -1,5 +1,6 @@
 const db = require('../../../prisma/connection'),
-    utils = require('../../utils/utils')
+    utils = require('../../utils/utils'),
+    notification = require('../../utils/notification')
 
 module.exports = {
 

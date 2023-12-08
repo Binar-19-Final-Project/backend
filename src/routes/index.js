@@ -5,6 +5,7 @@ const express = require("express"),
     userCoursesRoute = require('./user.course'),
     userProfileRoute = require('./user.profile'),
     checkAccessContentRoute = require('./check.access.content'),
+    notificationRoute = require('./notification'),
     router = express.Router()
     
 router.use("/auth", authRoute)
@@ -13,5 +14,6 @@ router.use(orderRoute)
 router.use(userCoursesRoute)
 router.use(checkAccessContentRoute)
 router.use("/profile", userProfileRoute)
+router.use("/notifications", notificationRoute)
 
 module.exports = router

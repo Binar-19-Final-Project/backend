@@ -1,5 +1,6 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
+    notification = require('../../utils/notification'),
     otpUtils = require('../../utils/otp'),
     resetUtils = require('../../utils/reset-password'),
     imageKit = require('../../utils/imageKit')
@@ -191,6 +192,10 @@ module.exports = {
                 }
             })
 
+            const sendNotification = await notification.createNotification("reset-password", null, "Reset password berhasil", user.id)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi')
+
             return res.status(200).json(utils.apiSuccess("Reset password berhasil"))
             
         } catch (error) {
@@ -270,6 +275,10 @@ module.exports = {
                 }
             })
 
+            const sendNotification = await notification.createNotification("change-password", null, "Ubah password berhasil" ,userId)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi')
+
             return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
 
         } catch (error) {
@@ -285,7 +294,10 @@ module.exports = {
 
             const checkName = await db.user.findFirst({
                 where: {
-                    name: name
+                    name: name,
+                    NOT: {
+                        id: res.user.id
+                    }
                 }
             })
 
@@ -293,7 +305,10 @@ module.exports = {
 
             const checkEmail = await db.user.findFirst({
                 where: {
-                    email: email
+                    email: email,
+                    NOT: {
+                        id: res.user.id
+                    }
                 }
             })
 
@@ -301,7 +316,10 @@ module.exports = {
 
             const checkPhone = await db.user.findFirst({
                 where: {
-                    phone: phone
+                    phone: phone,
+                    NOT: {
+                        id: res.user.id
+                    }
                 }
             })
 
@@ -320,8 +338,11 @@ module.exports = {
                 }
             })
 
+            const sendNotification = await notification.createNotification("update-profile", null, "Profile berhasil diperbarui", res.user.id)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi')
+
             return res.status(200).json(utils.apiSuccess("Profile berhasil diperbarui"))
-        
             
         } catch (error) {
             console.log(error);
@@ -364,6 +385,10 @@ module.exports = {
                     imageFilename: originalFileName
                 }
             })
+
+            const sendNotification = await notification.createNotification("update-profile-photo", null, "Foto profile berhasil diubah", res.user.id)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi')
 
             return res.status(200).json(utils.apiSuccess("Foto profile berhasil diperbarui"))
 
