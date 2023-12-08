@@ -290,40 +290,7 @@ module.exports = {
     updateProfile: async (req, res) => {
         try {
 
-            const {name, email, phone, city, country} = req.body
-
-            const checkName = await db.user.findFirst({
-                where: {
-                    name: name,
-                    NOT: {
-                        id: res.user.id
-                    }
-                }
-            })
-
-            if(checkName) return res.status(409).json(utils.apiError("Nama sudah terdaftar"))
-
-            const checkEmail = await db.user.findFirst({
-                where: {
-                    email: email,
-                    NOT: {
-                        id: res.user.id
-                    }
-                }
-            })
-
-            if(checkEmail) return res.status(409).json(utils.apiError("Email sudah terdaftar"))
-
-            const checkPhone = await db.user.findFirst({
-                where: {
-                    phone: phone,
-                    NOT: {
-                        id: res.user.id
-                    }
-                }
-            })
-
-            if(checkPhone) return res.status(409).json(utils.apiError("Nomor telepon sudah terdaftar"))
+            const {name, phone, city, country} = req.body
 
             await db.user.update({
                 where: {
@@ -331,7 +298,6 @@ module.exports = {
                 },
                 data: {
                     name: name,
-                    email: email,
                     phone: phone,
                     country: country,
                     city: city

@@ -98,8 +98,6 @@ module.exports = {
         .notEmpty().withMessage("Nama tidak boleh kosong")
         .matches(/^[a-zA-Z\s'-]+$/).withMessage("Nama tidak boleh mengandung karakter spesial")
         .isString().withMessage("tipe data nama string"),
-    body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
     body("phone")
         .notEmpty().withMessage("Nomor telepon tidak boleh kosong").isInt().withMessage("Nomor telepon tidak valid")
         .isInt().withMessage("tipe data phone integer"),
