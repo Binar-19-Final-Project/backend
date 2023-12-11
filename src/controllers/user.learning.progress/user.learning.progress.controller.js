@@ -1,52 +1,36 @@
 const db = require('../../../prisma/connection'),
-    userLearningProgress = require('../../utils/user-learning-progress'),
     utils = require('../../utils/utils')
    
 module.exports = {
 
-    // createLearningProgress: async (req, res) => {
-    //     try {
+    getLearningProgress: async(req, res) => {
+        try {
+
+            const {contentId, userCourseId} = req.body
+
+            const checkUserCourse = await db.userCourse.findFirst({
+                where:{
+                    id: userCourseId,
+                    userId: res.user.id,
+                }
+            })
+
+            if(!checkUserCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
             
-    //         const userCourseId = 2;
+            const userLearningProgress = await db.userLearningProgress.findFirst({
+                where: {
+                    contentId: contentId,
+                    userCourseId: userCourseId
+                }
+            })
 
-    //         const checkUserCourse = await db.userCourse.findUnique({
-    //             where: {
-    //                 id: userCourseId
-    //             }
-    //         })
+            return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan learning progress", userLearningProgress))
 
-    //         const modules = await db.courseModule.findMany({
-    //             where: {
-    //                 courseId: checkUserCourse.courseId
-    //             },
-    //             select: {
-    //                 id: true
-    //             }
-    //         })
-
-    //         const contents = await db.courseContent.findMany({
-    //             where: {
-    //                 id: {
-    //                     in: modules.id
-    //                 }
-    //             },
-    //             select: {
-    //                 id: true
-    //             }
-    //         })
-
-    //         contents.forEach( async (item, index, array) => {
-    //             const test = await userLearningProgress.createUserLearningProgress(item.id, userCourseId)
-    //             if(!test) console.log('error')
-    //         })
-
-    //         return res.status(200).json(utils.apiSuccess("Berhasil"))        
-
-    //     } catch (error) {
-    //         console.log(error)
-    //         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-    //     }
-    // },
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
 
     updateLearningProgress: async(req, res) => {
         try {
@@ -111,12 +95,20 @@ module.exports = {
             
             let progress = (totalFinished / totalContent) * 100
 
+            let status = "In Progress"
+
+            if(totalFinished == totalContent)
+            {
+               status = "Selesai"
+            }
+
             await db.userCourse.update({
                 where: {
                     id: userCourse.id
                 },
                 data : {
-                    progress: progress
+                    progress: progress,
+                    status: status
                 }
             })
 

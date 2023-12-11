@@ -4,7 +4,7 @@ const express = require('express'),
     checkRole = require('../../middlewares/check.role'),
     router = express.Router()
 
-// router.post('/', verifyToken, checkRole('user'), controller.userLearningProgress.createLearningProgress)
+router.get('/', verifyToken, checkRole('user'), controller.userLearningProgress.getLearningProgress)
 router.put('/', verifyToken, checkRole('user'), controller.userLearningProgress.updateLearningProgress)
 
 module.exports = router
