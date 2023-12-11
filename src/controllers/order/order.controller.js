@@ -1,5 +1,6 @@
 const db = require('../../../prisma/connection'),
-    utils = require('../../utils/utils')
+    utils = require('../../utils/utils'),
+    userLearningProgress = require('../../utils/user-learning-progress')
 
 module.exports = {
 
@@ -59,7 +60,6 @@ module.exports = {
                 }
             })
                 
-    
             if(!historyOrders) return res.status(404).json(utils.apiError("Riwayat order tidak ditemukan"))
 
             return res.status(200).json(utils.apiSuccess('Berhasil mengambil riwayat order berdasarkan id user', data))
@@ -102,10 +102,39 @@ module.exports = {
                             status: "In Progress"
                         }
                     })
-                return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas Gratis", orderFreeCourse))
+
+                    const modules = await db.courseModule.findMany({
+                        where: {
+                            courseId: orderFreeCourse.courseId
+                        },
+                        select: {
+                            id: true
+                        }
+                    })
+
+                    const moduleIds = modules.map(({id}) => id)
+
+                    const contents = await db.courseContent.findMany({
+                        where: {
+                            moduleId: {
+                                in: moduleIds
+                            }
+                        },
+                        select: {
+                            id: true
+                        }
+                    })
+
+                    contents.forEach( async (item, index, array) => {
+                        await userLearningProgress.createUserLearningProgress(item.id, orderFreeCourse.id)
+                    })
+
+                    return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas Gratis", orderFreeCourse))
+                
                 } else if (course.courseType.name === 'Premium') {
                     return res.status(403).json(utils.apiError("Fitur Pembayaran Belum Tersedia"))
                 }
+
             } else {
                 return res.status(409).json(utils.apiError("Course sudah tersedia"))
             }
