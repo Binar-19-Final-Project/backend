@@ -166,7 +166,7 @@ model Course {
 
 model CourseRequirement {
   id            Int             @id @default(autoincrement())
-  requirements  String
+  requirements  String          @db.Text
   courseId      Int             @map("course_id")
   course        Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt     DateTime        @default(now()) @map("created_at")
@@ -206,12 +206,12 @@ model CourseContent {
 }
 model UserLearningProgress {
   id           Int           @id @default(autoincrement())
-  progress     Int
-  isFinished   Boolean      @map("is_finished") @default(false)
+  isFinished   Boolean       @map("is_finished") @default(false)
   contentId    Int           @map("content_id")
   content      CourseContent @relation(fields: [contentId], references: [id])
   userCourseId Int           @map("user_course_id")
   userCourse   UserCourse    @relation(fields: [userCourseId], references: [id])
+  finishedAt   DateTime?     @map("finished_at")     
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
