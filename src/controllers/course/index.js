@@ -15,5 +15,5 @@ module.exports = {
   courseContent,
   courseCategory,
   courseType,
-  courseLevel,
+  courseLevel
 };
