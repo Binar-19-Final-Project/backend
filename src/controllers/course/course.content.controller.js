@@ -106,7 +106,7 @@ module.exports = {
             })
 
             userCourses.forEach( async (item, index, array) => {
-                const sendNotification = await notification.createNotification('create-content', item, 'Kelas yang kamu ikuti terdapat konten baru', item.userId)
+                const sendNotification = await notification.createNotification('New Content', item, 'Kelas yang kamu ikuti terdapat konten baru', item.userId)
                 if(!sendNotification) console.log("Gagal mengirim notifikasi")
             })
             
@@ -177,11 +177,6 @@ module.exports = {
                 include: {
                     course: true
                 }
-            })
-
-            userCourses.forEach( async (item, index, array) => {
-                const sendNotification = await notification.createNotification('create-content', item, 'Kelas yang kamu ikuti terdapat konten baru', item.userId)
-                if(!sendNotification) console.log("Gagal mengirim notifikasi")
             })
 
             return res.status(200).json(utils.apiSuccess("Konten berhasil diubah", data))
