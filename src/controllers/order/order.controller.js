@@ -67,5 +67,52 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
         }
+    },
+
+    createOrder: async(req, res) => {
+        try {
+            const id = res.user.id
+            const courseId = req.params.courseId
+
+            const existUserCourse = await db.userCourse.findFirst({
+                where: {
+                    userId: id,
+                    courseId: parseInt(courseId)
+                }
+            })
+
+            const course = await db.course.findUnique({
+                where: {
+                    id: parseInt(courseId)
+                },
+                include: {
+                    courseType: true
+                }
+            })
+
+            if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
+
+            if(!existUserCourse) {
+                if(course.courseType.name === 'Free') {
+                    const orderFreeCourse = await db.userCourse.create({
+                        data: {
+                            userId: id,
+                            courseId: parseInt(courseId),
+                            progress: 0,
+                            status: "In Progress"
+                        }
+                    })
+                return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas Gratis", orderFreeCourse))
+                } else if (course.courseType.name === 'Premium') {
+                    return res.status(403).json(utils.apiError("Fitur Pembayaran Belum Tersedia"))
+                }
+            } else {
+                return res.status(409).json(utils.apiError("Course sudah tersedia"))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
+        }
     }
 }
