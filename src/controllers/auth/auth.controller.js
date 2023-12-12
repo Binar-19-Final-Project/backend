@@ -142,13 +142,13 @@ module.exports = {
 
             if(user.resetToken != null) return res.status(500).json(utils.apiError("Link untuk reset password sudah dikirim ke email anda"))
 
-            const bcryptResetToken = await utils.createHashData(email)
+            let bcryptResetToken = await utils.createHashData(email)
 
-            bcryptResetToken.replace(/\//g, "-")
+            let resetToken = bcryptResetToken.replace(/\//g, "-")
 
             await db.user.update({
                 data:{
-                    resetToken: bcryptResetToken
+                    resetToken: resetToken
                 },
                 where:{
                     id: user.id
@@ -192,7 +192,7 @@ module.exports = {
                 }
             })
 
-            const sendNotification = await notification.createNotification("reset-password", null, "Reset password berhasil", user.id)
+            const sendNotification = await notification.createNotification("Reset Password", null, "Reset password berhasil", user.id)
 
             if(!sendNotification) console.log('Gagal mengirim notifikasi')
 
@@ -275,7 +275,7 @@ module.exports = {
                 }
             })
 
-            const sendNotification = await notification.createNotification("change-password", null, "Ubah password berhasil" ,userId)
+            const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
 
             if(!sendNotification) console.log('Gagal mengirim notifikasi')
 
@@ -304,7 +304,7 @@ module.exports = {
                 }
             })
 
-            const sendNotification = await notification.createNotification("update-profile", null, "Profile berhasil diperbarui", res.user.id)
+            const sendNotification = await notification.createNotification("Update Profile", null, "Profile berhasil diperbarui", res.user.id)
 
             if(!sendNotification) console.log('Gagal mengirim notifikasi')
 
@@ -352,7 +352,7 @@ module.exports = {
                 }
             })
 
-            const sendNotification = await notification.createNotification("update-profile-photo", null, "Foto profile berhasil diubah", res.user.id)
+            const sendNotification = await notification.createNotification("Update Profile Photo", null, "Foto profile berhasil diubah", res.user.id)
 
             if(!sendNotification) console.log('Gagal mengirim notifikasi')
 
