@@ -6,16 +6,17 @@ module.exports = {
     getLearningProgress: async(req, res) => {
         try {
 
-            const {contentId, userCourseId} = req.body
+            const userCourseId = parseInt(req.params.userCourseId)
+            const contentId = parseInt(req.params.contentId)    
 
             const checkUserCourse = await db.userCourse.findFirst({
                 where:{
                     id: userCourseId,
-                    userId: res.user.id,
+                    userId: res.user.id
                 }
             })
 
-            if(!checkUserCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+            if(!checkUserCourse) return res.status(404).json(utils.apiError("User course tidak ditemukkan"))
             
             const userLearningProgress = await db.userLearningProgress.findFirst({
                 where: {
@@ -35,7 +36,8 @@ module.exports = {
     updateLearningProgress: async(req, res) => {
         try {
 
-            const {contentId, userCourseId} = req.body
+            const userCourseId = parseInt(req.params.userCourseId)
+            const contentId = parseInt(req.params.contentId)
 
             const userCourse = await db.userCourse.findUnique({
                 where: {
@@ -76,7 +78,7 @@ module.exports = {
                 totalContent += item._count.courseContent
             })
 
-            await db.userLearningProgress.update({
+            const data = await db.userLearningProgress.update({
                 where: {
                     id: userLearningProgress.id
                 },
@@ -112,7 +114,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Konten berhasil diselesaikan"))        
+            return res.status(200).json(utils.apiSuccess("Konten berhasil diselesaikan", data))        
             
         } catch (error) {
             console.log(error)
