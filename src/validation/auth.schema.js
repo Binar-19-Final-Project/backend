@@ -5,17 +5,18 @@ module.exports = {
     body("name")
         .notEmpty().withMessage("Nama tidak boleh kosong")
         .matches(/^[a-zA-Z\s'-]+$/).withMessage("Nama tidak boleh mengandung karakter spesial")
-        .isString().withMessage("tipe data nama string"),
+        .isString().withMessage("Nama harus berupa string"),
     body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+        .notEmpty().withMessage("Email tidak boleh kosong")
+        .isEmail().withMessage("Format email tidak valid"),
     body("phone")
-        .notEmpty().withMessage("Nomor telepon tidak boleh kosong").isInt().withMessage("Nomor telepon tidak valid")
-        .isInt().withMessage("tipe data phone integer"),
+        .notEmpty().withMessage("Nomor telepon tidak boleh kosong")
+        .isInt().withMessage("Nomor telepon tidak valid"),
     body("password")
         .notEmpty().withMessage("Password tidak boleh kosong")
         .isLength({ min: 8 }).withMessage("Password minimal 8 karakter")
         .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password harus mengandung setidaknya satu huruf kapital dan satu angka")
-        .isString().withMessage("tipe data string"),
+        .isString().withMessage("Password harus berupa string"),
     body("confPassword")
         .notEmpty().withMessage("Konfirmasi password tidak boleh kosong")
         .custom((confPassword, { req }) => {
@@ -24,40 +25,42 @@ module.exports = {
             }
             return true;
         })
-        .isString().withMessage("tipe data confPassoword string"),
+        .isString().withMessage("Konfirmasi password harus berupa string"),
   ],
 
   login: [
     body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+        .notEmpty().withMessage("Email tidak boleh kosong")
+        .isEmail().withMessage("Format email tidak valid"),
     body("password")
         .notEmpty().withMessage("Password tidak boleh kosong")
         .isLength({ min: 8 }).withMessage("Password minimal 8 karakter")
         .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password harus mengandung setidaknya satu huruf kapital dan satu angka")
-        .isString().withMessage("tipe data password string"),
+        .isString().withMessage("Password harus berupa string"),
   ],
 
   verifyUser: [
     body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+        .notEmpty().withMessage("Email tidak boleh kosong")
+        .isEmail().withMessage("Format email tidak valid"),
     body("otp")
         .notEmpty().withMessage("Otp tidak boleh kosong")
         .isLength({ min: 6, max: 6}).withMessage("Otp berisi 6 angka")
-        .isString().withMessage("tipe data otp string"),
+        .isString().withMessage("Otp harus berupa string"),
   ],
 
   requestResetPassword: [
     body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+        .notEmpty().withMessage("Email tidak boleh kosong")
+        .isEmail().withMessage("Format email tidak valid"),
   ],
 
   resetPassword: [
-    // body("resetToken").notEmpty("Reset token tidak boleh kosong"),
     body("password")
         .notEmpty().withMessage("Password baru tidak boleh kosong")
         .isLength({ min: 8 }).withMessage("Password baru minimal 8 karakter")
         .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password baru harus mengandung setidaknya satu huruf kapital dan satu angka")
-        .isString().withMessage("tipe data password string"),
+        .isString().withMessage("Password harus berupa string"),
     body("confPassword")
         .notEmpty().withMessage("Konfirmasi password baru tidak boleh kosong")
         .custom((confPassword, { req }) => {
@@ -66,12 +69,13 @@ module.exports = {
             }
             return true;
         })
-        .isString().withMessage("tipe data confPassword string"),
+        .isString().withMessage("Konfirmasi password harus berupa string"),
   ],
 
   resendOtp: [
     body("email")
-        .notEmpty().withMessage("Email tidak boleh kosong").isEmail().withMessage("Format email tidak valid"),
+        .notEmpty().withMessage("Email tidak boleh kosong")
+        .isEmail().withMessage("Format email tidak valid"),
   ],
 
   changePassword: [
@@ -97,10 +101,10 @@ module.exports = {
     body("name")
         .notEmpty().withMessage("Nama tidak boleh kosong")
         .matches(/^[a-zA-Z\s'-]+$/).withMessage("Nama tidak boleh mengandung karakter spesial")
-        .isString().withMessage("tipe data nama string"),
+        .isString().withMessage("Nama harus berupa string"),
     body("phone")
         .notEmpty().withMessage("Nomor telepon tidak boleh kosong").isInt().withMessage("Nomor telepon tidak valid")
-        .isInt().withMessage("tipe data phone integer"),
+        .isInt().withMessage("Nomor telepon harus berupa angka"),
     body("country")
         .optional({values: null}),
     body("city")
@@ -110,9 +114,5 @@ module.exports = {
   updateProfilePhoto: [
     body("photoProfile")
         .optional({values: null})
-        // .custom((value, { req }) => {
-        //     console.log(req.file.originalname)
-        //     return true
-        // })
   ]
 };
