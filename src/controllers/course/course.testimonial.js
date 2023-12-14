@@ -37,13 +37,31 @@ module.exports = {
         try {
             const { courseId } = req.params
 
-            const testimonial = await db.courseTestimonial.findMany({
+            const testimonials = await db.courseTestimonial.findMany({
                 where: {
                     courseId: parseInt(courseId)
+                },
+                include: {
+                    user: true,
+                    course: true
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess('Sukses', testimonial))
+            const data = testimonials.map((testimonial) => {
+                const userName = testimonial.user.name
+                const userPhotoProfile = testimonial.user.photoProfile
+                
+                return {
+                    testimoialId: testimonial.id,
+                    testimonial: testimonial.testimonial,
+                    rating: testimonial.rating,
+                    userName: userName,
+                    userPhotoProfile: userPhotoProfile,
+                    courseId: testimonial.course.id
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess('Behasil mengambil data testimonial berdasarkan course', data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
