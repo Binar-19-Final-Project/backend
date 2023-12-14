@@ -1,7 +1,8 @@
 const db = require('../../../prisma/connection'),
     courseUtils = require('../../utils/filter/course.filter.j'),
     utils = require('../../utils/utils'),
-    filter = require('../../utils/filter')
+    filter = require('../../utils/filter'),
+    imageKit = require('../../utils/imageKit')
 
 module.exports = {
     getCourses: async(req, res) => {
@@ -29,7 +30,8 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
-                    courseRequirement: true,
+                    courseTestimonial: true,
+                    userCourse: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -48,6 +50,13 @@ module.exports = {
                 const promoName = course.coursePromo ? course.coursePromo.name : null
                 const discount = course.coursePromo ? course.coursePromo.discount : null
                 const totalModule = course.courseModule.length
+
+                const ratings = course.courseTestimonial.map((testimonial) => testimonial.rating)
+                const totalRatings = ratings.length
+                const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
+                const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
+
+                const taken = course.userCourse.length
 
                 totalDurationModule = 0
                 course.courseModule.map((module) => {
@@ -68,9 +77,9 @@ module.exports = {
                   slug: course.slug,
                   description: course.description,
                   originalPrice: originalPrice,
-                  rating: course.rating,
+                  rating: averageRatings,
                   duration: totalDurationModule,
-                  taken: course.taken,
+                  taken: taken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -124,7 +133,6 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
-                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -158,6 +166,15 @@ module.exports = {
                 const discountAmount = (originalPrice * discount) / 100
                 totalPrice = originalPrice - discountAmount
             }
+
+            const requirementsString = course.requirements
+            const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
+            const requirementsObjectsArray = requirementsArray.map((requirement, index) => {
+                return {
+                    id: parseInt(`${index + 1}`),
+                    requirement: requirement
+                };
+            })
             
             const data = {
                 courseId: course.id,
@@ -180,10 +197,7 @@ module.exports = {
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
-                requirements: course.courseRequirement.map((requirement) => ({
-                    requirementId: requirement.id,
-                    requirements: requirement.requirements
-                })),
+                requirements: requirementsObjectsArray,
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
                         return total + content.duration
@@ -216,65 +230,99 @@ module.exports = {
         }
     },
 
+    createCourse: async(req, res) => {
+        try {
+            const { title, rating, taken, courseCategoryId, courseTypeId, courseLevelId, price, description, courseInstructorId, isPromo, coursePromoId, isPublished } = req.body
+
+            const checkTitle = await db.course.findFirst({
+                where:{
+                    title: title,
+                }
+            })
+
+            if(checkTitle) return res.status(409).json(utils.apiError("Judul course sudah terdaftar"))
+
+            const checkCategory = await db.courseCategory.findFirst({
+                where:{
+                    id: parseInt(courseCategoryId),
+                }
+            })
+
+            if(!checkCategory) return res.status(404).json(utils.apiError("Kategori tidak ditemukan"))
+
+            const checkType = await db.courseType.findFirst({
+                where:{
+                    id: parseInt(courseTypeId),
+                }
+            })
+
+            if(!checkType) return res.status(404).json(utils.apiError("Tipe tidak ditemukan"))
+
+            const checkLevel = await db.courseLevel.findFirst({
+                where:{
+                    id: parseInt(courseLevelId),
+                }
+            })
+
+            if(!checkLevel) return res.status(404).json(utils.apiError("Level tidak ditemukan"))
+
+            const checkInstructor = await db.courseInstructor.findFirst({
+                where:{
+                    id: parseInt(courseInstructorId),
+                }
+            })
+
+            if(!checkInstructor) return res.status(404).json(utils.apiError("Instructor tidak ditemukan"))
+
+            const slug = await utils.createSlug(title)
+
+            const courseImage = req.file
+            const allowedMimes = [
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/webp'
+            ]
+            const allowedSizeMb = 2
+
+            if(typeof courseImage === 'undefined') return res.status(422).json(utils.apiError("Gambar kelas tidak boleh kosong"))
+
+            if(!allowedMimes.includes(courseImage.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
+
+            if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
+
+            const stringFile = courseImage.buffer.toString('base64')
+            const originalFileName = courseImage.originalname
+
+            const uploadFile = await imageKit.upload({
+                fileName: originalFileName,
+                file: stringFile
+            })
+
+
+            const course = await db.course.create({
+                data: {
+                    title: title,
+                    slug: slug,
+                    description: description,
+                    price: parseFloat(price),
+                    courseInstructorId: parseInt(courseInstructorId),
+                    courseCategoryId: parseInt(courseCategoryId),
+                    courseTypeId: parseInt(courseTypeId),
+                    courseLevelId: parseInt(courseLevelId),
+                    isPromo: Boolean(isPromo),
+                    isPublished: Boolean(isPublished),
+                    imageUrl: uploadFile.url,
+                    imageFilename: originalFileName,
+                    rating: parseInt(rating),
+                    taken: parseInt(taken),
+                }
+            })
+
+            return res.status(201).json(utils.apiSuccess('Sukses', course))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    }
 }
-//     if (popularByCategory) {
-        //     const popularCourses = await db.course.findMany({
-        //         where: filter,
-        //         include: {
-        //             courseCategory: true,
-        //             courseLevel: true,
-        //             courseType: true,
-        //             coursePromo: true,
-        //             courseInstructor: true,
-        //             courseModule: true
-        //         },
-        //         orderBy: {
-        //             taken: 'desc'
-        //         }
-        //     })
-        
-        //     const groupedByCategory = {}
-        //     popularCourses.forEach(course => {
-        //         const category = course.courseCategory.name
-        //         if (!groupedByCategory[category]) {
-        //             groupedByCategory[category] = []
-        //         }
-
-        //         const originalPrice = course.price
-        //         const promoName = course.coursePromo ? course.coursePromo.name : null
-        //         const discount = course.coursePromo ? course.coursePromo.discount : null
-        //         const totalModule = course.courseModule.length
-
-        //         groupedByCategory[category].push({
-        //             id: course.id,
-        //             title: course.title,
-        //             slug: course.slug,
-        //             description: course.description,
-        //              originalPrice: originalPrice,
-        //             rating: course.rating,
-        //             duration: course.duration,
-        //             taken: course.taken,
-        //             imageUrl: course.imageUrl,
-        //             category: course.courseCategory.name,
-        //             type: course.courseType.name,
-        //             level: course.courseLevel.name,
-        //             instructor: course.courseInstructor.name,
-        //             totalModule: totalModule,
-        //             namePromo: promoName,
-        //             discount: discount,
-        //             publishedAt: course.createdAt
-        //         })
-        //     })
-
-        //     let message = "Berhasil mengambil data course popular"
-        
-        //     if (popular) {
-        //         message += ` popular berdasarkan kategori`
-        //     }
-
-        //     if (category) {
-        //         message += ` berdasarkan kategori '${category}'`
-        //     }
-        
-        //     return res.status(200).json(utils.apiSuccess(message, groupedByCategory ))
-        // }

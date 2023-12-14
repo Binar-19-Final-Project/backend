@@ -1,128 +1,119 @@
-const db = require('../../../prisma/connection'),
-    utils = require('../../utils/utils')
-
+const db = require("../../../prisma/connection"),
+  utils = require("../../utils/utils");
 
 module.exports = {
-    getAll: async (req, res) => {
-        try {
-            
-            const type = await db.couseType.findMany({
-                select : {
-                    id: true,
-                    name : true,
-                    slug : true
-                }
-            })
+  getAll: async (req, res) => {
+    try {
+      const type = await db.courseType.findMany({
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      });
 
-            return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Success fetch data catagory", type));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.error("Internal Server Error"));
+    }
+  },
+  getById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const type = await db.courseType.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
 
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
-        }
-    },
-    getById: async(req, res)=>{
-        try {
-            const {id} = req.params
-            const type = await db.couseType.findUnique({
-                where : {
-                    id : parseInt(id)
-                },
-                
-            })
+      if (!type) {
+        return res.status(404).json(utils.error("type not found"));
+      }
 
-            if(!type){
-                return res.status(404).json(utils.error("type not found"))
-            }
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Success fetch data catagory", type));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.error("Internal Server Error"));
+    }
+  },
+  create: async (req, res) => {
+    try {
+      const { name } = req.body;
 
-            return res.status(200).json(utils.apiSuccess("Success fetch data catagory", type))
+      const nameSlug = await utils.createSlug(name);
 
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
-        }
-    },
-    create: async (req, res) => {
-        try {
+      const data = await db.courseType.create({
+        data: {
+          name: name,
+          slug: nameSlug,
+        },
+      });
 
-            const {name} = req.body
+      return res.status(200).json(utils.apiSuccess("Berhasil buat type", data));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.error("Internal Server Error"));
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const { name } = req.body;
+      const nameSlug = await utils.createSlug(name);
+      const id = parseInt(req.params.id);
 
-            const nameSlug = await utils.createSlug(name)
+      const check = await db.courseType.findUnique({
+        where: {
+          id: id,
+        },
+      });
 
-            const data = await db.couseType.create({
-                data:{
-                    name : name,
-                    slug : nameSlug,
-                }
-            })
+      if (!check) return res.status(404).json(utils.error("type not found"));
 
-            
+      const type = await db.courseType.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: name,
+          slug: nameSlug,
+        },
+      });
 
-            return res.status(200).json(utils.apiSuccess("Berhasil buat type", data))
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Success update type", type));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.error("Internal Server Error"));
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
 
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
-        }
-    },
-    update: async (req, res) => {
-        try {
+      const check = await db.courseType.findUnique({
+        where: {
+          id: id,
+        },
+      });
 
-            const {name} = req.body
-            const nameSlug = await utils.createSlug(name)
-            const id = parseInt(req.params.id)
+      if (!check) return res.status(404).json(utils.error("type not found"));
 
-            const check = await db.couseType.findUnique({
-                where:{
-                    id: id
-                }
-            })
+      await db.courseType.delete({
+        where: {
+          id: id,
+        },
+      });
 
-            if(!check) return res.status(404).json(utils.error("type not found"))
-
-            const type = await db.couseType.update({
-                where:{
-                    id: id
-                },
-                data:{
-                    name : name,
-                    slug : nameSlug,
-                }
-            })
-
-            return res.status(200).json(utils.apiSuccess("Success update type", type))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
-        }
-    },
-    delete: async (req, res) => {
-        try {
-
-            const id = parseInt(req.params.id)
-
-            const check = await db.couseType.findUnique({
-                where:{
-                    id: id
-                }
-            })
-
-            if(!check) return res.status(404).json(utils.error("type not found"))
-
-            await db.couseType.delete({
-                where: {
-                    id: id
-                }
-            })
-
-            return res.status(200).json(utils.apiSuccess("Success delete type"))            
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.error("Internal Server Error"))
-        }
-    },
-
-  
-}
+      return res.status(200).json(utils.apiSuccess("Success delete type"));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.error("Internal Server Error"));
+    }
+  },
+};

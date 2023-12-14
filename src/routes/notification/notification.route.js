@@ -6,8 +6,8 @@ const express = require('express'),
     controller = require('../../controllers/notification'),
     router = express.Router()
 
-router.get('/', [verifyToken, checkRole('user')], controller.notification.getNotificationByUserId)
-router.put('/', [verifyToken, checkRole('user'), validate(schema.notification)], controller.notification.updateNotification)
-router.delete('/', [verifyToken, checkRole('user'), validate(schema.notification)], controller.notification.deleteNotification)
+router.get('/', verifyToken, checkRole('user'), controller.notification.getNotificationByUserId)
+router.put('/', verifyToken, checkRole('user'), validate(schema.notification), controller.notification.updateNotification)
+router.delete('/', verifyToken, checkRole('user'), validate(schema.notification), controller.notification.deleteNotification)
 
 module.exports = router

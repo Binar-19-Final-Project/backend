@@ -5,7 +5,8 @@ const course = require("./course.controller"),
   courseContent = require("./course.content.controller"),
   courseCategory = require("./course.category.controller"),
   courseType = require("./course.type.controller"),
-  courseLevel = require("./course.level.controller");
+  courseLevel = require("./course.level.controller"),
+  courseTestimonial = require('./course.testimonial')
 
 module.exports = {
   course,
@@ -15,5 +16,6 @@ module.exports = {
   courseContent,
   courseCategory,
   courseType,
-  courseLevel
+  courseLevel,
+  courseTestimonial
 };
