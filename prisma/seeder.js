@@ -71,7 +71,7 @@ async function seedData()  {
             country: faker.location.country(),
             photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
             verified: true,
-            roleId: 1, 
+            roleId: faker.number.int({ min: 1, max: 2 }), 
         }
     
         await db.user.create({ data: seedUsers })
