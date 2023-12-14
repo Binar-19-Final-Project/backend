@@ -1,5 +1,6 @@
 const db = require("../../../prisma/connection"),
-  utils = require("../../utils/utils");
+  utils = require("../../utils/utils"),
+  imageKit = require("../../utils/imageKit");
 
 module.exports = {
   getAll: async (req, res) => {
@@ -51,16 +52,44 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      const { name, urlPhoto, is_published } = req.body;
-
+      const { name, urlPhoto, isPublished } = req.body;
+      const photoCategory = req.file;
+      console.log("test", req.body);
+      const allowedMimes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/webp",
+      ];
+      if (!name) {
+        return res.status(400).json(utils.apiError("Nama Kosong1"));
+      }
+      const allowedSizeMb = 2;
       const nameSlug = await utils.createSlug(name);
-
+      if (typeof photoCategory === "undefined")
+        return res
+          .status(400)
+          .json(utils.apiError("Foto cover kategori tidak boleh kosong"));
+      if (!allowedMimes.includes(photoCategory.mimetype))
+        return res
+          .status(400)
+          .json(utils.apiError("cover kategori harus berupa gambar"));
+      if (photoCategory.size / (1024 * 1024) > allowedSizeMb)
+        return res
+          .status(400)
+          .json(utils.apiError("cover categori tidak boleh lebih dari 2mb"));
+      const stringFile = photoCategory.buffer.toString("base64");
+      const originalFileName = photoCategory.originalname;
+      const uploadFile = await imageKit.upload({
+        fileName: originalFileName,
+        file: stringFile,
+      });
       const data = await db.courseCategory.create({
         data: {
           name: name,
           slug: nameSlug,
-          is_published: is_published,
-          urlPhoto: urlPhoto,
+          isPublished: Boolean(isPublished),
+          urlPhoto: uploadFile.url,
         },
       });
 
@@ -76,10 +105,16 @@ module.exports = {
   },
   update: async (req, res) => {
     try {
-      const { name, urlPhoto, is_published } = req.body;
+      const { name, urlPhoto, isPublished } = req.body;
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
-
+      const photoCategory = req.file;
+      const allowedMimes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/webp",
+      ];
       const check = await db.courseCategory.findUnique({
         where: {
           id: id,
@@ -90,7 +125,25 @@ module.exports = {
         return res
           .status(404)
           .json(utils.apiError("Kategori Tidak di temukan"));
-
+      const allowedSizeMb = 2;
+      if (typeof photoCategory === "undefined")
+        return res
+          .status(400)
+          .json(utils.apiError("Foto cover kategori tidak boleh kosong"));
+      if (!allowedMimes.includes(photoCategory.mimetype))
+        return res
+          .status(400)
+          .json(utils.apiError("cover kategori harus berupa gambar"));
+      if (photoCategory.size / (1024 * 1024) > allowedSizeMb)
+        return res
+          .status(400)
+          .json(utils.apiError("cover categori tidak boleh lebih dari 2mb"));
+      const stringFile = photoCategory.buffer.toString("base64");
+      const originalFileName = photoCategory.originalname;
+      const uploadFile = await imageKit.upload({
+        fileName: originalFileName,
+        file: stringFile,
+      });
       const category = await db.courseCategory.update({
         where: {
           id: id,
@@ -98,8 +151,8 @@ module.exports = {
         data: {
           name: name,
           slug: nameSlug,
-          isPublished: is_published,
-          urlPhoto: urlPhoto,
+          isPublished: Boolean(isPublished),
+          urlPhoto: uploadFile.url,
         },
       });
 
