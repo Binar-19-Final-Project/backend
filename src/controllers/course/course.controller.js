@@ -1,5 +1,4 @@
 const db = require('../../../prisma/connection'),
-    courseUtils = require('../../utils/filter/course.filter.j'),
     utils = require('../../utils/utils'),
     filter = require('../../utils/filter'),
     imageKit = require('../../utils/imageKit')
@@ -74,6 +73,7 @@ module.exports = {
                 return {
                   id: course.id,
                   title: course.title,
+                  code: course.code,
                   slug: course.slug,
                   description: course.description,
                   originalPrice: originalPrice,
@@ -133,6 +133,8 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseTestimonial: true,
+                    userCourse: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -167,6 +169,13 @@ module.exports = {
                 totalPrice = originalPrice - discountAmount
             }
 
+            const ratings = course.courseTestimonial.map((testimonial) => testimonial.rating)
+            const totalRatings = ratings.length
+            const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
+            const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
+
+            const taken = course.userCourse.length
+
             const requirementsString = course.requirements
             const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
             const requirementsObjectsArray = requirementsArray.map((requirement, index) => {
@@ -179,12 +188,13 @@ module.exports = {
             const data = {
                 courseId: course.id,
                 title: course.title,
+                code: course.code,
                 slug: course.slug,
                 description: course.description,
                 originalPrice: originalPrice,
-                rating: course.rating,
+                rating: averageRatings,
                 duration: totalDurationModule,
-                taken: course.taken,
+                taken: taken,
                 imageUrl: course.imageUrl,
                 category: course.courseCategory.name,
                 type: course.courseType.name,
@@ -232,7 +242,7 @@ module.exports = {
 
     createCourse: async(req, res) => {
         try {
-            const { title, rating, taken, courseCategoryId, courseTypeId, courseLevelId, price, description, courseInstructorId, isPromo, coursePromoId, isPublished } = req.body
+            const { title, courseCategoryId, courseTypeId, courseLevelId, requirements, price, description, courseInstructorId, isPromo = false, isPublished } = req.body
 
             const checkTitle = await db.course.findFirst({
                 where:{
@@ -299,12 +309,25 @@ module.exports = {
                 file: stringFile
             })
 
+            const category = await db.courseCategory.findUnique({
+                where: {
+                    id: parseInt(courseCategoryId)
+                }
+            })
+
+            const categorySlug = category.slug // android-development
+            const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
+            const randomCode = await utils.generateCodeCategory()
+            const courseCode = `${cattegoryAbbrevation}-${randomCode}`
+
 
             const course = await db.course.create({
                 data: {
                     title: title,
                     slug: slug,
+                    code: courseCode,
                     description: description,
+                    requirements: requirements,
                     price: parseFloat(price),
                     courseInstructorId: parseInt(courseInstructorId),
                     courseCategoryId: parseInt(courseCategoryId),
@@ -314,8 +337,6 @@ module.exports = {
                     isPublished: Boolean(isPublished),
                     imageUrl: uploadFile.url,
                     imageFilename: originalFileName,
-                    rating: parseInt(rating),
-                    taken: parseInt(taken),
                 }
             })
 

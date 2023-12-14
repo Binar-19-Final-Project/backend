@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { premiumContent } = require('../../middlewares/premium.content'),
+    { courseContentMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     router = express.Router()
 
@@ -15,6 +15,6 @@ router.post('/', multer.single('courseImage'), validate(schema.course), verifyTo
 router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)
 router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModuleByIdAndCourseId)
 
-router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, premiumContent, controller.courseContent.getCourseContentByIdModuleAndCourse)
+router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, courseContentMiddleware, controller.courseContent.getCourseContentByIdModuleAndCourse)
 
 module.exports = router

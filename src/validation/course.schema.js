@@ -5,6 +5,17 @@ module.exports = {
     body("name")
         .notEmpty().withMessage("Nama tidak boleh kosong")],
 
+  course: [
+    body("title").notEmpty().withMessage("Judul kelas tidak boleh kosong"),
+    body("courseCategoryId").notEmpty().withMessage("Kategori kelas tidak boleh kosong"),
+    body("courseTypeId").notEmpty().withMessage("Tipe kelas tidak boleh kosong"),
+    body("courseLevelId").notEmpty().withMessage("Level kelas tidak boleh kosong"),
+    body("price").notEmpty().withMessage("Harga kelas tidak boleh kosong"),
+    body("courseInstructorId").notEmpty().withMessage("Instructor kelas tidak boleh kosong"),
+    body("description").notEmpty().withMessage("Deskripsi kelas tidak boleh kosong"),
+    body("isPublished").notEmpty().withMessage("Status publish tidak boleh kosong"),
+  ],
+
   promo: [
     body("name")
         .notEmpty().withMessage("Nama tidak boleh kosong")
