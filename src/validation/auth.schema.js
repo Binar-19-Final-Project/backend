@@ -103,8 +103,8 @@ module.exports = {
         .matches(/^[a-zA-Z\s'-]+$/).withMessage("Nama tidak boleh mengandung karakter spesial")
         .isString().withMessage("Nama harus berupa string"),
     body("phone")
-        .notEmpty().withMessage("Nomor telepon tidak boleh kosong").isInt().withMessage("Nomor telepon tidak valid")
-        .isInt().withMessage("Nomor telepon harus berupa angka"),
+        .notEmpty().withMessage("Nomor telepon tidak boleh kosong")
+        .isInt().withMessage("Nomor telepon tidak valid"),
     body("country")
         .optional({values: null}),
     body("city")

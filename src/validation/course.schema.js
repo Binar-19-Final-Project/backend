@@ -1,76 +1,57 @@
 const { body } = require("express-validator");
 
 module.exports = {
-  instructor: [body("name").notEmpty().withMessage("name is required")],
+  instructor: [
+    body("name")
+        .notEmpty().withMessage("Nama tidak boleh kosong")],
 
   promo: [
-    body("name").notEmpty().withMessage("Nama wajib diisi"),
-    body("name").isString().withMessage("Nama harus berupa karakter"),
-    body("discount").notEmpty().withMessage("Diskon wajib diisi"),
-    body("discount").isInt().withMessage("Diskon harus berupa angka"),
+    body("name")
+        .notEmpty().withMessage("Nama tidak boleh kosong")
+        .isString().withMessage("Nama harus berupa string"),
     body("discount")
-      .isInt({ min: 1, max: 99 })
-      .withMessage("Diskon harus lebih dari 0 dan kurang dari 100"),
-    body("expiredAt").notEmpty().withMessage("Tanggal kadaluarsa wajib diisi"),
+        .notEmpty().withMessage("Diskon tidak boleh kosong")
+        .isInt({ min: 1, max: 99 }).withMessage("Diskon harus berupa angka, lebih dari 0 dan kurang dari 100"),
     body("expiredAt")
-      .isISO8601()
-      .withMessage("Tanggal kadaluarsa harus berupa tanggal dan waktu"),
-    body("expiredAt")
-      .isAfter(new Date().toDateString())
-      .withMessage(
-        "Tanggal kadaluarsa harus melewati tanggal dan waktu sekarang"
-      ),
+        .notEmpty().withMessage("Tanggal kadaluarsa tidak boleh kosong")
+        .isISO8601().withMessage("Tanggal kadaluarsa harus berupa tanggal dan waktu dengan format ISO 8601")
+        .isAfter(new Date().toDateString()).withMessage("Tanggal kadaluarsa harus melewati tanggal dan waktu sekarang"),
   ],
 
   module: [
-    body("title").notEmpty().withMessage("Judul wajib diisi"),
-    body("title").isString().withMessage("Judul harus berupa karakter"),
-    body("courseId").notEmpty().withMessage("Course id wajib diisi"),
-    body("courseId").isInt().withMessage("Course id harus berupa angka"),
+    body("title")
+        .notEmpty().withMessage("Judul tidak boleh kosong")
+        .isString().withMessage("Judul harus berupa string"),
     body("courseId")
-      .isInt({ min: 1 })
-      .withMessage("Course id tidak boleh kurang dari 1"),
+        .notEmpty().withMessage("Course id tidak boleh kosong")
+        .isInt({ min: 1 }).withMessage("Course id harus berupa angka dan tidak boleh kurang dari 1"),
   ],
 
   content: [
     body("title")
-      .notEmpty()
-      .withMessage("Judul wajib diisi")
-      .isString()
-      .withMessage("Judul harus berupa karakter"),
+        .notEmpty().withMessage("Judul tidak boleh kosong")
+        .isString().withMessage("Judul harus berupa string"),
     body("sequence")
-      .isInt()
-      .optional({ values: null })
-      .withMessage("Urutan harus berupa angka")
-      .isInt({ min: 1 })
-      .optional({ values: null })
-      .withMessage("Urutan minimal 1"),
+        .notEmpty().withMessage("Urutan tidak boleh kosong")
+        .isInt({ min: 1 }).withMessage("Urutan harus berupa angka dan minimal 1"),
     body("videoUrl")
-      .notEmpty()
-      .withMessage("Link video wajib diisi")
-      .isURL()
-      .withMessage("Link video harus berupa link valid"),
+        .notEmpty().withMessage("Link video tidak boleh kosong")
+        .isURL().withMessage("Link video harus berupa link URL yang valid"),
     body("duration")
-      .notEmpty()
-      .withMessage("Durasi wajib diisi")
-      .isInt()
-      .withMessage("Durasi harus berupa menit")
-      .isInt({ min: 1 })
-      .withMessage("Durasi minimal 1 menit"),
+        .notEmpty().withMessage("Durasi tidak boleh kosong")
+        .isInt({ min: 1 }).withMessage("Durasi harus berupa angka dan minimal 1 menit"),
     body("isFree")
-      .notEmpty()
-      .withMessage("Type konten wajib diisi")
-      .isBoolean()
-      .withMessage("Type konten harus berupa boolean"),
+        .notEmpty().withMessage("Tipe konten tidak boleh kosong")
+        .isBoolean().withMessage("Tipe konten harus berupa boolean"),
     body("moduleId")
-      .notEmpty()
-      .withMessage("Module id wajib diisi")
-      .isInt()
-      .withMessage("Module id harus berupa angka"),
+        .notEmpty().withMessage("Module id tidak boleh kosong")
+        .isInt().withMessage("Module id harus berupa angka"),
   ],
 
   category: [
-    body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
-    body("urlPhoto").notEmpty().withMessage("Foto wajib diisi"),
+    body("name")
+        .notEmpty().withMessage("Nama Kategori tidak boleh kosong"),
+    body("urlPhoto")
+        .notEmpty().withMessage("Foto tidak boleh kosong"),
   ],
 };
