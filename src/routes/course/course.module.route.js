@@ -6,8 +6,8 @@ const express = require('express'),
     checkRole = require('../../middlewares/check.role'),
     router = express.Router()
 
-router.post('/', [validate(schema.module), verifyToken, checkRole('admin')], controller.courseModule.createCourseModule)
-router.put('/:id', [validate(schema.module), verifyToken, checkRole('admin')], controller.courseModule.updateCourseModule)
-router.delete('/:id', [verifyToken, checkRole('admin')], controller.courseModule.deleteCourseModule)
+router.post('/', verifyToken, checkRole('admin'), validate(schema.module), controller.courseModule.createCourseModule)
+router.put('/:id', verifyToken, checkRole('admin'), validate(schema.module), controller.courseModule.updateCourseModule)
+router.delete('/:id', verifyToken, checkRole('admin'), controller.courseModule.deleteCourseModule)
     
 module.exports = router
