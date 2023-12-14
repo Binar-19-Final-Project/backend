@@ -26,7 +26,6 @@ async function seedData()  {
     await db.$transaction([db.course.deleteMany()])
     await db.$transaction([db.courseModule.deleteMany()])
     await db.$transaction([db.courseContent.deleteMany()])
-    await db.$transaction([db.courseRequirement.deleteMany()])
     await db.$transaction([db.courseTestimonial.deleteMany()])
     await db.$transaction([db.userCourse.deleteMany()])
     await db.$transaction([db.order.deleteMany()])
@@ -42,7 +41,6 @@ async function seedData()  {
     await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_requirements AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
@@ -183,10 +181,10 @@ async function seedData()  {
       const seedCourse = {
         title: title,
         slug: slug,
+        code: "Code-Course",
         description: faker.commerce.productDescription(),
         price: faker.number.int({ min: 100000, max: 1000000 }),
-        rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
-        taken: faker.number.int({ min: 10, max: 100 }),
+        requirements: "Mengetahui basic javascript, Mengetahui basic NodeJs",
         imageUrl: "https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg",
         courseInstructorId: faker.number.int({ min: 1, max: 5 }),
         courseTypeId: faker.number.int({ min: 1, max: 2 }),
@@ -200,17 +198,6 @@ async function seedData()  {
       }
   
       await db.course.create({ data: seedCourse })
-    }
-
-    /* Course Requirement Seeder */
-    for (let i = 0; i < 80; i++) {
-
-      const seedCourseRequirements = {
-          requirements: faker.lorem.text(),
-          courseId: faker.number.int({ min: 1, max: 30 })
-      }
-  
-      await db.courseRequirement.create({ data: seedCourseRequirements })
     }
 
     /* Course Module Seeder */

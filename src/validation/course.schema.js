@@ -68,4 +68,9 @@ module.exports = {
       .isInt()
       .withMessage("Module id harus berupa angka"),
   ],
+
+  category: [
+    body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
+    body("urlPhoto").notEmpty().withMessage("Foto wajib diisi"),
+  ],
 };
