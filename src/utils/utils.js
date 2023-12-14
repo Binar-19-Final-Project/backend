@@ -78,4 +78,12 @@ module.exports = {
         const date = new Date(dateString)
         return date.toLocaleDateString('id-ID', options)
     },
+
+    generateCodeCategory: async () => {
+        try {
+            return `${Math.floor(1000 + Math.random() * 9000)}`
+        } catch (error) {
+            console.log(error)
+        }
+    },
 }
