@@ -30,7 +30,8 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
-                    courseRequirement: true,
+                    courseTestimonial: true,
+                    userCourse: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -49,6 +50,13 @@ module.exports = {
                 const promoName = course.coursePromo ? course.coursePromo.name : null
                 const discount = course.coursePromo ? course.coursePromo.discount : null
                 const totalModule = course.courseModule.length
+
+                const ratings = course.courseTestimonial.map((testimonial) => testimonial.rating)
+                const totalRatings = ratings.length
+                const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
+                const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
+
+                const taken = course.userCourse.length
 
                 totalDurationModule = 0
                 course.courseModule.map((module) => {
@@ -69,9 +77,9 @@ module.exports = {
                   slug: course.slug,
                   description: course.description,
                   originalPrice: originalPrice,
-                  rating: course.rating,
+                  rating: averageRatings,
                   duration: totalDurationModule,
-                  taken: course.taken,
+                  taken: taken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -125,7 +133,6 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
-                    courseRequirement: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -159,6 +166,15 @@ module.exports = {
                 const discountAmount = (originalPrice * discount) / 100
                 totalPrice = originalPrice - discountAmount
             }
+
+            const requirementsString = course.requirements
+            const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
+            const requirementsObjectsArray = requirementsArray.map((requirement, index) => {
+                return {
+                    id: parseInt(`${index + 1}`),
+                    requirement: requirement
+                };
+            })
             
             const data = {
                 courseId: course.id,
@@ -181,10 +197,7 @@ module.exports = {
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
-                requirements: course.courseRequirement.map((requirement) => ({
-                    requirementId: requirement.id,
-                    requirements: requirement.requirements
-                })),
+                requirements: requirementsObjectsArray,
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
                         return total + content.duration
