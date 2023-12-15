@@ -4,6 +4,46 @@ const db = require('../../../prisma/connection'),
 
 module.exports = {
 
+    getOrders: async (req, res) => {
+        try {
+
+            let { page = 1, limit = 10 } = req.query
+
+            /* Pagination */
+            let skip = ( page - 1 ) * limit
+
+
+            const data = await db.order.findMany({
+                take: parseInt(limit),
+                skip: skip,
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+
+            /* Total Data & Total Page after Pagination */
+            const resultCount = await db.order.count() 
+            const totalPage = Math.ceil(resultCount / limit)
+
+            if (resultCount === 0) {
+                return res.status(404).json(utils.apiError("Tidak ada data course"))
+            }
+
+            return res.status(200).json(utils.apiSuccess(
+                "Berhasil mengambil data riwayat semua order",
+                data, 
+                {   
+                    currentPage: parseInt(page),
+                    totalPage: totalPage,
+                    totalData: resultCount
+                }
+            ))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
+        }
+    },
+
     getOrderHistoryById: async (req, res) => {
         try {
             const id  = res.user.id
