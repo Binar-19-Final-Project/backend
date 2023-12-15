@@ -1,7 +1,7 @@
 const db = require('../../prisma/connection'),
     utils = require('../utils/utils')
 
-const courseTestiMiddleware = async (req, res, next) => {
+const courseTestimonialMiddleware = async (req, res, next) => {
     const userCourse = await db.userCourse.findFirst({
         where: {
             userId: res.user.id,
@@ -65,4 +65,4 @@ const courseContentMiddleware = async (req, res, next) => {
 }
 
 
-module.exports = { courseTestiMiddleware, courseContentMiddleware }
+module.exports = { courseTestimonialMiddleware, courseContentMiddleware }

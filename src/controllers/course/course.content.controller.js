@@ -20,6 +20,7 @@ module.exports = {
                 },
                 include: {
                     courseModule: true,
+                    userLearningProgress: true,
                     courseModule: {
                         include: {
                             course: true
@@ -41,7 +42,10 @@ module.exports = {
                 duration: courseContent.duration,
                 isFree: courseContent.isFree,
                 moduleId: courseContent.moduleId,
-                courseId: courseContent.courseModule.courseId
+                courseId: courseContent.courseModule.courseId,
+                userCourses: courseContent.userLearningProgress.map((userCourseId) => ({
+                    userCourseId: userCourseId.userCourseId
+                }))
             }
 
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data))

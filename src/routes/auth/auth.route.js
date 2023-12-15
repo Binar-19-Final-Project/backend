@@ -14,4 +14,8 @@ router.post('/reset-password',  validate(schema.resetPassword), controller.auth.
 router.post('/resend-otp',  validate(schema.resendOtp), controller.auth.resendOtp)
 router.post('/change-password', [verifyToken, validate(schema.changePassword), checkRole('user')], controller.auth.changePassword)
 
+/* Google Auth */
+router.get("/google", controller.auth.googleLogin);
+router.get("/google/callback", controller.auth.googleCallbackLogin);
+
 module.exports = router

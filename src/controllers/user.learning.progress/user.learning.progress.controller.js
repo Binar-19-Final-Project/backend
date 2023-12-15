@@ -13,7 +13,8 @@ module.exports = {
                 where:{
                     id: userCourseId,
                     userId: res.user.id
-                }
+                },
+               
             })
 
             if(!checkUserCourse) return res.status(404).json(utils.apiError("User course tidak ditemukkan"))
