@@ -144,7 +144,7 @@ module.exports = {
 
             let bcryptResetToken = await utils.createHashData(email)
 
-            let resetToken = bcryptResetToken.replace(/\/./g, "a")
+            let resetToken = bcryptResetToken.replace(/[\/\\.]/g, "a")
 
             await db.user.update({
                 data:{
