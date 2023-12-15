@@ -30,7 +30,7 @@ module.exports = {
         );
     },
 
-    createJwt: (payload) => {
+    createJwt: async (payload) => {
         try {
             return jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: "20h"})
         } catch (error) {

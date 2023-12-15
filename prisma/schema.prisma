@@ -24,8 +24,8 @@ model User {
   uuid              String               @default(uuid())
   name              String
   email             String               @unique
-  phone             BigInt
-  password          String
+  phone             BigInt?
+  password          String?
   city              String?
   country           String?
   photoProfile      String?              @map("photo_prfile")

@@ -7,8 +7,8 @@ const express = require("express"),
 router.get("/", controller.courseType.getAll);
 router.get("/:id", controller.courseType.getById);
 
-router.post("/", controller.courseType.create);
-router.put("/:id", controller.courseType.update);
-router.delete("/:id", controller.courseType.delete);
+router.post("/", checkRole('admin'), verifyToken, controller.courseType.create);
+router.put("/:id", checkRole('admin'), verifyToken, controller.courseType.update);
+router.delete("/:id", checkRole('admin'), verifyToken, controller.courseType.delete);
 
 module.exports = router;

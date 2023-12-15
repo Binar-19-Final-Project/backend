@@ -340,7 +340,7 @@ module.exports = {
                 }
             })
 
-            return res.status(201).json(utils.apiSuccess('Sukses', course))
+            return res.status(201).json(utils.apiSuccess('Sukses membuat kelas', course))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
