@@ -55,7 +55,7 @@ module.exports = {
                 const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
                 const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
 
-                const taken = course.userCourse.length
+                /* const taken = course.userCourse.length */
 
                 totalDurationModule = 0
                 course.courseModule.map((module) => {
@@ -79,7 +79,7 @@ module.exports = {
                   originalPrice: originalPrice,
                   rating: averageRatings,
                   duration: totalDurationModule,
-                  taken: taken,
+                  taken: course.taken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -174,7 +174,7 @@ module.exports = {
             const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
             const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
 
-            const taken = course.userCourse.length
+            /* const taken = course.userCourse.length */
 
             const requirementsString = course.requirements
             const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
@@ -194,7 +194,7 @@ module.exports = {
                 originalPrice: originalPrice,
                 rating: averageRatings,
                 duration: totalDurationModule,
-                taken: taken,
+                taken: course.taken,
                 imageUrl: course.imageUrl,
                 category: course.courseCategory.name,
                 type: course.courseType.name,
