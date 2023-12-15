@@ -3,7 +3,26 @@ const db = require('../../../prisma/connection'),
     notification = require('../../utils/notification'),
     otpUtils = require('../../utils/otp'),
     resetUtils = require('../../utils/reset-password'),
-    imageKit = require('../../utils/imageKit')
+    imageKit = require('../../utils/imageKit'),
+    { google } = require("googleapis"),
+    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require('../../config')
+
+const oauth2Client = new google.auth.OAuth2(
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    "http://localhost:5000/api/v1/auth/google/callback"
+)
+
+const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+]
+
+const authorizationUrl = oauth2Client.generateAuthUrl({
+  access_type: "offline",
+  scope: scopes,
+  include_granted_scopes: true,
+})
 
 module.exports = {
     register: async (req, res) => {
@@ -81,7 +100,7 @@ module.exports = {
             }
 
             const payload = { id: user.id }
-            const token = utils.createJwt(payload)
+            const token = await utils.createJwt(payload)
 
             const data = {
                 token: token
@@ -93,6 +112,57 @@ module.exports = {
             return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
         }
     },
+
+    googleLogin: (req, res) => {
+        res.redirect(authorizationUrl)
+    },
+
+    googleCallbackLogin: async (req, res) => {
+        const { code } = req.query
+        const { tokens } = await oauth2Client.getToken(code)
+
+        oauth2Client.setCredentials(tokens)
+
+        const oauth2 = google.oauth2({
+            auth: oauth2Client,
+            version: "v2",
+        })
+
+        const { data } = await oauth2.userinfo.get()
+
+        if (!data.email || !data.name)
+            return res.json({
+                data: data,
+        })
+
+        let user = await db.user.findUnique({
+            where: {
+                email: data.email,
+            },
+        })
+
+        if (!user) {
+            user = await db.user.create({
+                data: {
+                    name: data.name,
+                    email: data.email,
+                    verified: true,
+                    photoProfile: data.picture
+                },
+            })
+        }
+ 
+        const payload = { id: user.id }
+        const token = await utils.createJwt(payload)
+        const responseData = {
+            token: token
+        }
+
+        // return res.redirect(`http://localhost:3000/auth-success?token=${token}`)
+
+        return res.status(200).json(utils.apiSuccess("Login berhasil", responseData))
+    },
+
 
     verifyUser: async (req, res) => {
         try {
@@ -144,7 +214,7 @@ module.exports = {
 
             let bcryptResetToken = await utils.createHashData(email)
 
-            let resetToken = bcryptResetToken.replace(/\/./g, "a")
+            let resetToken = bcryptResetToken.replace(/[\/\\.]/g, "a")
 
             await db.user.update({
                 data:{
@@ -215,7 +285,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -240,7 +310,7 @@ module.exports = {
     
             return res.status(200).json(utils.apiSuccess("Data user berhasil diambil", data))
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -282,7 +352,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -311,7 +381,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Profile berhasil diperbarui"))
             
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -359,7 +429,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Foto profile berhasil diperbarui"))
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     }
