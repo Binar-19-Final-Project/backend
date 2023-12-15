@@ -43,7 +43,7 @@ module.exports = {
         .notEmpty().withMessage("Judul tidak boleh kosong")
         .isString().withMessage("Judul harus berupa string"),
     body("sequence")
-        .notEmpty().withMessage("Urutan tidak boleh kosong")
+        .optional({values: null})
         .isInt({ min: 1 }).withMessage("Urutan harus berupa angka dan minimal 1"),
     body("videoUrl")
         .notEmpty().withMessage("Link video tidak boleh kosong")
@@ -51,7 +51,7 @@ module.exports = {
     body("duration")
         .notEmpty().withMessage("Durasi tidak boleh kosong")
         .isInt({ min: 1 }).withMessage("Durasi harus berupa angka dan minimal 1 menit"),
-    body("isFree")
+    body("isDemo")
         .notEmpty().withMessage("Tipe konten tidak boleh kosong")
         .isBoolean().withMessage("Tipe konten harus berupa boolean"),
     body("moduleId")

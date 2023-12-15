@@ -7,6 +7,7 @@ const express = require('express'),
     router = express.Router()
 
 router.get('/', verifyToken, controller.order.getOrderHistoryById)
+router.get('/all', controller.order.getOrders)
 router.post('/:courseId', verifyToken, checkRole('user'), controller.order.createOrder)
 
 module.exports = router
