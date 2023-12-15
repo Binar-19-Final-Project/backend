@@ -191,6 +191,7 @@ async function seedData()  {
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
         courseLevelId: faker.number.int({ min: 1, max: 3 }),
         isPromo: faker.datatype.boolean(0.2),
+        taken: faker.number.int({ min: 50, max: 100 })
       }
       
       if (seedCourse.isPromo) {

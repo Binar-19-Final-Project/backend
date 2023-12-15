@@ -138,6 +138,7 @@ model Course {
   description        String               @db.Text
   price              Float
   requirements       String               @db.Text
+  taken              Int?
   imageUrl           String               @map("image_url")
   imageFilename      String?              @map("image_filename")
   courseInstructorId Int                  @map("course_instructor_id")
