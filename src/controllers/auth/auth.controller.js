@@ -225,7 +225,7 @@ module.exports = {
                 }
             })
 
-            const resetPasswordSent = await resetUtils.send(email, bcryptResetToken)
+            const resetPasswordSent = await resetUtils.send(email, resetToken)
 
             if(!resetPasswordSent) return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
 
