@@ -99,6 +99,41 @@ module.exports = {
                 }
             }
 
+            if(user.roleId === 1) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+
+            const payload = { id: user.id }
+            const token = await utils.createJwt(payload)
+
+            const data = {
+                token: token
+            }
+
+            return res.status(200).json(utils.apiSuccess("Login berhasil", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+        }
+    },
+
+    loginAdmin: async (req, res) => {
+        try {
+
+            const { email, password } = req.body
+
+            const user = await db.user.findUnique({
+                where: {
+                  email: email,
+                },
+              })
+
+            if (!user) return res.status(400).json(utils.apiError("Email tidak terdaftar"))
+
+            const verifyPassword = await utils.verifyHashData(password, user.password)
+
+            if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
+
+            if(user.roleId === 2) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
 
