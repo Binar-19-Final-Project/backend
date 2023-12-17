@@ -17,4 +17,6 @@ router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModu
 
 router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, courseContentMiddleware, controller.courseContent.getCourseContentByIdModuleAndCourse)
 
+router.put('/:courseId', verifyToken, checkRole('admin'), multer.single('courseImage'), validate(schema.course), controller.course.updateCourse)
+
 module.exports = router
