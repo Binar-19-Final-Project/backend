@@ -3,7 +3,7 @@ const db = require('../../../prisma/connection'),
     notification = require('../../utils/notification'),
     otpUtils = require('../../utils/otp'),
     resetUtils = require('../../utils/reset-password'),
-    imageKit = require('../../utils/imageKit'),
+    imageKitFile = require('../../utils/imageKitFile'),
     { google } = require("googleapis"),
     { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require('../../config')
 
@@ -99,7 +99,13 @@ module.exports = {
                 }
             }
 
-            if(user.roleId === 1) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'user') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
@@ -132,7 +138,13 @@ module.exports = {
 
             if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
 
-            if(user.roleId === 2) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'admin') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
@@ -425,27 +437,35 @@ module.exports = {
         try {
 
             const photoProfile = req.file
+
+            const allowedSizeMb = 2
             const allowedMimes = [
                 'image/png',
                 'image/jpeg',
                 'image/jpg',
                 'image/webp'
             ]
-            const allowedSizeMb = 2
 
-            if(typeof photoProfile === 'undefined') return res.status(400).json(utils.apiError("Foto profile tidak boleh kosong"))
+            if(typeof photoProfile === 'undefined') return res.status(400).json(utils.apiError("Gambar tidak boleh kosong"))
 
-            if(!allowedMimes.includes(photoProfile.mimetype)) return res.status(400).json(utils.apiError("Foto profile harus berupa gambar"))
+            if(!allowedMimes.includes(photoProfile.mimetype)) return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"))
 
-            if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Foto profile tidak boleh lebih dari 2mb"))
+            if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Gambar tidak boleh lebih dari 2mb"))
 
-            const stringFile = photoProfile.buffer.toString('base64')
-            const originalFileName = photoProfile.originalname
-
-            const uploadFile = await imageKit.upload({
-                fileName: originalFileName,
-                file: stringFile
+            const user = await db.user.findUnique({
+                where: {
+                    id: res.user.id
+                }
             })
+
+            if(user.imageFilename != null) {
+                const deleteFile = await imageKitFile.delete(user.imageFilename)
+                if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+            }
+
+            const uploadFile = await imageKitFile.upload(photoProfile)
+
+            if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
 
             await db.user.update({
                 where: {
@@ -453,7 +473,7 @@ module.exports = {
                 },
                 data: {
                     photoProfile: uploadFile.url,
-                    imageFilename: originalFileName
+                    imageFilename: uploadFile.name
                 }
             })
 

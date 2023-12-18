@@ -9,7 +9,28 @@ const courseTestimonialMiddleware = async (req, res, next) => {
         }
     })
 
-    if(userCourse) return next()
+    const status = userCourse.status === 'Selesai'
+
+    if(status) {
+        return next()
+    } else {
+        return res.status(403).json(utils.apiError("Anda belum menyelesaikan course ini"))
+    }
+}
+
+const courseCertificate = async (req, res, next) => {
+    const userTestimonial = await db.courseTestimonial.findFirst({
+        where: {
+            userId: res.user.id,
+            courseId: parseInt(courseId)
+        }
+    })
+
+    if(userTestimonial) {
+        return next()
+    } else {
+        return res.status(403).json(utils.apiError("Mohon berikan rating dan testimoni course ini terlebih dahulu"))
+    }
 }
 
 const courseContentMiddleware = async (req, res, next) => {
