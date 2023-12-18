@@ -4,13 +4,7 @@ const db = require("../../../prisma/connection"),
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const type = await db.courseType.findMany({
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-      });
+      const type = await db.courseType.findMany();
 
       return res
         .status(200)
@@ -30,12 +24,12 @@ module.exports = {
       });
 
       if (!type) {
-        return res.status(404).json(utils.error("type not found"));
+        return res.status(404).json(utils.apiError("type not found"));
       }
 
       return res
         .status(200)
-        .json(utils.apiSuccess("Success fetch data catagory", type));
+        .json(utils.apiSuccess("Success fetch data type", type));
     } catch (error) {
       console.log(error);
       return res.status(500).json(utils.error("Internal Server Error"));
@@ -57,7 +51,7 @@ module.exports = {
       return res.status(200).json(utils.apiSuccess("Berhasil buat type", data));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Internal Server Error"));
+      return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
   update: async (req, res) => {
@@ -72,7 +66,7 @@ module.exports = {
         },
       });
 
-      if (!check) return res.status(404).json(utils.error("type not found"));
+      if (!check) return res.status(404).json(utils.apiError("type not found"));
 
       const type = await db.courseType.update({
         where: {
@@ -89,7 +83,7 @@ module.exports = {
         .json(utils.apiSuccess("Success update type", type));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Internal Server Error"));
+      return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
   delete: async (req, res) => {
@@ -113,7 +107,7 @@ module.exports = {
       return res.status(200).json(utils.apiSuccess("Success delete type"));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Internal Server Error"));
+      return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
 };
