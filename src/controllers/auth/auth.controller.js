@@ -5,12 +5,12 @@ const db = require('../../../prisma/connection'),
     resetUtils = require('../../utils/reset-password'),
     imageKitFile = require('../../utils/imageKitFile'),
     { google } = require("googleapis"),
-    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require('../../config')
+    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } = require('../../config')
 
 const oauth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
-    "http://localhost:5000/api/v1/auth/google/callback"
+    GOOGLE_REDIRECT_URL
 )
 
 const scopes = [
