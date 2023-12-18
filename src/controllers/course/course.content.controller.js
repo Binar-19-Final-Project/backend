@@ -32,17 +32,6 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
-            const learningProgress = await db.userLearningProgress.findFirst({
-                where: {
-                    contentId: parseInt(contentId),
-                    userCourse: {
-                        userId: res.user.id
-                    }
-                }
-            })
-
-            const userCourseId = learningProgress.userCourseId
-
             const data = {
                 contentId: courseContent.id,
                 title: courseContent.title,
