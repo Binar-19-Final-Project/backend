@@ -36,6 +36,9 @@ module.exports = {
       if (!level) {
         return res.status(404).json(utils.error("level not found"));
       }
+      return res
+      .status(200)
+      .json(utils.apiSuccess("Berhasil Memampilkan data Level", level));
     } catch (error) {
       console.log(error);
       return res.status(500).json(utils.error("Kesalahan Pada Server"));
