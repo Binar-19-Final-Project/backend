@@ -20,7 +20,6 @@ module.exports = {
                 },
                 include: {
                     courseModule: true,
-                    userLearningProgress: true,
                     courseModule: {
                         include: {
                             course: true
@@ -33,6 +32,17 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
+            const learningProgress = await db.userLearningProgress.findFirst({
+                where: {
+                    contentId: parseInt(contentId),
+                    userCourse: {
+                        userId: res.user.id
+                    }
+                }
+            })
+
+            const userCourseId = learningProgress.userCourseId
+
             const data = {
                 contentId: courseContent.id,
                 title: courseContent.title,
@@ -43,9 +53,7 @@ module.exports = {
                 isDemo: courseContent.isDemo,
                 moduleId: courseContent.moduleId,
                 courseId: courseContent.courseModule.courseId,
-                userCourses: courseContent.userLearningProgress.map((userCourseId) => ({
-                    userCourseId: userCourseId.userCourseId
-                }))
+                userCourseId: userCourseId
             }
 
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data))
