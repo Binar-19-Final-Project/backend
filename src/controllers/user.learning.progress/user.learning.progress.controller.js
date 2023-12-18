@@ -47,6 +47,8 @@ module.exports = {
                 }
             })
 
+            if(!userCourse) return res.status(404).json(utils.apiError("user course id tidak ditemukan"))
+
             const userLearningProgress = await db.userLearningProgress.findFirst({
                 where:{
                     contentId: contentId,

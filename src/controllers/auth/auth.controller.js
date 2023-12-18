@@ -99,7 +99,13 @@ module.exports = {
                 }
             }
 
-            if(user.roleId === 1) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'user') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
@@ -132,7 +138,13 @@ module.exports = {
 
             if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
 
-            if(user.roleId === 2) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'admin') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
