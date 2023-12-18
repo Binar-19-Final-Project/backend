@@ -1,8 +1,7 @@
 const db = require('../../../prisma/connection'),
-    courseUtils = require('../../utils/filter/course.filter.j'),
     utils = require('../../utils/utils'),
     filter = require('../../utils/filter'),
-    imageKit = require('../../utils/imageKit')
+    imageKitFile = require('../../utils/imageKitFile')
 
 module.exports = {
     getCourses: async(req, res) => {
@@ -56,7 +55,7 @@ module.exports = {
                 const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
                 const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
 
-                const taken = course.userCourse.length
+                /* const taken = course.userCourse.length */
 
                 totalDurationModule = 0
                 course.courseModule.map((module) => {
@@ -74,12 +73,13 @@ module.exports = {
                 return {
                   id: course.id,
                   title: course.title,
+                  code: course.code,
                   slug: course.slug,
                   description: course.description,
                   originalPrice: originalPrice,
                   rating: averageRatings,
                   duration: totalDurationModule,
-                  taken: taken,
+                  taken: course.taken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -133,6 +133,8 @@ module.exports = {
                     courseType: true,
                     coursePromo: true,
                     courseInstructor: true,
+                    courseTestimonial: true,
+                    userCourse: true,
                     courseModule: {
                         include: {
                             courseContent: {
@@ -167,6 +169,13 @@ module.exports = {
                 totalPrice = originalPrice - discountAmount
             }
 
+            const ratings = course.courseTestimonial.map((testimonial) => testimonial.rating)
+            const totalRatings = ratings.length
+            const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
+            const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
+
+            /* const taken = course.userCourse.length */
+
             const requirementsString = course.requirements
             const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
             const requirementsObjectsArray = requirementsArray.map((requirement, index) => {
@@ -179,10 +188,11 @@ module.exports = {
             const data = {
                 courseId: course.id,
                 title: course.title,
+                code: course.code,
                 slug: course.slug,
                 description: course.description,
                 originalPrice: originalPrice,
-                rating: course.rating,
+                rating: averageRatings,
                 duration: totalDurationModule,
                 taken: course.taken,
                 imageUrl: course.imageUrl,
@@ -232,7 +242,7 @@ module.exports = {
 
     createCourse: async(req, res) => {
         try {
-            const { title, rating, taken, courseCategoryId, courseTypeId, courseLevelId, price, description, courseInstructorId, isPromo, coursePromoId, isPublished } = req.body
+            const { title, courseCategoryId, courseTypeId, courseLevelId, requirements, price, description, courseInstructorId, isPromo = false, isPublished } = req.body
 
             const checkTitle = await db.course.findFirst({
                 where:{
@@ -291,20 +301,36 @@ module.exports = {
 
             if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
 
-            const stringFile = courseImage.buffer.toString('base64')
-            const originalFileName = courseImage.originalname
+            // const stringFile = courseImage.buffer.toString('base64')
+            // const originalFileName = courseImage.originalname
 
-            const uploadFile = await imageKit.upload({
-                fileName: originalFileName,
-                file: stringFile
+            // const uploadFile = await imageKit.upload({
+            //     fileName: originalFileName,
+            //     file: stringFile
+            // })
+
+            const uploadFile = await imageKitFile.upload(courseImage)
+
+            if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+
+            const category = await db.courseCategory.findUnique({
+                where: {
+                    id: parseInt(courseCategoryId)
+                }
             })
 
+            const categorySlug = category.slug // android-development
+            const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
+            const randomCode = await utils.generateCodeCategory()
+            const courseCode = `${cattegoryAbbrevation}-${randomCode}`
 
             const course = await db.course.create({
                 data: {
                     title: title,
                     slug: slug,
+                    code: courseCode,
                     description: description,
+                    requirements: requirements,
                     price: parseFloat(price),
                     courseInstructorId: parseInt(courseInstructorId),
                     courseCategoryId: parseInt(courseCategoryId),
@@ -313,13 +339,138 @@ module.exports = {
                     isPromo: Boolean(isPromo),
                     isPublished: Boolean(isPublished),
                     imageUrl: uploadFile.url,
-                    imageFilename: originalFileName,
-                    rating: parseInt(rating),
-                    taken: parseInt(taken),
+                    imageFilename: uploadFile.name,
                 }
             })
 
-            return res.status(201).json(utils.apiSuccess('Sukses', course))
+            return res.status(201).json(utils.apiSuccess('Sukses membuat kelas', course))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    updateCourse: async(req, res) => {
+        try {
+
+            const { title, courseCategoryId, courseTypeId, courseLevelId, requirements, price, description, courseInstructorId, isPromo, isPublished } = req.body
+
+            const courseId = parseInt(req.params.courseId)
+
+            const checkCourse = await db.course.findUnique({
+                where: {
+                    id: courseId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+            
+            const checkTitle = await db.course.findFirst({
+                where:{
+                    title: title,
+                    NOT: {
+                        id: courseId
+                    }
+                }
+            })
+
+            if(checkTitle) return res.status(409).json(utils.apiError("Judul course sudah terdaftar"))
+
+            const checkCategory = await db.courseCategory.findUnique({
+                where:{
+                    id: parseInt(courseCategoryId),
+                }
+            })
+
+            if(!checkCategory) return res.status(404).json(utils.apiError("Kategori course tidak ditemukan"))
+
+            const checkType = await db.courseType.findFirst({
+                where:{
+                    id: parseInt(courseTypeId),
+                }
+            })
+
+            if(!checkType) return res.status(404).json(utils.apiError("Tipe course tidak ditemukan"))
+
+            const checkLevel = await db.courseLevel.findFirst({
+                where:{
+                    id: parseInt(courseLevelId),
+                }
+            })
+
+            if(!checkLevel) return res.status(404).json(utils.apiError("Level course tidak ditemukan"))
+
+            const checkInstructor = await db.courseInstructor.findFirst({
+                where:{
+                    id: parseInt(courseInstructorId),
+                }
+            })
+
+            if(!checkInstructor) return res.status(404).json(utils.apiError("Instructor tidak ditemukan"))
+
+            const slug = await utils.createSlug(title)
+
+            const courseImage = req.file
+            const allowedMimes = [
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/webp'
+            ]
+            const allowedSizeMb = 2
+
+            if(typeof courseImage === 'undefined') return res.status(422).json(utils.apiError("Gambar kelas tidak boleh kosong"))
+
+            if(!allowedMimes.includes(courseImage.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
+
+            if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
+
+            // const stringFile = courseImage.buffer.toString('base64')
+            // const originalFileName = courseImage.originalname
+
+            // const uploadFile = await imageKit.upload({
+            //     fileName: originalFileName,
+            //     file: stringFile
+            // })
+
+            if(checkCourse.imageFilename != null) {
+                const deleteFile = await imageKitFile.delete(checkCourse.imageFilename)
+                if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+            }
+
+            const uploadFile = await imageKitFile.upload(courseImage)
+
+            if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+
+            const categorySlug = checkCategory.slug
+            const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
+            const randomCode = await utils.generateCodeCategory()
+            const courseCode = `${cattegoryAbbrevation}-${randomCode}`
+
+            await db.course.update({
+                where: {
+                    id: courseId
+                },
+                data: {
+                    title: title,
+                    slug: slug,
+                    code: courseCode,
+                    description: description,
+                    requirements: requirements,
+                    price: parseFloat(price),
+                    courseInstructorId: parseInt(courseInstructorId),
+                    courseCategoryId: parseInt(courseCategoryId),
+                    courseTypeId: parseInt(courseTypeId),
+                    courseLevelId: parseInt(courseLevelId),
+                    isPromo: Boolean(isPromo),
+                    isPublished: Boolean(isPublished),
+                    imageUrl: uploadFile.url,
+                    imageFilename: uploadFile.name,
+                }
+            })
+
+            return res.status(201).json(utils.apiSuccess('Sukses mengubah kelas'))
+
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))

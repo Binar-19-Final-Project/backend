@@ -30,7 +30,7 @@ module.exports = {
         );
     },
 
-    createJwt: (payload) => {
+    createJwt: async (payload) => {
         try {
             return jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: "20h"})
         } catch (error) {
@@ -77,5 +77,13 @@ module.exports = {
         const options = { year: 'numeric', month: 'long', day: 'numeric' }
         const date = new Date(dateString)
         return date.toLocaleDateString('id-ID', options)
+    },
+
+    generateCodeCategory: async () => {
+        try {
+            return `${Math.floor(1000 + Math.random() * 9000)}`
+        } catch (error) {
+            console.log(error)
+        }
     },
 }

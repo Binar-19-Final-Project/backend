@@ -3,7 +3,26 @@ const db = require('../../../prisma/connection'),
     notification = require('../../utils/notification'),
     otpUtils = require('../../utils/otp'),
     resetUtils = require('../../utils/reset-password'),
-    imageKit = require('../../utils/imageKit')
+    imageKitFile = require('../../utils/imageKitFile'),
+    { google } = require("googleapis"),
+    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require('../../config')
+
+const oauth2Client = new google.auth.OAuth2(
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    "http://localhost:5000/api/v1/auth/google/callback"
+)
+
+const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+]
+
+const authorizationUrl = oauth2Client.generateAuthUrl({
+  access_type: "offline",
+  scope: scopes,
+  include_granted_scopes: true,
+})
 
 module.exports = {
     register: async (req, res) => {
@@ -80,8 +99,16 @@ module.exports = {
                 }
             }
 
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'user') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+
             const payload = { id: user.id }
-            const token = utils.createJwt(payload)
+            const token = await utils.createJwt(payload)
 
             const data = {
                 token: token
@@ -93,6 +120,96 @@ module.exports = {
             return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
         }
     },
+
+    loginAdmin: async (req, res) => {
+        try {
+
+            const { email, password } = req.body
+
+            const user = await db.user.findUnique({
+                where: {
+                  email: email,
+                },
+              })
+
+            if (!user) return res.status(400).json(utils.apiError("Email tidak terdaftar"))
+
+            const verifyPassword = await utils.verifyHashData(password, user.password)
+
+            if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
+
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'admin') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+
+            const payload = { id: user.id }
+            const token = await utils.createJwt(payload)
+
+            const data = {
+                token: token
+            }
+
+            return res.status(200).json(utils.apiSuccess("Login berhasil", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+        }
+    },
+
+    googleLogin: (req, res) => {
+        res.redirect(authorizationUrl)
+    },
+
+    googleCallbackLogin: async (req, res) => {
+        const { code } = req.query
+        const { tokens } = await oauth2Client.getToken(code)
+
+        oauth2Client.setCredentials(tokens)
+
+        const oauth2 = google.oauth2({
+            auth: oauth2Client,
+            version: "v2",
+        })
+
+        const { data } = await oauth2.userinfo.get()
+
+        if (!data.email || !data.name)
+            return res.json({
+                data: data,
+        })
+
+        let user = await db.user.findUnique({
+            where: {
+                email: data.email,
+            },
+        })
+
+        if (!user) {
+            user = await db.user.create({
+                data: {
+                    name: data.name,
+                    email: data.email,
+                    verified: true,
+                    photoProfile: data.picture
+                },
+            })
+        }
+ 
+        const payload = { id: user.id }
+        const token = await utils.createJwt(payload)
+        const responseData = {
+            token: token
+        }
+
+        // return res.redirect(`http://localhost:3000/auth-success?token=${token}`)
+
+        return res.status(200).json(utils.apiSuccess("Login berhasil", responseData))
+    },
+
 
     verifyUser: async (req, res) => {
         try {
@@ -144,7 +261,7 @@ module.exports = {
 
             let bcryptResetToken = await utils.createHashData(email)
 
-            let resetToken = bcryptResetToken.replace(/\/./g, "a")
+            let resetToken = bcryptResetToken.replace(/[\/\\.]/g, "a")
 
             await db.user.update({
                 data:{
@@ -155,7 +272,7 @@ module.exports = {
                 }
             })
 
-            const resetPasswordSent = await resetUtils.send(email, bcryptResetToken)
+            const resetPasswordSent = await resetUtils.send(email, resetToken)
 
             if(!resetPasswordSent) return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
 
@@ -215,7 +332,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -240,7 +357,7 @@ module.exports = {
     
             return res.status(200).json(utils.apiSuccess("Data user berhasil diambil", data))
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -282,7 +399,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -311,7 +428,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Profile berhasil diperbarui"))
             
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
@@ -320,27 +437,35 @@ module.exports = {
         try {
 
             const photoProfile = req.file
+
+            const allowedSizeMb = 2
             const allowedMimes = [
                 'image/png',
                 'image/jpeg',
                 'image/jpg',
                 'image/webp'
             ]
-            const allowedSizeMb = 2
 
-            if(typeof photoProfile === 'undefined') return res.status(400).json(utils.apiError("Foto profile tidak boleh kosong"))
+            if(typeof photoProfile === 'undefined') return res.status(400).json(utils.apiError("Gambar tidak boleh kosong"))
 
-            if(!allowedMimes.includes(photoProfile.mimetype)) return res.status(400).json(utils.apiError("Foto profile harus berupa gambar"))
+            if(!allowedMimes.includes(photoProfile.mimetype)) return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"))
 
-            if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Foto profile tidak boleh lebih dari 2mb"))
+            if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Gambar tidak boleh lebih dari 2mb"))
 
-            const stringFile = photoProfile.buffer.toString('base64')
-            const originalFileName = photoProfile.originalname
-
-            const uploadFile = await imageKit.upload({
-                fileName: originalFileName,
-                file: stringFile
+            const user = await db.user.findUnique({
+                where: {
+                    id: res.user.id
+                }
             })
+
+            if(user.imageFilename != null) {
+                const deleteFile = await imageKitFile.delete(user.imageFilename)
+                if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+            }
+
+            const uploadFile = await imageKitFile.upload(photoProfile)
+
+            if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
 
             await db.user.update({
                 where: {
@@ -348,7 +473,7 @@ module.exports = {
                 },
                 data: {
                     photoProfile: uploadFile.url,
-                    imageFilename: originalFileName
+                    imageFilename: uploadFile.name
                 }
             })
 
@@ -359,7 +484,7 @@ module.exports = {
             return res.status(200).json(utils.apiSuccess("Foto profile berhasil diperbarui"))
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     }

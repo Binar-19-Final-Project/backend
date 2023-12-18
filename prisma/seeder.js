@@ -71,7 +71,7 @@ async function seedData()  {
             country: faker.location.country(),
             photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
             verified: true,
-            roleId: 1, 
+            roleId: faker.number.int({ min: 1, max: 2 }), 
         }
     
         await db.user.create({ data: seedUsers })
@@ -191,6 +191,7 @@ async function seedData()  {
         courseCategoryId: faker.number.int({ min: 1, max: 5 }),
         courseLevelId: faker.number.int({ min: 1, max: 3 }),
         isPromo: faker.datatype.boolean(0.2),
+        taken: faker.number.int({ min: 50, max: 100 })
       }
       
       if (seedCourse.isPromo) {
@@ -201,7 +202,7 @@ async function seedData()  {
     }
 
     /* Course Module Seeder */
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 100; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -216,7 +217,7 @@ async function seedData()  {
     }
 
      /* Course Content Seeder */
-     for (let i = 0; i < 1000; i++) {
+     for (let i = 0; i < 400; i++) {
 
       const title = faker.commerce.productName()
       const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
@@ -228,7 +229,7 @@ async function seedData()  {
           sequence: faker.number.int({ min: 1, max: 8 }),
           isDemo: faker.datatype.boolean(0.3),
           duration: faker.number.int({ min: 1, max: 10 }),
-          moduleId: faker.number.int({ min: 1, max: 200 }),
+          moduleId: faker.number.int({ min: 1, max: 100 }),
       }
   
       await db.courseContent.create({ data: seedCourseContents })

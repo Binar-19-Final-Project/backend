@@ -20,6 +20,7 @@ module.exports = {
                 },
                 include: {
                     courseModule: true,
+                    userLearningProgress: true,
                     courseModule: {
                         include: {
                             course: true
@@ -39,9 +40,12 @@ module.exports = {
                 sequence: courseContent.sequence,
                 videoUrl: courseContent.videoUrl,
                 duration: courseContent.duration,
-                isFree: courseContent.isFree,
+                isDemo: courseContent.isDemo,
                 moduleId: courseContent.moduleId,
-                courseId: courseContent.courseModule.courseId
+                courseId: courseContent.courseModule.courseId,
+                userCourses: courseContent.userLearningProgress.map((userCourseId) => ({
+                    userCourseId: userCourseId.userCourseId
+                }))
             }
 
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data))
@@ -55,7 +59,7 @@ module.exports = {
     createCourseContent: async (req, res) => {
         try {
 
-            const {title, videoUrl, duration, isFree, moduleId} = req.body
+            const {title, videoUrl, duration, isDemo, moduleId} = req.body
 
             const checkTitle = await db.courseContent.findFirst({
                 where:{
@@ -80,7 +84,7 @@ module.exports = {
                 }
             })
 
-            const sequence = courseContent.length
+            const sequence = courseContent.length + 1
 
             const titleSlug = await utils.createSlug(title)
 
@@ -91,7 +95,7 @@ module.exports = {
                     sequence: sequence,
                     duration: duration,
                     videoUrl: videoUrl,
-                    isFree: isFree,
+                    isDemo: isDemo,
                     moduleId: moduleId
                 }
             })
@@ -121,7 +125,7 @@ module.exports = {
     updateCourseContent: async (req, res) => {
         try {
 
-            const {title, sequence, videoUrl, duration, isFree, moduleId} = req.body
+            const {title, sequence, videoUrl, duration, isDemo, moduleId} = req.body
             const id = parseInt(req.params.id)
 
             const checkContent = await db.courseContent.findUnique({
@@ -154,6 +158,25 @@ module.exports = {
 
             const titleSlug = await utils.createSlug(title)
 
+            const prevContent = await db.courseContent.findFirst({
+                where:{
+                    sequence: sequence,
+                    moduleId: moduleId,
+                },
+                select: {
+                    id: true
+                }
+            })
+
+            await db.courseContent.update({
+                where:{
+                    id: prevContent.id
+                },
+                data:{
+                    sequence: checkContent.sequence
+                }
+            })
+
             const data = await db.courseContent.update({
                 where:{
                     id: id
@@ -165,17 +188,8 @@ module.exports = {
                     sequence: sequence,
                     duration: duration,
                     videoUrl: videoUrl,
-                    isFree: isFree,
+                    isDemo: isDemo,
                     moduleId: moduleId
-                }
-            })
-
-            const userCourses = await db.userCourse.findMany({
-                where: {
-                    courseId: checkModule.courseId
-                },
-                include: {
-                    course: true
                 }
             })
 

@@ -24,8 +24,8 @@ model User {
   uuid              String               @default(uuid())
   name              String
   email             String               @unique
-  phone             BigInt
-  password          String
+  phone             BigInt?
+  password          String?
   city              String?
   country           String?
   photoProfile      String?              @map("photo_prfile")
@@ -138,6 +138,7 @@ model Course {
   description        String               @db.Text
   price              Float
   requirements       String               @db.Text
+  taken              Int?
   imageUrl           String               @map("image_url")
   imageFilename      String?              @map("image_filename")
   courseInstructorId Int                  @map("course_instructor_id")
@@ -196,9 +197,9 @@ model UserLearningProgress {
   id           Int           @id @default(autoincrement())
   isFinished   Boolean       @map("is_finished") @default(false)
   contentId    Int           @map("content_id")
-  content      CourseContent @relation(fields: [contentId], references: [id])
+  content      CourseContent @relation(fields: [contentId], references: [id], onDelete: Cascade)
   userCourseId Int           @map("user_course_id")
-  userCourse   UserCourse    @relation(fields: [userCourseId], references: [id])
+  userCourse   UserCourse    @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
   finishedAt   DateTime?     @map("finished_at")     
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")

@@ -3,9 +3,11 @@ const express = require('express'),
     validate = require('../../middlewares/validation'),
     { verifyToken } = require('../../middlewares/verify.token'),
     controller = require('../../controllers/order'),
+    checkRole = require('../../middlewares/check.role'),
     router = express.Router()
 
 router.get('/', verifyToken, controller.order.getOrderHistoryById)
-router.post('/:courseId', verifyToken, controller.order.createOrder)
+router.get('/all', controller.order.getOrders)
+router.post('/:courseId', verifyToken, checkRole('user'), controller.order.createOrder)
 
 module.exports = router

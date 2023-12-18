@@ -4,9 +4,10 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     controller = require('../../controllers/course'),
     checkRole = require('../../middlewares/check.role'),
+    { courseTestimonialMiddleware } = require('../../middlewares/course.middleware'),
     router = express.Router()
 
-router.post('/:courseId',  verifyToken, checkRole('user'), controller.courseTestimonial.createTestimonial)
+router.post('/:courseId',  verifyToken, courseTestimonialMiddleware, checkRole('user'), controller.courseTestimonial.createTestimonial)
 router.get('/:courseId',  controller.courseTestimonial.readTestimonialByCourseId)
 
 module.exports = router

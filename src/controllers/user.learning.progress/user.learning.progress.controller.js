@@ -13,7 +13,8 @@ module.exports = {
                 where:{
                     id: userCourseId,
                     userId: res.user.id
-                }
+                },
+               
             })
 
             if(!checkUserCourse) return res.status(404).json(utils.apiError("User course tidak ditemukkan"))
@@ -45,6 +46,8 @@ module.exports = {
                     userId: res.user.id
                 }
             })
+
+            if(!userCourse) return res.status(404).json(utils.apiError("user course id tidak ditemukan"))
 
             const userLearningProgress = await db.userLearningProgress.findFirst({
                 where:{
