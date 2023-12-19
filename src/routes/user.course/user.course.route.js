@@ -1,10 +1,9 @@
 const express = require('express'),
-    schema = require('../../validation/auth.schema'),
-    validate = require('../../middlewares/validation'),
     { verifyToken } = require('../../middlewares/verify.token'),
     controller = require('../../controllers/user.course'),
     router = express.Router()
 
-router.get('/', verifyToken, controller.userCourse.getUserCoursesById)
+router.get('/', verifyToken, controller.userCourse.getUserCoursesByIdUser)
+router.get('/:userCourseId', verifyToken, controller.userCourse.getUserCoursesByIdUserCourse)
 
 module.exports = router

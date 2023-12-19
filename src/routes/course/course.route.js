@@ -4,12 +4,12 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { courseContentMiddleware } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     router = express.Router()
 
 router.get('/', controller.course.getCourses)
-router.get('/:id', controller.course.getCourseById)
+router.get('/:id', getCourseMiddleware, controller.course.getCourseById)
 router.post('/', multer.single('courseImage'), validate(schema.course), verifyToken, checkRole('admin'), controller.course.createCourse)
  
 router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)

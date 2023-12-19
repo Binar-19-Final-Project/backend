@@ -5,12 +5,12 @@ const db = require('../../../prisma/connection'),
     resetUtils = require('../../utils/reset-password'),
     imageKitFile = require('../../utils/imageKitFile'),
     { google } = require("googleapis"),
-    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require('../../config')
+    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } = require('../../config')
 
 const oauth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
-    "http://localhost:5000/api/v1/auth/google/callback"
+    GOOGLE_REDIRECT_URL
 )
 
 const scopes = [
@@ -99,7 +99,13 @@ module.exports = {
                 }
             }
 
-            if(user.roleId === 1) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'user') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)
@@ -132,7 +138,13 @@ module.exports = {
 
             if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
 
-            if(user.roleId === 2) return res.status(403).json(utils.apiError("Akses Tidak Diperbolehkan"))
+            const role = await db.role.findUnique({
+                where:{
+                    id: user.roleId
+                }
+            })
+
+            if(!role.name === 'admin') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             const payload = { id: user.id }
             const token = await utils.createJwt(payload)

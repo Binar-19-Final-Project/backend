@@ -26,6 +26,8 @@ module.exports = {
                 }
             })
 
+            if(!userLearningProgress) return res.status(404).json(utils.apiError("User course id atau content id tidak ada"))
+
             return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan learning progress", userLearningProgress))
 
         } catch (error) {
@@ -47,6 +49,8 @@ module.exports = {
                 }
             })
 
+            if(!userCourse) return res.status(404).json(utils.apiError("user course id tidak ditemukan"))
+
             const userLearningProgress = await db.userLearningProgress.findFirst({
                 where:{
                     contentId: contentId,
@@ -54,7 +58,12 @@ module.exports = {
                 }
             })
 
+            if(!userLearningProgress) return res.status(404).json(utils.apiError("User LEarning progress tidak ada"))
+
+            /* console.log("============================== ", userLearningProgress) */
+
             if(userLearningProgress.isFinished) return res.status(500).json(utils.apiError("Konten sudah diselesaikan"))
+
 
             const course = await db.course.findUnique({
                 where: {

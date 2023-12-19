@@ -56,7 +56,11 @@ module.exports = {
                 },
                 include: {
                     courseModule: true,
-                    userLearningProgress: true,
+                    userLearningProgress: {
+                        include: {
+                            userCourse: true
+                        }
+                    },
                     courseModule: {
                         include: {
                             course: true
@@ -69,23 +73,32 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
-            const data = {
+            const userId = res.user.id
+
+            const userCourses = await db.userCourse.findFirst({
+                where: {
+                    userId: userId,
+                    courseId: parseInt(courseId)
+                }
+            })
+
+            let data = {
                 contentId: courseContent.id,
                 title: courseContent.title,
-                slug: courseContent.slug, 
+                slug: courseContent.slug,
                 sequence: courseContent.sequence,
                 videoUrl: courseContent.videoUrl,
                 duration: courseContent.duration,
                 isDemo: courseContent.isDemo,
                 moduleId: courseContent.moduleId,
                 courseId: courseContent.courseModule.courseId,
-                userCourses: courseContent.userLearningProgress.map((userCourseId) => ({
-                    userCourseId: userCourseId.userCourseId
-                }))
-            }
-
-            return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data))
+            };
             
+            if (userCourses) {
+                data.userCourseId = userCourses.id;
+            }
+            
+            return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data));
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))

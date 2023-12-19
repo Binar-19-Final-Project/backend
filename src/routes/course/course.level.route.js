@@ -8,9 +8,8 @@ const express = require("express"),
 
 router.get("/", controller.courseLevel.getAll);
 router.get("/:id", controller.courseLevel.getById);
-
-router.post("/", verifyToken, checkRole('admin'), validate(schema.courseLevel), controller.courseLevel.create);
-router.put("/:id", verifyToken, checkRole('admin'), validate(schema.courseLevel), controller.courseLevel.update);
-router.delete("/:id", verifyToken, checkRole('admin'), controller.courseLevel.delete);
+router.post("/", validate(schema.level), verifyToken, checkRole('admin'), controller.courseLevel.create);
+router.put("/:id", validate(schema.level), verifyToken, checkRole('admin'), controller.courseLevel.update);
+router.delete("/:id", controller.courseLevel.delete);
 
 module.exports = router;
