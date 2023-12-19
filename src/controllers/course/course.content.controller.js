@@ -37,11 +37,11 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
-            const id = res.user.id
+            const userId = res.user.id
 
             const userCourses = await db.userCourse.findFirst({
                 where: {
-                    userId: id,
+                    userId: userId,
                     courseId: parseInt(courseId)
                 }
             })

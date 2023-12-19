@@ -185,7 +185,7 @@ module.exports = {
                 };
             })
             
-            const data = {
+            let data = {
                 courseId: course.id,
                 title: course.title,
                 code: course.code,
@@ -205,6 +205,7 @@ module.exports = {
                 discount: discount,
                 totalPrice: totalPrice,
                 publishedAt: course.createdAt,
+                userCourseId: null,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
                 requirements: requirementsObjectsArray,
@@ -231,6 +232,16 @@ module.exports = {
                         }))
                     }
                 })
+            }
+
+            if(res.user) {
+                const userCourse = await db.userCourse.findFirst({
+                    where: {
+                        userId: res.user.id,
+                        courseId: parseInt(id)
+                    }
+                })
+                data.userCourseId = userCourse.id
             }
 
             return res.status(200).json(utils.apiSuccess("Data course berdasarkan id berhasil diambil", data))

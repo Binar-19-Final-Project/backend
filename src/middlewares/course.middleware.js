@@ -1,5 +1,32 @@
 const db = require('../../prisma/connection'),
-    utils = require('../utils/utils')
+    utils = require('../utils/utils'),
+     jwt = require("jsonwebtoken"),
+    { JWT_SECRET_KEY } = require('../config')
+
+const getCourseMiddleware = async (req, res, next) => {
+    try {
+        if (req.headers["authorization"]) {
+            const authHeader = req.headers["authorization"]
+            const token = authHeader && authHeader.split(" ")[1]
+
+            const jwtPayload = jwt.verify(token, JWT_SECRET_KEY)
+
+            res.user = jwtPayload
+
+            return next()
+        } else {
+            return next()
+        }
+  } catch (error) {
+    console.log(error)
+    if (error instanceof jwt.TokenExpiredError) {
+        return res.status(401).json(utils.apiError("Silahkan login ulang"))
+    } else {
+        return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+    }
+    
+  }
+}
 
 const courseTestimonialMiddleware = async (req, res, next) => {
     const userCourse = await db.userCourse.findFirst({
@@ -86,4 +113,4 @@ const courseContentMiddleware = async (req, res, next) => {
 }
 
 
-module.exports = { courseTestimonialMiddleware, courseContentMiddleware }
+module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware }
