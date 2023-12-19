@@ -205,6 +205,7 @@ module.exports = {
                 discount: discount,
                 totalPrice: totalPrice,
                 userCourseId: null,
+                learningProgress: null,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
@@ -243,8 +244,10 @@ module.exports = {
                 })
                 if (userCourse) {
                     data.userCourseId = userCourse.id
+                    data.learningProgress = userCourse.progress
                 } else {
                     data.userCourseId = null
+                    data.learningProgress = null
                 }
             }
 
