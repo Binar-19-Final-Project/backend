@@ -82,5 +82,43 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
+    },
+
+    checkStatusFinsihed: async (req, res) => {
+        try {
+
+            const userCourseId = parseInt(req.params.userCourseId)
+            const contentId = parseInt(req.params.contentId)    
+
+            const checkUserCourse = await db.userCourse.findFirst({
+                where:{
+                    id: userCourseId,
+                    userId: res.user.id
+                },
+               
+            })
+
+            if(!checkUserCourse) return res.status(404).json(utils.apiError("User course tidak ditemukkan"))
+            
+            const userLearningProgress = await db.userLearningProgress.findFirst({
+                where: {
+                    contentId: contentId,
+                    userCourseId: userCourseId
+                }
+            })
+
+            if(!userLearningProgress) return res.status(404).json(utils.apiError("User course id atau content id tidak ada"))
+
+            if(userLearningProgress.isFinished === true) {
+                return res.status(200).json(utils.apiSuccess("Content telah diselesaikan"))
+            } else {
+                return res.status(409).json(utils.apiError("Content belum diselesaikan"))
+            }
+            
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     }
 }
