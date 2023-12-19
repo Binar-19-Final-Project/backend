@@ -17,6 +17,9 @@ router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModu
 
 router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, courseContentMiddleware, controller.courseContent.getCourseContentByIdModuleAndCourse)
 
+router.get('/:courseId/modules/:moduleId/contents', verifyToken, checkRole('admin'), controller.courseContent.getAllCourseContentByModuleAndCourseId)
 router.put('/:courseId', verifyToken, checkRole('admin'), multer.single('courseImage'), validate(schema.course), controller.course.updateCourse)
+router.put('/:courseId/promos', verifyToken, checkRole('admin'), controller.course.putPromoOnCourse)
+router.delete('/:courseId/promos', verifyToken, checkRole("admin"), controller.course.cancelPromoOnCourse)
 
 module.exports = router
