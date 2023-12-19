@@ -52,8 +52,8 @@ module.exports = {
         .notEmpty().withMessage("Durasi tidak boleh kosong")
         .isInt({ min: 1 }).withMessage("Durasi harus berupa angka dan minimal 1 menit"),
     body("isDemo")
-        .notEmpty().withMessage("Tipe konten tidak boleh kosong")
-        .isBoolean().withMessage("Tipe konten harus berupa boolean"),
+        .notEmpty().withMessage("Status demo konten tidak boleh kosong")
+        .isBoolean().withMessage("Status demo harus berupa boolean"),
     body("moduleId")
         .notEmpty().withMessage("Module id tidak boleh kosong")
         .isInt().withMessage("Module id harus berupa angka"),
@@ -61,6 +61,5 @@ module.exports = {
 
   category: [
     body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
-    body("urlPhoto").notEmpty().withMessage("Foto wajib diisi"),
   ],
 };
