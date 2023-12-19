@@ -60,9 +60,7 @@ module.exports = {
   ],
 
   category: [
-    body("name")
-        .notEmpty().withMessage("Nama Kategori tidak boleh kosong"),
-    body("urlPhoto")
-        .notEmpty().withMessage("Foto tidak boleh kosong"),
+    body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
+    body("urlPhoto").notEmpty().withMessage("Foto wajib diisi"),
   ],
 };
