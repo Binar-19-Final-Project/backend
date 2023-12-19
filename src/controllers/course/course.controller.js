@@ -86,6 +86,7 @@ module.exports = {
                   level: course.courseLevel.name,
                   instructor: course.courseInstructor.name,
                   totalModule: totalModule,
+                  isPromo: course.isPromo,
                   namePromo: promoName,
                   discount: discount,
                   totalPrice: totalPrice,
@@ -470,6 +471,101 @@ module.exports = {
             })
 
             return res.status(201).json(utils.apiSuccess('Sukses mengubah kelas'))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    putPromoOnCourse: async(req, res) => {
+        try {
+
+            const {promoId} = req.body
+            const courseId = parseInt(req.params.courseId)
+
+            const checkPromo = await db.coursePromo.findUnique({
+                where: {
+                    id: promoId
+                }
+            })
+
+            if(!checkPromo) return res.status(404).json(utils.apiError("Promo tidak ditemukkan"))
+
+            await db.course.update({
+                where: {
+                    id: courseId
+                },
+                data: {
+                    isPromo: true,
+                    coursePromoId: promoId
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Promo berhasil ditambahkan"))
+            
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    cancelPromoOnCourse: async (req, res) => {
+        try {
+
+            const courseId = parseInt(req.params.courseId)
+
+            const checkCourse = await db.course.findUnique({
+                where: {
+                    id: courseId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+
+            await db.course.update({
+                where: {
+                    id: courseId
+                },
+                
+                data: {
+                    isPromo: false,
+                    coursePromoId: null
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Behasil menghapus promo pada course"))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    
+    deleteCourse: async(req, res) => {
+        try {
+
+            const courseId = parseInt(req.params.courseId)
+
+            const checkCourse = await db.course.findUnique({
+                where:{
+                    id: courseId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+            
+            await db.course.update({
+                where: {
+                    id: courseId
+                },
+                data: {
+                    isPublished: false
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Course berhasil dihapus"))
 
         } catch (error) {
             console.log(error)
