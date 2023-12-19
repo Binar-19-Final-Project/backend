@@ -204,8 +204,8 @@ module.exports = {
                 namePromo: promoName,
                 discount: discount,
                 totalPrice: totalPrice,
-                publishedAt: course.createdAt,
                 userCourseId: null,
+                publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
                 requirements: requirementsObjectsArray,
@@ -241,7 +241,11 @@ module.exports = {
                         courseId: parseInt(id)
                     }
                 })
-                data.userCourseId = userCourse.id
+                if (userCourse) {
+                    data.userCourseId = userCourse.id
+                } else {
+                    data.userCourseId = null
+                }
             }
 
             return res.status(200).json(utils.apiSuccess("Data course berdasarkan id berhasil diambil", data))
