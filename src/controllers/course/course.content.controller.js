@@ -4,6 +4,42 @@ const db = require('../../../prisma/connection'),
 
 module.exports = {
 
+    getAllCourseContentByModuleAndCourseId: async (req, res) => {
+        try {
+
+            const courseId = parseInt(req.params.courseId)
+            const moduleId = parseInt(req.params.moduleId)
+
+            const checkCourse = await db.course.findUnique({
+                where: {
+                    id: courseId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
+
+            const checkModule = await db.courseModule.findUnique({
+                where: {
+                    id: moduleId
+                }
+            })
+
+            if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
+
+            const data = await db.courseContent.findMany({
+                where: {
+                    moduleId: moduleId
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Behasil mengambil semua data konten", data))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
     getCourseContentByIdModuleAndCourse: async (req, res) => {
 
         const { contentId, moduleId, courseId } = req.params
