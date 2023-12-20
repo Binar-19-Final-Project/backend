@@ -17,7 +17,7 @@ module.exports = {
         .json(utils.apiSuccess("Berhasil Memampilkan data Level", level));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan Pada Server"));
+      return res.status(500).json(utils.apiError("Kesalahan Pada Server"));
     }
   },
   getById: async (req, res) => {
@@ -34,14 +34,14 @@ module.exports = {
         },
       });
       if (!level) {
-        return res.status(404).json(utils.error("level not found"));
+        return res.status(404).json(utils.apiError("level not found"));
       }
       return res
       .status(200)
       .json(utils.apiSuccess("Berhasil Memampilkan data Level", level));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan Pada Server"));
+      return res.status(500).json(utils.apiError("Kesalahan Pada Server"));
     }
   },
   create: async (req, res) => {
@@ -62,7 +62,7 @@ module.exports = {
         .json(utils.apiSuccess("Berhasil buat level", data));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan Pada Server"));
+      return res.status(500).json(utils.apiError("Kesalahan Pada Server"));
     }
   },
   update: async (req, res) => {
@@ -77,7 +77,7 @@ module.exports = {
         },
       });
 
-      if (!check) return res.status(404).json(utils.error("level not found"));
+      if (!check) return res.status(404).json(utils.apiError("level not found"));
 
       const level = await db.courseLevel.update({
         where: {
@@ -94,7 +94,7 @@ module.exports = {
         .json(utils.apiSuccess("Berhasil Mengubah level", level));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan Pada Server"));
+      return res.status(500).json(utils.apiError("Kesalahan Pada Server"));
     }
   },
   delete: async (req, res) => {
@@ -107,7 +107,7 @@ module.exports = {
         },
       });
 
-      if (!check) return res.status(404).json(utils.error("level not found"));
+      if (!check) return res.status(404).json(utils.apiError("level not found"));
 
       await db.courseLevel.delete({
         where: {
@@ -118,7 +118,7 @@ module.exports = {
       return res.status(200).json(utils.apiSuccess("Success delete level"));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan Pada Server"));
+      return res.status(500).json(utils.apiError("Kesalahan Pada Server"));
     }
   },
 };
