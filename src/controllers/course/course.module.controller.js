@@ -31,7 +31,7 @@ module.exports = {
                 }
             })
 
-            const data = modules.map((module) => ({
+            /* const data = modules.map((module) => ({
                 id: module.id,
                 title: module.title,
                 slug: module.slug,
@@ -46,7 +46,29 @@ module.exports = {
                     videoUrl: content.videoUrl,
                     isFree: content.isFree
                 }))
-            }))
+            })) */
+
+            const data = modules.map((module) => {
+                const totalContent = module.courseContent.length
+
+                return {
+                    moduleId: module.id,
+                    title: module.title,
+                    slug: module.slug,
+                    totalContent: module.totalChapter,
+                    courseId: module.courseId,
+                    totalContent: totalContent,
+                    contents: module.courseContent.map((content) => ({
+                        contentId: content.id,
+                        sequence: content.sequence,
+                        title: content.title,
+                        slug: content.slug,
+                        duration: content.duration,
+                        videoUrl: content.videoUrl,
+                        isDemo: content.isDemo
+                    }))
+                }
+            })
 
             if (!modules) {
                 if(!data) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
@@ -93,7 +115,7 @@ module.exports = {
             const totalContent = module.courseContent.length
 
             const data = {
-                id: module.id,
+                moduleId: module.id,
                 sequence: module.sequence,
                 id: module.id,
                 title: module.title,
@@ -101,7 +123,7 @@ module.exports = {
                 totalContent: totalContent,
                 courseId: module.courseId,
                 contents: module.courseContent.map((content) => ({
-                    id: content.id,
+                    contentId: content.id,
                     sequence: content.sequence,
                     title: content.title,
                     slug: content.slug,

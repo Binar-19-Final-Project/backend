@@ -92,6 +92,7 @@ module.exports = {
                 isDemo: courseContent.isDemo,
                 moduleId: courseContent.moduleId,
                 courseId: courseContent.courseModule.courseId,
+                userCourseId: null,
             };
             
             if (userCourses) {
