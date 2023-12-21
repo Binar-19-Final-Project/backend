@@ -75,6 +75,7 @@ model CourseCategory {
   name        String
   slug        String   @unique
   urlPhoto    String
+  imageFileName String? @map("image_filename")
   course      Course[]
   isPublished Boolean  @default(true) @map("is_published")
   createdAt   DateTime @default(now()) @map("created_at")
