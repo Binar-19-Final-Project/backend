@@ -320,14 +320,6 @@ module.exports = {
 
             if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
 
-            // const stringFile = courseImage.buffer.toString('base64')
-            // const originalFileName = courseImage.originalname
-
-            // const uploadFile = await imageKit.upload({
-            //     fileName: originalFileName,
-            //     file: stringFile
-            // })
-
             const uploadFile = await imageKitFile.upload(courseImage)
 
             if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
@@ -338,7 +330,7 @@ module.exports = {
                 }
             })
 
-            const categorySlug = category.slug // android-development
+            const categorySlug = category.slug 
             const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
             const randomCode = await utils.generateCodeCategory()
             const courseCode = `${cattegoryAbbrevation}-${randomCode}`
