@@ -127,10 +127,10 @@ module.exports = {
           .status(404)
           .json(utils.apiError("Kategori Tidak di temukan"));
       const allowedSizeMb = 2;
-      if (typeof photoCategory === "undefined")
-        return res
-          .status(400)
-          .json(utils.apiError("Foto cover kategori tidak boleh kosong"));
+      // if (typeof photoCategory === "undefined")
+      //   return res
+      //     .status(400)
+      //     .json(utils.apiError("Foto cover kategori tidak boleh kosong"));
       if (!allowedMimes.includes(photoCategory.mimetype))
         return res
           .status(400)
@@ -145,6 +145,11 @@ module.exports = {
         fileName: originalFileName,
         file: stringFile,
       });
+
+      if(category.imageFilename != null) {
+        const deleteFile = await imageKitFile.delete(user.imageFilename)
+        if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+    }
       const category = await db.courseCategory.update({
         where: {
           id: id,
