@@ -109,7 +109,7 @@ module.exports = {
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
       const photoCategory = req.file;
-      console.log(req.file, "gagal");
+      /* console.log(req.file, "gagal"); */
       const allowedMimes = [
         "image/png",
         "image/jpeg",
@@ -127,10 +127,10 @@ module.exports = {
           .status(404)
           .json(utils.apiError("Kategori Tidak di temukan"));
       const allowedSizeMb = 2;
-      if (typeof photoCategory === "undefined")
+      /* if (typeof photoCategory === "undefined")
         return res
           .status(400)
-          .json(utils.apiError("Foto cover kategori tidak boleh kosong"));
+          .json(utils.apiError("Foto cover kategori tidak boleh kosong")); */
       if (!allowedMimes.includes(photoCategory.mimetype))
         return res
           .status(400)

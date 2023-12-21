@@ -24,6 +24,7 @@ model User {
   uuid              String               @default(uuid())
   name              String
   email             String               @unique
+  googleId          String?              @map("google_id")
   phone             BigInt?
   password          String?
   city              String?

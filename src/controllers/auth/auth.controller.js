@@ -4,10 +4,11 @@ const db = require('../../../prisma/connection'),
     otpUtils = require('../../utils/otp'),
     resetUtils = require('../../utils/reset-password'),
     imageKitFile = require('../../utils/imageKitFile'),
-    { google } = require("googleapis"),
-    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } = require('../../config')
+    axios = require('axios')
+    /* { google } = require("googleapis"),
+    { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } = require('../../config') */
 
-const oauth2Client = new google.auth.OAuth2(
+/* const oauth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URL
@@ -16,13 +17,13 @@ const oauth2Client = new google.auth.OAuth2(
 const scopes = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
-]
+] */
 
-const authorizationUrl = oauth2Client.generateAuthUrl({
+/* const authorizationUrl = oauth2Client.generateAuthUrl({
   access_type: "offline",
   scope: scopes,
   include_granted_scopes: true,
-})
+}) */
 
 module.exports = {
     register: async (req, res) => {
@@ -160,11 +161,68 @@ module.exports = {
         }
     },
 
-    googleLogin: (req, res) => {
+    /* googleLogin: (req, res) => {
         res.redirect(authorizationUrl)
-    },
+    }, */
 
-    googleCallbackLogin: async (req, res) => {
+    googleLogin: async (req, res) => {
+        try {
+          const { accessToken } = req.body
+    
+          const response = await axios.get(
+            `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`
+          );
+          
+          const { sub, email, name } = response.data
+      
+          /* let user = await User.findOne({ where: { googleId: sub } }); */
+
+            let user = await db.user.findFirst({
+                where: {
+                    googleId: sub
+                }
+            })
+
+            if(!user) {
+                user = await db.user.create({
+                    data: {
+                        email: email,
+                        name: name,
+                        googleId: sub
+                    }
+                })
+            }
+
+          /* if (!user)
+            user = await User.create({
+              email,
+              name,
+              googleId: sub,
+              registeredVia: "google",
+              roleId,
+            }); */
+      
+            const payload = { id: user.id }
+            const token = await utils.createJwt(payload)
+            const data = {
+                token: token
+            }
+      
+            return res.status(200).json(utils.apiSuccess("Login berhasil", data))
+        } catch (error) {
+          console.error(error);
+      
+          let status = 500;
+          if (axios.isAxiosError(error)) {
+            error.message = error.response.data.error_description;
+            status = error.response.status;
+          }
+      
+          return res.status(status).json(utils.apiError(error.message));
+        }
+      },
+
+    /* googleCallbackLogin: async (req, res) => {
         const { code } = req.query
         const { tokens } = await oauth2Client.getToken(code)
 
@@ -208,7 +266,7 @@ module.exports = {
         // return res.redirect(`http://localhost:3000/auth-success?token=${token}`)
 
         return res.status(200).json(utils.apiSuccess("Login berhasil", responseData))
-    },
+    }, */
 
 
     verifyUser: async (req, res) => {
