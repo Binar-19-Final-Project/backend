@@ -334,14 +334,6 @@ module.exports = {
 
             if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
 
-            // const stringFile = courseImage.buffer.toString('base64')
-            // const originalFileName = courseImage.originalname
-
-            // const uploadFile = await imageKit.upload({
-            //     fileName: originalFileName,
-            //     file: stringFile
-            // })
-
             const uploadFile = await imageKitFile.upload(courseImage)
 
             if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
@@ -352,7 +344,7 @@ module.exports = {
                 }
             })
 
-            const categorySlug = category.slug // android-development
+            const categorySlug = category.slug 
             const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
             const randomCode = await utils.generateCodeCategory()
             const courseCode = `${cattegoryAbbrevation}-${randomCode}`
@@ -452,29 +444,33 @@ module.exports = {
             ]
             const allowedSizeMb = 2
 
-            if(typeof courseImage === 'undefined') return res.status(422).json(utils.apiError("Gambar kelas tidak boleh kosong"))
+            let imageUrl = null;
+            let imageFileName = null;
 
-            if(!allowedMimes.includes(courseImage.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
+            if(typeof courseImage === 'undefined') {
 
-            if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
+                imageUrl = checkCourse.imageUrl
+                imageFileName = checkCourse.imageFilename
 
-            // const stringFile = courseImage.buffer.toString('base64')
-            // const originalFileName = courseImage.originalname
+            }else{
 
-            // const uploadFile = await imageKit.upload({
-            //     fileName: originalFileName,
-            //     file: stringFile
-            // })
+                if(!allowedMimes.includes(courseImage.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
 
-            if(checkCourse.imageFilename != null) {
-                const deleteFile = await imageKitFile.delete(checkCourse.imageFilename)
-                if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+                if((courseImage.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kelas tidak boleh lebih dari 2mb"))
+
+                if(checkCourse.imageFilename != null) {
+                    const deleteFile = await imageKitFile.delete(checkCourse.imageFilename)
+                    if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+                }
+
+                const uploadFile = await imageKitFile.upload(courseImage)
+
+                if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+
+                imageUrl = uploadFile.url
+                imageFileName = uploadFile.name
             }
-
-            const uploadFile = await imageKitFile.upload(courseImage)
-
-            if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-
+          
             const categorySlug = checkCategory.slug
             const cattegoryAbbrevation = categorySlug.split('-').map(word => word[0].toUpperCase()).join('')
             const randomCode = await utils.generateCodeCategory()
@@ -497,8 +493,8 @@ module.exports = {
                     courseLevelId: parseInt(courseLevelId),
                     isPromo: Boolean(isPromo),
                     isPublished: Boolean(isPublished),
-                    imageUrl: uploadFile.url,
-                    imageFilename: uploadFile.name,
+                    imageUrl: imageUrl,
+                    imageFilename: imageFileName,
                 }
             })
 
