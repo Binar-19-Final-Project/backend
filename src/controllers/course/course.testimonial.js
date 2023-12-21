@@ -8,13 +8,13 @@ module.exports = {
             const { testimonial, rating } = req.body
             const { courseId } = req.params
 
-            const checkCourse = await db.course.findUnique({
+            const checkCourse = await db.course.findFirst({
                 where: {
                     id: parseInt(courseId)
                 }
             })
 
-            if(checkCourse) return res.status(404).json(utils.apiError('Kelas tidak ditemukan'))
+            if(!checkCourse) return res.status(404).json(utils.apiError('Kelas tidak ditemukan'))
 
             const checkTestimonial = await db.courseTestimonial.findFirst({
                 where: {

@@ -7,7 +7,7 @@ const express = require('express'),
     { courseTestimonialMiddleware } = require('../../middlewares/course.middleware'),
     router = express.Router()
 
-router.post('/:courseId',  verifyToken, courseTestimonialMiddleware, checkRole('user'), controller.courseTestimonial.createTestimonial)
+router.post('/:courseId', verifyToken, courseTestimonialMiddleware, checkRole('user'), validate(schema.testimonial), controller.courseTestimonial.createTestimonial)
 router.get('/:courseId',  controller.courseTestimonial.readTestimonialByCourseId)
 
 module.exports = router

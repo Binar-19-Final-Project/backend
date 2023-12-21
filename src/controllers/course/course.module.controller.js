@@ -7,6 +7,7 @@ module.exports = {
     getAllCourseModuleByCourseId: async (req, res) => {
 
         const { courseId } = req.params
+        if (!courseId) return res.status(422).json(utils.apiError("Params courseId tidak boleh kosong"))
 
         try {
 
@@ -85,6 +86,8 @@ module.exports = {
     getCourseModuleByIdAndCourseId: async (req, res) => {
 
         const { courseId, moduleId } = req.params
+        if (!courseId) return res.status(422).json(utils.apiError("Params courseId tidak boleh kosong"))
+        if (!moduleId) return res.status(422).json(utils.apiError("Params moduleId tidak boleh kosong"))
         
         try {
 
@@ -186,6 +189,7 @@ module.exports = {
 
             const {title, courseId} = req.body
             const id = parseInt(req.params.id)
+             
 
             const checkModule = await db.courseModule.findUnique({
                 where:{
@@ -240,6 +244,7 @@ module.exports = {
         try {
 
             const id = parseInt(req.params.id)
+             
 
             const check = await db.courseModule.findUnique({
                 where:{

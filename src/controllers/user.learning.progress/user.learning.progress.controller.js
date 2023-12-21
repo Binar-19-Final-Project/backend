@@ -7,7 +7,10 @@ module.exports = {
         try {
 
             const userCourseId = parseInt(req.params.userCourseId)
-            const contentId = parseInt(req.params.contentId)    
+            const contentId = parseInt(req.params.contentId)
+            
+            if (!userCourseId) return res.status(422).json(utils.apiError("Params userCourseId tidak boleh kosong"))
+            if (!contentId) return res.status(422).json(utils.apiError("Params contentId tidak boleh kosong"))
 
             const checkUserCourse = await db.userCourse.findFirst({
                 where:{
@@ -64,6 +67,32 @@ module.exports = {
 
             if(userLearningProgress.isFinished) return res.status(500).json(utils.apiError("Konten sudah diselesaikan"))
 
+           /*  const content = await db.courseContent.findFirst({
+                where: {
+                    id: contentId
+                }
+            })
+
+            const currentSequence = content.sequence
+
+            if(currentSequence !== 1) {
+                const previousContent = await db.courseContent.findFirst({
+                    where: {
+                        sequence: currentSequence - 1
+                    }
+                })
+
+                if (!previousContent) return res.status(404).json(utils.apiError("Konten sebelumnya tidak ditemukan"))
+                
+                const previousLearning = await db.userLearningProgress.findFirst({
+                    where: {
+                        userCourseId: userCourseId,
+                        contentId: previousContent.id
+                    }
+                })
+
+                if(previousLearning.isFinished === false) return res.status(403).json(utils.apiError("Content sebelumnya belum diselesaikan"))
+            } */
 
             const course = await db.course.findUnique({
                 where: {

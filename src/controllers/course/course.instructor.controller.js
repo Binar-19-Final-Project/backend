@@ -22,6 +22,7 @@ module.exports = {
 
     readById: async (req, res) => {
         const { id } = req.params
+         
         try {
             const instructor = await db.courseInstructor.findUnique({
                 where: { 
@@ -63,6 +64,7 @@ module.exports = {
 
     update: async (req, res) => {
         const { id } = req.params
+         
         const { name } = req.body
         const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
         try {
@@ -85,6 +87,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const { id } = req.params
+         
         try {
             await db.courseInstructor.delete({
                 where: {

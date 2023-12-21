@@ -65,4 +65,9 @@ module.exports = {
   level: [
     body("name").notEmpty().withMessage("Nama level wajib diisi"),
   ],
+
+  testimonial: [
+    body("testimonial").notEmpty().withMessage("Testimonial tidak boleh kosong"),
+    body("rating").notEmpty().withMessage("Rating tidak boleh kosong"),
+  ],
 };

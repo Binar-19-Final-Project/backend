@@ -22,7 +22,10 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params
+
+       
+
       const level = await db.courseLevel.findUnique({
         where: {
           id: parseInt(id),
@@ -69,7 +72,8 @@ module.exports = {
     try {
       const { name } = req.body;
       const nameSlug = await utils.createSlug(name);
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id)
+       
 
       const check = await db.courseLevel.findUnique({
         where: {
@@ -100,6 +104,7 @@ module.exports = {
   delete: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+       
 
       const check = await db.courseLevel.findUnique({
         where: {

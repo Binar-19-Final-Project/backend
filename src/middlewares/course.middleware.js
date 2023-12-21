@@ -29,19 +29,31 @@ const getCourseMiddleware = async (req, res, next) => {
 }
 
 const courseTestimonialMiddleware = async (req, res, next) => {
+
+    const { courseId } = req.params
+    if (!courseId) return res.status(422).json(utils.apiError("Params courseId tidak boleh kosong"))
+    
+    const checkCourse = await db.course.findFirst({
+        where: {
+            id: parseInt(courseId)
+        }
+    })
+    if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukan"))
+
     const userCourse = await db.userCourse.findFirst({
         where: {
             userId: res.user.id,
-            courseId: parseInt(req.params.courseId)
+            courseId: parseInt(courseId)
         }
     })
+    if(!userCourse) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. User tidak mempunyai course ini"))
+    
+    const status = userCourse.status
 
-    const status = userCourse.status === 'Selesai'
-
-    if(status) {
+    if(status === 'Selesai') {
         return next()
     } else {
-        return res.status(403).json(utils.apiError("Anda belum menyelesaikan course ini"))
+        return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. Anda belum menyelesaikan course ini"))
     }
 }
 

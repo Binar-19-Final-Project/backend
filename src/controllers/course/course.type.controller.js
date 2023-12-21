@@ -17,6 +17,7 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const { id } = req.params;
+       
       const type = await db.courseType.findUnique({
         where: {
           id: parseInt(id),
@@ -59,6 +60,7 @@ module.exports = {
       const { name } = req.body;
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
+       
 
       const check = await db.courseType.findUnique({
         where: {
@@ -89,6 +91,7 @@ module.exports = {
   delete: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+       
 
       const check = await db.courseType.findUnique({
         where: {

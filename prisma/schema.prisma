@@ -10,15 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Role {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("roles")
-}
-
 model User {
   id                Int                  @id @default(autoincrement())
   uuid              String               @default(uuid())
@@ -32,9 +23,8 @@ model User {
   photoProfile      String?              @map("photo_prfile")
   imageFilename     String?              @map("image_filename")
   resetToken        String?              @map("reset_token") @db.Text
-  roleId            Int                  @default(1) @map("role_id")
+  roleName          String               @map("role_name")
   verified          Boolean              @default(false)
-  userWishlist      UserCourseWishlist[]
   order             Order[]
   userCourse        UserCourse[]
   courseTestimonial CourseTestimonial[]
@@ -155,7 +145,7 @@ model Course {
   isPromo            Boolean              @default(false) @map("is_promo")
   isPublished        Boolean              @default(true) @map("is_published")
   courseModule       CourseModule[]
-  userWishlist       UserCourseWishlist[]
+  courseContent      CourseContent[]
   order              Order[]
   userCourse         UserCourse[]
   courseTestimonial  CourseTestimonial[]
@@ -186,6 +176,8 @@ model CourseContent {
   videoUrl             String                 @map("video_url")
   duration             Int
   isDemo               Boolean                @map("is_demo") @default(false)
+  courseId      Int             @map("course_id")
+  course        Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
   moduleId             Int                    @map("course_module_id")
   courseModule         CourseModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   userLearningProgress UserLearningProgress[]
@@ -220,18 +212,6 @@ model CourseTestimonial {
 
   @@unique([userId, courseId])
   @@map("course_testimonials")
-}
-
-model UserCourseWishlist {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId  Int      @map("course_id")
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("user_course_wishlist")
 }
 
 model Order {

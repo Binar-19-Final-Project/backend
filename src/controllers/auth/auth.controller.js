@@ -49,7 +49,8 @@ module.exports = {
                         email: email,
                         phone: BigInt(phone),
                         password: hashPassword,
-                        photoProfile: "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
+                        roleName: "user",
+                        photoProfile: "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png",
                     }
                 })
 

@@ -47,7 +47,7 @@ module.exports = {
             const data = courses.map((course) => {
                 const originalPrice = course.price
                 const promoName = course.coursePromo ? course.coursePromo.name : null
-                const discount = course.coursePromo ? course.coursePromo.discount : null
+                const discount = course.coursePromo ? course.coursePromo.discount : 0
                 const totalModule = course.courseModule.length
 
                 const ratings = course.courseTestimonial.map((testimonial) => testimonial.rating)
@@ -69,6 +69,14 @@ module.exports = {
                   const discountAmount = (originalPrice * discount) / 100
                   totalPrice = originalPrice - discountAmount
                 }
+
+                const taken = course.userCourse.map((course) => ({
+                    courseId: course.courseId
+                }))
+
+                const totalTaken = taken.length
+
+                console.log(totalTaken)
               
                 return {
                   id: course.id,
@@ -79,7 +87,7 @@ module.exports = {
                   originalPrice: originalPrice,
                   rating: averageRatings,
                   duration: totalDurationModule,
-                  taken: course.taken,
+                  taken: totalTaken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -175,7 +183,13 @@ module.exports = {
             const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
             const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
 
-            /* const taken = course.userCourse.length */
+            /* const taken = course.userCourse.length  */
+
+            const taken = course.userCourse.map((course) => ({
+                courseId: course.courseId
+            }))
+
+            const totalTaken = taken.length
 
             const requirementsString = course.requirements
             const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
@@ -195,7 +209,7 @@ module.exports = {
                 originalPrice: originalPrice,
                 rating: averageRatings,
                 duration: totalDurationModule,
-                taken: course.taken,
+                taken: totalTaken,
                 imageUrl: course.imageUrl,
                 category: course.courseCategory.name,
                 type: course.courseType.name,

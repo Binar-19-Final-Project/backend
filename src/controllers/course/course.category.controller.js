@@ -22,6 +22,7 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
       const category = await db.courseCategory.findUnique({
         where: {
           id: id,
@@ -108,6 +109,7 @@ module.exports = {
       const { name, urlPhoto, isPublished } = req.body;
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
+      
       const photoCategory = req.file;
       console.log(req.file, "gagal");
       const allowedMimes = [
@@ -170,7 +172,7 @@ module.exports = {
   delete: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-
+      
       const check = await db.courseCategory.findUnique({
         where: {
           id: id,
