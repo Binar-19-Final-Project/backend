@@ -47,7 +47,7 @@ module.exports = {
         .json(utils.apiSuccess("Berhasil membuat whistlist", wishList));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Kesalahan dalam server"));
+      return res.status(500).json(utils.apiError("Kesalahan dalam server"));
     }
   },
 };

@@ -39,6 +39,11 @@ module.exports = {
         .isString().withMessage("Password harus berupa string"),
   ],
 
+  googleLogin: [
+    body("accessToken")
+        .notEmpty().withMessage("Access Token tidak boleh kosong")
+  ],
+
   verifyUser: [
     body("email")
         .notEmpty().withMessage("Email tidak boleh kosong")
@@ -114,5 +119,6 @@ module.exports = {
   updateProfilePhoto: [
     body("photoProfile")
         .optional({values: null})
-  ]
+  ],
+
 };

@@ -46,8 +46,7 @@ module.exports = {
         .optional({values: null})
         .isInt({ min: 1 }).withMessage("Urutan harus berupa angka dan minimal 1"),
     body("videoUrl")
-        .notEmpty().withMessage("Link video tidak boleh kosong")
-        .isURL().withMessage("Link video harus berupa link URL yang valid"),
+        .notEmpty().withMessage("Link video tidak boleh kosong"),
     body("duration")
         .notEmpty().withMessage("Durasi tidak boleh kosong")
         .isInt({ min: 1 }).withMessage("Durasi harus berupa angka dan minimal 1 menit"),

@@ -11,7 +11,7 @@ module.exports = {
         .json(utils.apiSuccess("Success fetch data catagory", type));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Internal Server Error"));
+      return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
   getById: async (req, res) => {
@@ -32,7 +32,7 @@ module.exports = {
         .json(utils.apiSuccess("Success fetch data type", type));
     } catch (error) {
       console.log(error);
-      return res.status(500).json(utils.error("Internal Server Error"));
+      return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
   create: async (req, res) => {
@@ -96,7 +96,7 @@ module.exports = {
         },
       });
 
-      if (!check) return res.status(404).json(utils.error("type not found"));
+      if (!check) return res.status(404).json(utils.apiError("type not found"));
 
       await db.courseType.delete({
         where: {
