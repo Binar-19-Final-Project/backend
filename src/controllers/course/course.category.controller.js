@@ -109,7 +109,7 @@ module.exports = {
       const nameSlug = await utils.createSlug(name);
       const id = parseInt(req.params.id);
       const photoCategory = req.file;
-      console.log(req.file, "gagal");
+      /* console.log(req.file, "gagal"); */
       const allowedMimes = [
         "image/png",
         "image/jpeg",
