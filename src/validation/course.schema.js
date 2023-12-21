@@ -59,10 +59,15 @@ module.exports = {
   ],
 
   category: [
-    body("name").notEmpty().withMessage("Nama Kategori wajib diisi"),
+    body("name")
+        .notEmpty().withMessage("Nama Kategori tidak boleh kosong"),
+    body("isPublished")
+        .notEmpty().withMessage("Status kategori tidak boleh kosong")
+        .isBoolean().withMessage("Status kategori harus berupa boolean")
   ],
 
   level: [
-    body("name").notEmpty().withMessage("Nama level wajib diisi"),
+    body("name")
+        .notEmpty().withMessage("Nama level tidak boleh kosong"),
   ],
 };
