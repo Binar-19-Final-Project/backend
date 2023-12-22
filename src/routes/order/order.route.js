@@ -6,8 +6,8 @@ const express = require('express'),
     checkRole = require('../../middlewares/check.role'),
     router = express.Router()
 
-router.get('/', verifyToken, controller.order.getOrderHistoryById)
-router.get('/all', controller.order.getOrders)
+router.get('/', verifyToken, checkRole('user'), controller.order.getOrderHistoryById)
+router.get('/all', verifyToken, checkRole('admin'), controller.order.getOrders)
 router.post('/:courseId', verifyToken, checkRole('user'), controller.order.createOrder)
 
 module.exports = router

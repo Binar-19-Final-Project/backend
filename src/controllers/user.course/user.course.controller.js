@@ -15,7 +15,7 @@ module.exports = {
 
             let whereCondition = {}
 
-            whereCondition = filter.userCourse.filterWhereCondition(userId, whereCondition, category, level, promo, learningStatus )
+            whereCondition = await filter.userCourse.filterWhereCondition(userId, whereCondition, category, level, promo, learningStatus )
 
             /* Order By */
             const orderBy = await filter.userCourse.filterOrderBy(popular, latest)

@@ -1,21 +1,28 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
-    userLearningProgress = require('../../utils/user-learning-progress')
+    userLearningProgress = require('../../utils/user-learning-progress'),
+    filter = require('../../utils/filter')
 
 module.exports = {
 
     getOrders: async (req, res) => {
         try {
 
-            let { page = 1, limit = 10 } = req.query
+
+            let { page = 1, limit = 10, status } = req.query
 
             /* Pagination */
             let skip = ( page - 1 ) * limit
 
+            /* Filter */
+            /* let whereCondition = {} */
+
+            const whereCondition = await filter.order.filterWhereCondition(status)
 
             const data = await db.order.findMany({
                 take: parseInt(limit),
                 skip: skip,
+                where: whereCondition,
                 orderBy: {
                     createdAt: 'desc'
                 }

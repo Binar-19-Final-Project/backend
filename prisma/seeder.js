@@ -10,39 +10,39 @@ const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
 const usedCourseLevel = new Set()
 const usedCoursePromoName = new Set()
-// const existingPairs = new Set();
+const existingPairs = new Set();
 
 
 async function seedData()  {
     /* Reset database before run seeder */
       /* Delete all data in table */
-    await db.$transaction([db.user.deleteMany()])
-    await db.$transaction([db.courseCategory.deleteMany()])
-    await db.$transaction([db.courseType.deleteMany()])
-    await db.$transaction([db.courseLevel.deleteMany()])
-    await db.$transaction([db.courseInstructor.deleteMany()])
-    await db.$transaction([db.coursePromo.deleteMany()])
-    await db.$transaction([db.course.deleteMany()])
-    await db.$transaction([db.courseModule.deleteMany()])
-    await db.$transaction([db.courseContent.deleteMany()])
-    await db.$transaction([db.courseTestimonial.deleteMany()])
-    await db.$transaction([db.userCourse.deleteMany()])
+    // await db.$transaction([db.user.deleteMany()])
+    // await db.$transaction([db.courseCategory.deleteMany()])
+    // await db.$transaction([db.courseType.deleteMany()])
+    // await db.$transaction([db.courseLevel.deleteMany()])
+    // await db.$transaction([db.courseInstructor.deleteMany()])
+    // await db.$transaction([db.coursePromo.deleteMany()])
+    // await db.$transaction([db.course.deleteMany()])
+    // await db.$transaction([db.courseModule.deleteMany()])
+    // await db.$transaction([db.courseContent.deleteMany()])
+    // await db.$transaction([db.courseTestimonial.deleteMany()])
+    // await db.$transaction([db.userCourse.deleteMany()])
     await db.$transaction([db.order.deleteMany()])
       /* Reset ID to 1 again */
     // await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
     await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
-    /* User Seeder */
+    // /* User Seeder */
     // for (let i = 0; i < 10; i++) {
     //     const seedUsers = {
     //         name: faker.person.fullName(),
@@ -53,13 +53,13 @@ async function seedData()  {
     //         country: faker.location.country(),
     //         photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
     //         verified: true,
-    //         roleId: faker.number.int({ min: 1, max: 2 }), 
+    //         roleName: "user", 
     //     }
     
     //     await db.user.create({ data: seedUsers })
     // }
 
-    /* Course Category Seeder */
+    // /* Course Category Seeder */
     // for (let i = 0; i < 6; i++) {
     //   let courseCategoryName
     //     do {
@@ -79,7 +79,7 @@ async function seedData()  {
     //   await db.courseCategory.create({ data: seedCategoryCourse })
     // }
 
-    /* Course Type Seeder */
+    // /* Course Type Seeder */
     // for (let i = 0; i < 2; i++) {
     //   let courseType
     //     do {
@@ -98,7 +98,7 @@ async function seedData()  {
     //   await db.courseType.create({ data: seedCourseType })
     // }
 
-    /* Course Level Seeder */
+    // /* Course Level Seeder */
     // for (let i = 0; i < 3; i++) {
     //   let courseLevel
     //     do {
@@ -117,7 +117,7 @@ async function seedData()  {
     //   await db.courseLevel.create({ data: seedCourseLevel })
     // }
 
-    /* Course Instructor Seeder */
+    // /* Course Instructor Seeder */
     // for (let i = 0; i < 5; i++) {
 
     //   const name = faker.person.fullName()
@@ -133,7 +133,7 @@ async function seedData()  {
     //   await db.courseInstructor.create({ data: seedInsctructor })
     // } 
 
-    /* Course Promo Seeder */
+    // /* Course Promo Seeder */
     // for (let i = 0; i < 2; i++) {
     //   let promoName
     //   do {
@@ -154,7 +154,7 @@ async function seedData()  {
     //   await db.coursePromo.create({ data: seedPromos })
     // } 
 
-    /* Course Data Seeder */
+    // /* Course Data Seeder */
     // for (let i = 0; i < 30; i++) {
 
     //   const title = faker.commerce.productName()
@@ -183,7 +183,7 @@ async function seedData()  {
     //   await db.course.create({ data: seedCourse })
     // }
 
-    /* Course Module Seeder */
+    // /* Course Module Seeder */
     // for (let i = 0; i < 100; i++) {
 
     //   const title = faker.commerce.productName()
@@ -198,7 +198,7 @@ async function seedData()  {
     //   await db.courseModule.create({ data: seedCourseModules })
     // }
 
-     /* Course Content Seeder */
+    //  /* Course Content Seeder */
     //  for (let i = 0; i < 400; i++) {
 
     //   const title = faker.commerce.productName()
@@ -218,7 +218,7 @@ async function seedData()  {
     //   await db.courseContent.create({ data: seedCourseContents })
     // }
 
-    /* Course Testimonial Seeder */
+    // /* Course Testimonial Seeder */
     // for (let i = 0; i < 60; i++) {
     //   let userId = faker.number.int({ min: 1, max: 10 })
     //   let courseId = faker.number.int({ min: 1, max: 30 })
@@ -238,7 +238,7 @@ async function seedData()  {
     //   }
     // }
 
-    /* User Course Seeder */
+    // /* User Course Seeder */
     // for (let i = 0; i < 100; i++) {
     //   let userId = faker.number.int({ min: 1, max: 10 })
     //   let courseId = faker.number.int({ min: 1, max: 30 })
@@ -265,18 +265,18 @@ async function seedData()  {
     // }
 
     /* Course Order Seeder */
-    // for (let i = 0; i < 60; i++) {
-    //   const seedUserOrders = {
-    //       orderCode: faker.string.nanoid(),
-    //       price: faker.number.int({ min: 100000, max: 1000000 }),
-    //       status: faker.helpers.arrayElement(['Success', 'Cancel', 'Pending']),
-    //       paymentMethod: faker.helpers.arrayElement(['BRI', 'BCA', 'Permata', 'BNI']),
-    //       userId: faker.number.int({ min: 1, max: 10 }),
-    //       courseId: faker.number.int({ min: 1, max: 30 })
-    //   }
+    for (let i = 0; i < 60; i++) {
+      const seedUserOrders = {
+          orderCode: faker.string.nanoid(),
+          price: faker.number.int({ min: 100000, max: 1000000 }),
+          status: faker.helpers.arrayElement(['Success', 'Cancel', 'Pending']),
+          paymentMethod: faker.helpers.arrayElement(['BRI', 'BCA', 'Permata', 'BNI']),
+          userId: faker.number.int({ min: 1, max: 10 }),
+          courseId: faker.number.int({ min: 1, max: 30 })
+      }
   
-    //   await db.order.create({ data: seedUserOrders })
-    // }
+      await db.order.create({ data: seedUserOrders })
+    }
 
     /* Disconnect Prisma Connection */
     await db.$disconnect()
@@ -292,4 +292,3 @@ seedData()
     console.error(error)
     process.exit(1)
   });
-

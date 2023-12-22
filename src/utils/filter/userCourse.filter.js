@@ -1,6 +1,6 @@
 
 module.exports = {
-    filterWhereCondition: (userId, filter, category, level, promo, learningStatus) => {
+    filterWhereCondition: async (userId, filter, category, level, promo, learningStatus) => {
         filter.userId = userId
 
         if (!filter.course) {
