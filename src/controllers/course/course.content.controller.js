@@ -10,9 +10,6 @@ module.exports = {
             const courseId = parseInt(req.params.courseId)
             const moduleId = parseInt(req.params.moduleId)
 
-            if (!courseId) return res.status(422).json(utils.apiError("Params courseId tidak boleh kosong"))
-            if (!moduleId) return res.status(422).json(utils.apiError("Params moduleId tidak boleh kosong"))
-
             const checkCourse = await db.course.findUnique({
                 where: {
                     id: courseId
@@ -171,6 +168,7 @@ module.exports = {
                     duration: duration,
                     videoUrl: videoUrl,
                     isDemo: isDemo,
+                    courseId: courseId,
                     moduleId: moduleId
                 }
             })
@@ -200,7 +198,7 @@ module.exports = {
     updateCourseContent: async (req, res) => {
         try {
 
-            const {title, sequence, videoUrl, duration, isDemo, moduleId} = req.body
+            const { title, sequence, videoUrl, duration, isDemo, moduleId, courseId } = req.body
             const id = parseInt(req.params.id)
 
             const checkContent = await db.courseContent.findUnique({
@@ -211,13 +209,28 @@ module.exports = {
 
             if(!checkContent) return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
 
-            const checkModule = await db.courseModule.findUnique({
+            const checkCourse = await db.course.findUnique({
+                where:{
+                    id: courseId
+                },
+                include: {
+                    courseModule: {
+                        where: {
+                            id: moduleId
+                        }
+                    }
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course atau Modul tidak ditemukkan"))
+
+            /* const checkModule = await db.courseModule.findUnique({
                 where:{
                     id: moduleId
                 }
             })
 
-            if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan"))
+            if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan")) */
 
             const checkTitle = await db.courseContent.findFirst({
                 where: {
@@ -237,6 +250,7 @@ module.exports = {
                 where:{
                     sequence: sequence,
                     moduleId: moduleId,
+                    courseId: courseId,
                 },
                 select: {
                     id: true
@@ -264,7 +278,8 @@ module.exports = {
                     duration: duration,
                     videoUrl: videoUrl,
                     isDemo: isDemo,
-                    moduleId: moduleId
+                    moduleId: moduleId,
+                    courseId: courseId,
                 }
             })
 

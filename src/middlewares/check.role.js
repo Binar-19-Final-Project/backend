@@ -15,13 +15,8 @@ const checkRole = (...roles) => {
 
             if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
 
-            const role = await db.role.findUnique({
-                where:{
-                    id: user.roleId
-                }
-            })
 
-            if(!roles.includes(role.name)) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+            if(!roles.includes(user.roleName)) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
             return next()
             

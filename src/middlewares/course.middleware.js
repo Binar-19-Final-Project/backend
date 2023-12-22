@@ -105,17 +105,10 @@ const courseContentMiddleware = async (req, res, next) => {
             }
         })
     
-        const role = await db.role.findUnique({
-            where: {
-                id: user.roleId
-            }
-        })
-    
-    
         if(content) {
             if(content.isDemo === true) {
                 return next()
-            } else if(userCourse || role.name === 'admin') {
+            } else if(userCourse || user.roleName === 'admin') {
                 return next() 
             } else {
                 return res.status(403).json(utils.apiError("Silahkan ambil atau order kelas ini terlebih dahulu"))

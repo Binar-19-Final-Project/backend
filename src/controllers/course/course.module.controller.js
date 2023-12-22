@@ -86,8 +86,6 @@ module.exports = {
     getCourseModuleByIdAndCourseId: async (req, res) => {
 
         const { courseId, moduleId } = req.params
-        if (!courseId) return res.status(422).json(utils.apiError("Params courseId tidak boleh kosong"))
-        if (!moduleId) return res.status(422).json(utils.apiError("Params moduleId tidak boleh kosong"))
         
         try {
 

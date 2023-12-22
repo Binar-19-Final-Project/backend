@@ -1,15 +1,4 @@
 -- CreateTable
-CREATE TABLE `roles` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `roles_name_key`(`name`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `uuid` VARCHAR(191) NOT NULL,
@@ -23,7 +12,7 @@ CREATE TABLE `users` (
     `photo_prfile` VARCHAR(191) NULL,
     `image_filename` VARCHAR(191) NULL,
     `reset_token` TEXT NULL,
-    `role_id` INTEGER NOT NULL DEFAULT 1,
+    `role_name` VARCHAR(191) NOT NULL,
     `verified` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -62,6 +51,7 @@ CREATE TABLE `course_categories` (
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `urlPhoto` VARCHAR(191) NOT NULL,
+    `image_filename` VARCHAR(191) NULL,
     `is_published` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -202,17 +192,6 @@ CREATE TABLE `course_testimonials` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `user_course_wishlist` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `user_id` INTEGER NOT NULL,
-    `course_id` INTEGER NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `orders` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `order_code` VARCHAR(191) NOT NULL,
@@ -284,12 +263,6 @@ ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_userId_fke
 
 -- AddForeignKey
 ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_courseId_fkey` FOREIGN KEY (`courseId`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `user_course_wishlist` ADD CONSTRAINT `user_course_wishlist_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `user_course_wishlist` ADD CONSTRAINT `user_course_wishlist_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `orders` ADD CONSTRAINT `orders_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
