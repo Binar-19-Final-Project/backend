@@ -4,19 +4,16 @@ const jwt = require("jsonwebtoken"),
 
 
 const verifyToken = async (req, res, next) => {
-  const authHeader = req.headers["authorization"]
-  const token = authHeader && authHeader.split(" ")[1]
-
-  if (!token)
-    return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
-
   try {
+    const authHeader = req.headers["authorization"]
+    if (!authHeader) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+    
+    const token = authHeader && authHeader.split(" ")[1]
+    if (!token) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+
     const jwtPayload = jwt.verify(token, JWT_SECRET_KEY)
-
-    if (!jwtPayload) {
-      return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
-    }
-
+    if (!jwtPayload) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+    
     res.user = jwtPayload
 
     return next()
