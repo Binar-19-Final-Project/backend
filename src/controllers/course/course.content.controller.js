@@ -175,7 +175,7 @@ module.exports = {
 
             const userCourses = await db.userCourse.findMany({
                 where: {
-                    courseId: checkModule.courseId
+                    courseId: courseId
                 },
                 include: {
                     course: true
