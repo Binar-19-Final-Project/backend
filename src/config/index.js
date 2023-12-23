@@ -5,7 +5,7 @@ module.exports = {
   PORT: process.env.PORT,
 
   /* JWT Key Configuration*/
-  JWT_SECRET_KEY: process.env.PORT,
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
 
   /* Nodemailer Configuration */
   NODEMAILER_SERVICE: process.env.NODEMAILER_SERVICE,

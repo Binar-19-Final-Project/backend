@@ -6,7 +6,7 @@ const db = require('../../../prisma/connection'),
 module.exports = {
     getCourses: async(req, res) => {
         try {
-            let { page = 1, limit = 10, search, category, level, type, popular, promo, latest } = req.query
+            let { page = 1, limit = 10, search, category, level, type, popular, promo, latest, published } = req.query
 
             /* Pagination */
             let skip = ( page - 1 ) * limit
@@ -14,7 +14,7 @@ module.exports = {
             /* Filter */
             let whereCondition = {}
 
-            whereCondition = await filter.course.filterWhereCondition(whereCondition, search, category, level, type, promo)
+            whereCondition = await filter.course.filterWhereCondition(whereCondition, search, category, level, type, promo, published)
 
             /* Order By */
             const orderBy = await filter.course.filterOrderBy(popular, latest)
@@ -76,7 +76,7 @@ module.exports = {
 
                 const totalTaken = taken.length
 
-                console.log(totalTaken)
+                /* console.log(totalTaken) */
               
                 return {
                   id: course.id,
@@ -98,6 +98,7 @@ module.exports = {
                   namePromo: promoName,
                   discount: discount,
                   totalPrice: totalPrice,
+                  isPublished: course.isPublished,
                   publishedAt: course.createdAt
                 }
             })
@@ -110,7 +111,7 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Tidak ada data course"))
             }
 
-            const message = await filter.message.filterMessage({ search, category, level, type, promo, popular, latest })
+            const message = await filter.message.filterMessage({ search, category, level, type, promo, published, popular, latest })
 
             return res.status(200).json(utils.apiSuccess(
                 message,
@@ -221,6 +222,7 @@ module.exports = {
                 totalPrice: totalPrice,
                 userCourseId: null,
                 learningProgress: null,
+                isPublished: course.isPublished,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
                 groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",

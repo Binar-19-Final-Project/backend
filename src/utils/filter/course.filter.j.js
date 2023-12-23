@@ -51,6 +51,13 @@ module.exports = {
                 isPromo: true
             }
         }
+
+        if (promo) {
+            filter = {
+                ...filter,
+                isPublished: true
+            }
+        }
     
         return filter
     },

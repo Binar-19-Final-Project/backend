@@ -1,6 +1,6 @@
 
 module.exports = {
-    filterMessage: async ({ search, category, level, type, promo, popular, latest }) => {
+    filterMessage: async ({ search, category, level, type, promo, published, popular, latest }) => {
         let message = "Berhasil mengambil data course"
             
         if (search) {
@@ -21,6 +21,10 @@ module.exports = {
 
         if (promo) {
             message += ` berdasarkan promo`
+        }
+
+        if (published) {
+            message += ` berdasarkan status published`
         }
 
         if (popular) {
