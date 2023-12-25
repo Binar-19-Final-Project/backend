@@ -393,6 +393,8 @@ module.exports = {
             const randomCode = await utils.generateCodeCategory()
             const courseCode = `${cattegoryAbbrevation}-${randomCode}`
 
+            /* const type = checkType.name */
+
             const course = await db.course.create({
                 data: {
                     title: title,
@@ -411,6 +413,12 @@ module.exports = {
                     imageFilename: uploadFile.name,
                 }
             })
+
+           /*  if (type === 'Premium') {
+                await db.courseDiscussion.create({
+                    
+                })
+            } */
 
             return res.status(201).json(utils.apiSuccess('Sukses membuat kelas', course))
         } catch (error) {
