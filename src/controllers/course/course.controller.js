@@ -40,6 +40,12 @@ module.exports = {
                             }
                         }
                     }
+                    /* courseModule: true,
+                    courseContent: {
+                        orderBy: {
+                            sequence: 'asc'
+                        }
+                    } */
                 },
                orderBy: orderBy
             })
@@ -57,12 +63,16 @@ module.exports = {
 
                 /* const taken = course.userCourse.length */
 
-                totalDurationModule = 0
+                let totalDurationContent = 0
                 course.courseModule.map((module) => {
                     module.courseContent.map((content) => {
-                        totalDurationModule += content.duration
+                        totalDurationContent += content.duration
                     })
                 })
+
+                /* course.courseContent.map((content) => {
+                    totalDurationContent += content.duration
+                }) */
 
                 let totalPrice = originalPrice
                 if (discount) {
@@ -86,7 +96,7 @@ module.exports = {
                   description: course.description,
                   originalPrice: originalPrice,
                   rating: averageRatings,
-                  duration: totalDurationModule,
+                  duration: totalDurationContent,
                   taken: totalTaken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
@@ -149,6 +159,12 @@ module.exports = {
                             userLearningProgress: true
                         }
                     },
+                    /* courseModule: true,
+                    courseContent: {
+                        orderBy: {
+                            sequence: 'asc'
+                        }
+                    } */
                     courseModule: {
                         include: {
                             courseContent: {
@@ -157,7 +173,8 @@ module.exports = {
                                   }
                             }
                         }
-                    }
+                    },
+                    courseContent: true
                 }
             })
 
@@ -251,6 +268,7 @@ module.exports = {
                             slug: content.slug,
                             isDemo: content.isDemo,
                             duration: content.duration,
+                            isFinished: null
                         }))
                     }
                 })
@@ -263,12 +281,32 @@ module.exports = {
                         courseId: parseInt(id)
                     }
                 })
+
                 if (userCourse) {
+
+                    const userLearningProgress = await db.userLearningProgress.findMany({
+                        where: {
+                            userCourseId: userCourse.id,
+                        }
+                    })
+
                     data.userCourseId = userCourse.id
                     data.learningProgress = userCourse.progress
+
+                    data.modules.forEach((module) => {
+                        module.contents.forEach((content) => {
+                            const status = userLearningProgress.find(progress => progress.contentId === content.contentId)
+                            content.isFinished = status.isFinished
+                        })
+                    })
                 } else {
                     data.userCourseId = null
                     data.learningProgress = null
+                    data.modules.forEach((module) => {
+                        module.contents.forEach((content) => {
+                            content.isFinished = null
+                        })
+                    })
                 }
             }
 
