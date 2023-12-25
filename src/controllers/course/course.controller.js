@@ -144,7 +144,11 @@ module.exports = {
                     coursePromo: true,
                     courseInstructor: true,
                     courseTestimonial: true,
-                    userCourse: true,
+                    userCourse: {
+                        include: {
+                            userLearningProgress: true
+                        }
+                    },
                     courseModule: {
                         include: {
                             courseContent: {

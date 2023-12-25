@@ -78,6 +78,12 @@ module.exports = {
                 where: {
                     userId: userId,
                     courseId: parseInt(courseId)
+                },
+            })
+
+            const userLearningProgress = await db.userLearningProgress.findFirst({
+                where: {
+                    userCourseId: userCourses.id
                 }
             })
 
@@ -92,10 +98,12 @@ module.exports = {
                 moduleId: courseContent.moduleId,
                 courseId: courseContent.courseModule.courseId,
                 userCourseId: null,
+                isFinished: null,
             };
             
             if (userCourses) {
-                data.userCourseId = userCourses.id;
+                data.userCourseId = userCourses.id
+                data.isFinished = userLearningProgress.isFinished
             }
             
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data));
