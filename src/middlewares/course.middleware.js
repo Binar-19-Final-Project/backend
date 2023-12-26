@@ -184,6 +184,9 @@ const courseContentMiddleware = async (req, res, next) => {
         })
 
         if (userCourse || user.roleName === 'admin') {
+
+            res.user = jwtPayload
+            
             return next() 
         } else {
             return res.status(403).json(utils.apiError("Silahkan ambil atau order kelas ini terlebih dahulu"))
