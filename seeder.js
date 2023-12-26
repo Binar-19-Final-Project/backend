@@ -1,4 +1,4 @@
-const db = require('./connection')
+const db = require('./prisma/connection')
 const { faker } = require('@faker-js/faker/locale/id_ID')
 const bcrypt = require("bcrypt")
 const slugify = require('slugify');

@@ -22,6 +22,36 @@ CREATE TABLE `users` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `admins` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `role_name` VARCHAR(191) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `admins_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `instructors` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `role_name` VARCHAR(191) NOT NULL,
+    `photo_profile` VARCHAR(191) NULL,
+    `image_filename` VARCHAR(191) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `instructors_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `user_courses` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `progress` INTEGER NOT NULL,
@@ -123,7 +153,9 @@ CREATE TABLE `courses` (
     `taken` INTEGER NULL,
     `image_url` VARCHAR(191) NOT NULL,
     `image_filename` VARCHAR(191) NULL,
+    `course_discussion_id` INTEGER NULL,
     `course_instructor_id` INTEGER NOT NULL,
+    `iinstructor_id` INTEGER NOT NULL,
     `course_type_id` INTEGER NOT NULL,
     `course_category_id` INTEGER NOT NULL,
     `course_level_id` INTEGER NOT NULL,
@@ -134,6 +166,7 @@ CREATE TABLE `courses` (
     `updated_at` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `courses_slug_key`(`slug`),
+    UNIQUE INDEX `courses_course_discussion_id_key`(`course_discussion_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -192,6 +225,67 @@ CREATE TABLE `course_testimonials` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `course_discussions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `discussions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `question` VARCHAR(191) NOT NULL,
+    `closed` BOOLEAN NOT NULL DEFAULT false,
+    `user_id` INTEGER NOT NULL,
+    `instructor_id` INTEGER NOT NULL,
+    `course_discussion_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `discussions_course_discussion_id_key`(`course_discussion_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `discussion_images` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `urlPhoto` VARCHAR(191) NOT NULL,
+    `discussion_image_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `commentar_discussions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `commentar` VARCHAR(191) NOT NULL,
+    `user_id` INTEGER NOT NULL,
+    `instructor_id` INTEGER NOT NULL,
+    `discussion_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `commentar_images` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `urlPhoto` VARCHAR(191) NOT NULL,
+    `discussion_commentar_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `orders` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `order_code` VARCHAR(191) NOT NULL,
@@ -229,7 +323,13 @@ ALTER TABLE `user_courses` ADD CONSTRAINT `user_courses_user_id_fkey` FOREIGN KE
 ALTER TABLE `user_courses` ADD CONSTRAINT `user_courses_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `courses` ADD CONSTRAINT `courses_course_discussion_id_fkey` FOREIGN KEY (`course_discussion_id`) REFERENCES `course_discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `courses` ADD CONSTRAINT `courses_course_instructor_id_fkey` FOREIGN KEY (`course_instructor_id`) REFERENCES `course_instructors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `courses` ADD CONSTRAINT `courses_iinstructor_id_fkey` FOREIGN KEY (`iinstructor_id`) REFERENCES `instructors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `courses` ADD CONSTRAINT `courses_course_type_id_fkey` FOREIGN KEY (`course_type_id`) REFERENCES `course_types`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -263,6 +363,30 @@ ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_userId_fke
 
 -- AddForeignKey
 ALTER TABLE `course_testimonials` ADD CONSTRAINT `course_testimonials_courseId_fkey` FOREIGN KEY (`courseId`) REFERENCES `courses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `discussions` ADD CONSTRAINT `discussions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `discussions` ADD CONSTRAINT `discussions_instructor_id_fkey` FOREIGN KEY (`instructor_id`) REFERENCES `instructors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `discussions` ADD CONSTRAINT `discussions_course_discussion_id_fkey` FOREIGN KEY (`course_discussion_id`) REFERENCES `course_discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `discussion_images` ADD CONSTRAINT `discussion_images_discussion_image_id_fkey` FOREIGN KEY (`discussion_image_id`) REFERENCES `discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_instructor_id_fkey` FOREIGN KEY (`instructor_id`) REFERENCES `instructors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_discussion_id_fkey` FOREIGN KEY (`discussion_id`) REFERENCES `discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `commentar_images` ADD CONSTRAINT `commentar_images_discussion_commentar_id_fkey` FOREIGN KEY (`discussion_commentar_id`) REFERENCES `commentar_discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `orders` ADD CONSTRAINT `orders_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -393,7 +393,7 @@ module.exports = {
             const randomCode = await utils.generateCodeCategory()
             const courseCode = `${cattegoryAbbrevation}-${randomCode}`
 
-            /* const type = checkType.name */
+            const type = checkType.name
 
             const course = await db.course.create({
                 data: {
