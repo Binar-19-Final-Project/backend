@@ -15,7 +15,7 @@ router.post('/', multer.single('courseImage'), validate(schema.course), verifyTo
 router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)
 router.get('/:courseId/modules/:moduleId', controller.courseModule.getCourseModuleByIdAndCourseId)
 
-router.get('/:courseId/modules/:moduleId/contents/:contentId', verifyToken, courseContentMiddleware, controller.courseContent.getCourseContentByIdModuleAndCourse)
+router.get('/:courseId/modules/:moduleId/contents/:contentId', /* verifyToken,  */courseContentMiddleware, controller.courseContent.getCourseContentByIdModuleAndCourse)
 
 router.get('/:courseId/modules/:moduleId/contents', verifyToken, checkRole('admin'), controller.courseContent.getAllCourseContentByModuleAndCourseId)
 router.put('/:courseId', verifyToken, checkRole('admin'), multer.single('courseImage'), validate(schema.course), controller.course.updateCourse)

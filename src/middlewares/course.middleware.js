@@ -157,9 +157,18 @@ const courseContentMiddleware = async (req, res, next) => {
             return next()
         }
 
-        if (!res.user) {
-            return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+        const authHeader = req.headers["authorization"]
+        if (!authHeader) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+        
+        const token = authHeader && authHeader.split(" ")[1]
+        if (!token) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+
+        const jwtPayload = jwt.verify(token, JWT_SECRET_KEY)
+        if (!jwtPayload) {
+            return res.status(401).json(utils.apiError("Token tidak valid"))
         }
+            
+        res.user = jwtPayload
 
         const userCourse = await db.userCourse.findFirst({
             where: {
@@ -174,13 +183,12 @@ const courseContentMiddleware = async (req, res, next) => {
             }
         })
 
-        /* console.log(user) */
-
         if (userCourse || user.roleName === 'admin') {
             return next() 
         } else {
             return res.status(403).json(utils.apiError("Silahkan ambil atau order kelas ini terlebih dahulu"))
         }
+
     } catch (error) {
         console.log(error)
         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
