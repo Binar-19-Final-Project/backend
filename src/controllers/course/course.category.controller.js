@@ -154,6 +154,18 @@ module.exports = {
       }
 
       const { name, isPublished } = req.body;
+
+      const checkName = await db.courseCategory.findFirst({
+          where: {
+              name: name,
+              NOT: {
+                  id: id
+              }
+          }
+      })
+
+      if(checkName) return res.status(409).json(utils.apiError("Nama kategori sudah terdaftar"))
+
       const nameSlug = await utils.createSlug(name);
 
       await db.courseCategory.update({
