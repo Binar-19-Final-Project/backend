@@ -174,6 +174,8 @@ const courseContentMiddleware = async (req, res, next) => {
             }
         })
 
+        /* console.log(user) */
+
         if (userCourse || user.roleName === 'admin') {
             return next() 
         } else {
