@@ -72,21 +72,26 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Konten tidak ditemukkan"))
             }
 
-            const userId = res.user.id
+            /* const userId = res.user.id */
 
-            const userCourses = await db.userCourse.findFirst({
-                where: {
-                    userId: userId,
-                    courseId: parseInt(courseId)
-                },
-            })
-
-            const userLearningProgress = await db.userLearningProgress.findFirst({
-                where: {
-                    userCourseId: userCourses.id
-                }
-            })
-
+            let userCourses
+            let userLearningProgress
+            
+            if (res.user) {
+                userCourses = await db.userCourse.findFirst({
+                    where: {
+                        userId: res.user.id,
+                        courseId: parseInt(courseId)
+                    },
+                })
+            
+                userLearningProgress = await db.userLearningProgress.findFirst({
+                    where: {
+                        userCourseId: userCourses.id
+                    }
+                })
+            }
+            
             let data = {
                 contentId: courseContent.id,
                 title: courseContent.title,
@@ -102,8 +107,8 @@ module.exports = {
             };
             
             if (userCourses) {
-                data.userCourseId = userCourses.id
-                data.isFinished = userLearningProgress.isFinished
+                data.userCourseId = userCourses.id;
+                data.isFinished = userLearningProgress.isFinished;
             }
             
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data));
