@@ -184,8 +184,6 @@ const courseContentMiddleware = async (req, res, next) => {
         })
 
         if (userCourse || user.roleName === 'admin') {
-
-            res.user = jwtPayload
             
             return next() 
         } else {
