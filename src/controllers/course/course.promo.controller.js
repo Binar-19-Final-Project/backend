@@ -87,8 +87,11 @@ module.exports = {
 
             const checkName = await db.coursePromo.findFirst({
                 where: {
-                    name: name
-                }
+                    name: name,
+                    NOT: {
+                        id: id
+                    }
+                },
             })
 
             if(checkName) return res.status(409).json(utils.apiError("Nama promo sudah terdaftar"))

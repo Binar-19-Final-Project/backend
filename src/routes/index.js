@@ -1,6 +1,7 @@
 const express = require("express"),
     authRoute = require('./auth'),
     courseRoute = require('./course'),
+    analyticRoute = require('./analytic'),
     orderRoute = require('./order'),
     userCoursesRoute = require('./user.course'),
     userProfileRoute = require('./user.profile'),
@@ -10,6 +11,7 @@ const express = require("express"),
 
 router.use("/auth", authRoute)
 router.use(courseRoute)
+router.use(analyticRoute)
 router.use(orderRoute)
 router.use(userCoursesRoute)
 router.use("/profile", userProfileRoute)

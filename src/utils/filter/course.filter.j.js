@@ -1,7 +1,7 @@
 
 module.exports = {
 
-    filterWhereCondition: async (filter, search, category, level, type, promo) => {
+    filterWhereCondition: async (filter, search, category, level, type, promo, published) => {
         if(search) {
             filter.OR = [
                 { title: { contains: search } }
@@ -52,7 +52,7 @@ module.exports = {
             }
         }
 
-        if (promo) {
+        if (published) {
             filter = {
                 ...filter,
                 isPublished: true

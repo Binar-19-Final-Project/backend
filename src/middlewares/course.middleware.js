@@ -80,7 +80,7 @@ const courseCertificate = async (req, res, next) => {
     }
 }
 
-const courseContentMiddleware = async (req, res, next) => {
+/* const courseContentMiddleware = async (req, res, next) => {
     try {
         const userCourse = await db.userCourse.findFirst({
             where: {
@@ -125,6 +125,72 @@ const courseContentMiddleware = async (req, res, next) => {
         } else {
             return res.status(404).json(utils.apiError("Content tidak ditemukan"))
         }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+    }
+} */
+
+const courseContentMiddleware = async (req, res, next) => {
+    try {
+        const content = await db.courseContent.findFirst({
+            where: {
+                id: parseInt(req.params.contentId), 
+                moduleId: parseInt(req.params.moduleId), 
+                courseModule: {
+                    courseId: parseInt(req.params.courseId),
+                },
+            },
+            include: {
+                courseModule: {
+                    include: {
+                        course: true
+                    }
+                }
+            }
+        })
+
+        if (!content) {
+            return res.status(404).json(utils.apiError("Content tidak ditemukan"))
+        }
+
+        if (content.isDemo === true) {
+            return next()
+        }
+
+        const authHeader = req.headers["authorization"]
+        if (!authHeader) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+        
+        const token = authHeader && authHeader.split(" ")[1]
+        if (!token) return res.status(401).json(utils.apiError("Silahkan login terlebih dahulu"))
+
+        const jwtPayload = jwt.verify(token, JWT_SECRET_KEY)
+        if (!jwtPayload) {
+            return res.status(401).json(utils.apiError("Token tidak valid"))
+        }
+            
+        res.user = jwtPayload
+
+        const userCourse = await db.userCourse.findFirst({
+            where: {
+                userId: res.user.id,
+                courseId: parseInt(req.params.courseId)
+            }
+        })
+
+        const user = await db.user.findUnique({
+            where: {
+                id: res.user.id
+            }
+        })
+
+        if (userCourse || user.roleName === 'admin') {
+            
+            return next() 
+        } else {
+            return res.status(403).json(utils.apiError("Silahkan ambil atau order kelas ini terlebih dahulu"))
+        }
+
     } catch (error) {
         console.log(error)
         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
