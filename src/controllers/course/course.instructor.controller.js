@@ -5,13 +5,7 @@ const db = require('../../../prisma/connection'),
 module.exports = {
     read: async (req, res) => {
         try {
-            const data = await db.courseInstructor.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true
-                }
-            })
+            const data = await db.courseInstructor.findMany()
             return res.status(200).json(utils.apiSuccess("Berhasil mengambil semua data instructor", data))
 
         } catch (error) {
@@ -27,11 +21,6 @@ module.exports = {
             const instructor = await db.courseInstructor.findUnique({
                 where: { 
                     id: parseInt(id)
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true
                 }
             })
             if (!instructor) {

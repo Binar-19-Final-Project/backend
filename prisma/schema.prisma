@@ -49,23 +49,6 @@ model Admin {
   @@map("admins")
 }
 
-model Instructor {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  email             String              @unique
-  password          String
-  roleName          String              @map("role_name")
-  photoProfile  String?  @map("photo_profile")
-  imageFilename String?  @map("image_filename")
-  course        Course[]
-  discussion        Discussion[]
-  commentarDiscussion DiscussionCommentar[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-
-  @@map("instructors")
-}
-
 model UserCourse {
   id                   Int                    @id @default(autoincrement())
   progress             Int
@@ -128,14 +111,18 @@ model CourseLevel {
 }
 
 model CourseInstructor {
-  id            Int      @id @default(autoincrement())
-  name          String
-  slug          String
+id                Int                 @id @default(autoincrement())
+  name              String
+  email             String              @unique
+  password          String
+  roleName          String              @map("role_name")
   photoProfile  String?  @map("photo_profile")
   imageFilename String?  @map("image_filename")
   course        Course[]
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  discussion        Discussion[]
+  commentarDiscussion DiscussionCommentar[]
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
 
   @@map("course_instructors")
 }
@@ -168,8 +155,6 @@ model Course {
   courseDiscussion   CourseDiscussion?    @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
   courseInstructorId Int                 @map("course_instructor_id")
   courseInstructor   CourseInstructor    @relation(fields: [courseInstructorId], references: [id], onDelete: Cascade)
-  instructorId Int                 @map("iinstructor_id")
-  instructor   Instructor    @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   courseTypeId       Int                 @map("course_type_id")
   courseType         CourseType          @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
   courseCategoryId   Int                 @map("course_category_id")
@@ -270,7 +255,7 @@ model Discussion {
   userId              Int                    @map("user_id")
   user                User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   instructorId              Int                    @map("instructor_id")
-  instructor                Instructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructor                CourseInstructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   courseDiscussionId Int              @unique @map("course_discussion_id")
   courseDiscussion   CourseDiscussion @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
   commentar          DiscussionCommentar[]
@@ -298,7 +283,7 @@ model DiscussionCommentar {
   userId               Int                    @map("user_id")
   user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   instructorId               Int                    @map("instructor_id")
-  instructor                 Instructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructor                 CourseInstructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   discussionId Int              @map("discussion_id")
   discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")

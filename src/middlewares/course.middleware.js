@@ -112,6 +112,7 @@ const courseContentMiddleware = async (req, res, next) => {
                 id: res.user.id
             }
         })
+
     
         if(content) {
             if(content.isDemo === true) {

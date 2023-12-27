@@ -154,6 +154,7 @@ module.exports = {
                     coursePromo: true,
                     courseInstructor: true,
                     courseTestimonial: true,
+                    courseDiscussion: true,
                     userCourse: {
                         include: {
                             userLearningProgress: true
@@ -246,7 +247,7 @@ module.exports = {
                 isPublished: course.isPublished,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
-                groupDiscussion: "https://t.me/+c0MZsCGj2jIzZjdl",
+                courseDiscussion: null,
                 requirements: requirementsObjectsArray,
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
@@ -292,6 +293,7 @@ module.exports = {
 
                     data.userCourseId = userCourse.id
                     data.learningProgress = userCourse.progress
+                    data.courseDiscussion = course.courseDiscussionId
 
                     data.modules.forEach((module) => {
                         module.contents.forEach((content) => {
@@ -414,11 +416,18 @@ module.exports = {
                 }
             })
 
-           /*  if (type === 'Premium') {
-                await db.courseDiscussion.create({
-                    
+            if (type === 'Premium') {
+                const premiumDiscussion = await db.courseDiscussion.create({
+                    data: {
+                        name: `Forum Diskusi Kelas ${course.title}`,
+                        course: {
+                            connect: {
+                                id: course.id 
+                            }
+                        }
+                    }
                 })
-            } */
+            }
 
             return res.status(201).json(utils.apiSuccess('Sukses membuat kelas', course))
         } catch (error) {
