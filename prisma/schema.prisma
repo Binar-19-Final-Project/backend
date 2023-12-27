@@ -11,40 +11,40 @@ datasource db {
 }
 
 model User {
-  id                Int                 @id @default(autoincrement())
-  uuid              String              @default(uuid())
-  name              String
-  email             String              @unique
-  googleId          String?             @map("google_id")
-  phone             BigInt?
-  password          String?
-  city              String?
-  country           String?
-  photoProfile      String?             @map("photo_prfile")
-  imageFilename     String?             @map("image_filename")
-  resetToken        String?             @map("reset_token") @db.Text
-  roleName          String              @map("role_name")
-  verified          Boolean             @default(false)
-  order             Order[]
-  userCourse        UserCourse[]
-  courseTestimonial CourseTestimonial[]
-  discussion        Discussion[]
+  id                  Int                   @id @default(autoincrement())
+  uuid                String                @default(uuid())
+  name                String
+  email               String                @unique
+  googleId            String?               @map("google_id")
+  phone               BigInt?
+  password            String?
+  city                String?
+  country             String?
+  photoProfile        String?               @map("photo_prfile")
+  imageFilename       String?               @map("image_filename")
+  resetToken          String?               @map("reset_token") @db.Text
+  roleName            String                @map("role_name")
+  verified            Boolean               @default(false)
+  order               Order[]
+  userCourse          UserCourse[]
+  courseTestimonial   CourseTestimonial[]
+  discussion          Discussion[]
   commentarDiscussion DiscussionCommentar[]
-  notification      Notification[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  notification        Notification[]
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Admin {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  email             String              @unique
-  password          String
-  roleName          String              @map("role_name")
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  roleName  String   @map("role_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("admins")
 }
@@ -111,18 +111,17 @@ model CourseLevel {
 }
 
 model CourseInstructor {
-id                Int                 @id @default(autoincrement())
-  name              String
-  email             String              @unique
-  password          String
-  roleName          String              @map("role_name")
-  photoProfile  String?  @map("photo_profile")
-  imageFilename String?  @map("image_filename")
-  course        Course[]
-  discussion        Discussion[]
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  email               String                @unique
+  password            String
+  roleName            String                @map("role_name")
+  photoProfile        String?               @map("photo_profile")
+  imageFilename       String?               @map("image_filename")
+  course              Course[]
   commentarDiscussion DiscussionCommentar[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
 
   @@map("course_instructors")
 }
@@ -151,8 +150,8 @@ model Course {
   taken              Int?
   imageUrl           String              @map("image_url")
   imageFilename      String?             @map("image_filename")
-  courseDiscussionId Int?                 @unique @map("course_discussion_id")
-  courseDiscussion   CourseDiscussion?    @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
+  courseDiscussionId Int?                @unique @map("course_discussion_id")
+  courseDiscussion   CourseDiscussion?   @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
   courseInstructorId Int                 @map("course_instructor_id")
   courseInstructor   CourseInstructor    @relation(fields: [courseInstructorId], references: [id], onDelete: Cascade)
   courseTypeId       Int                 @map("course_type_id")
@@ -239,7 +238,7 @@ model CourseDiscussion {
   id        Int          @id @default(autoincrement())
   name      String
   course    Course?
-  disussion Discussion[]
+  dicsussion Discussion[]
   createdAt DateTime     @default(now()) @map("created_at")
   updatedAt DateTime     @updatedAt @map("updated_at")
 
@@ -247,58 +246,56 @@ model CourseDiscussion {
 }
 
 model Discussion {
-  id                 Int              @id @default(autoincrement())
+  id                 Int                   @id @default(autoincrement())
   title              String
   question           String
-  discussionImage   DiscussionImage[]  
-  closed             Boolean          @default(false)
-  userId              Int                    @map("user_id")
-  user                User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  instructorId              Int                    @map("instructor_id")
-  instructor                CourseInstructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  courseDiscussionId Int              @unique @map("course_discussion_id")
-  courseDiscussion   CourseDiscussion @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
+  discussionImage    DiscussionImage[]
+  closed             Boolean               @default(false)
+  userId             Int                   @map("user_id")
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseDiscussionId Int                   @map("course_discussion_id")
+  courseDiscussion   CourseDiscussion      @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
   commentar          DiscussionCommentar[]
-  createdAt          DateTime         @default(now()) @map("created_at")
-  updatedAt          DateTime         @updatedAt @map("updated_at")
+  createdAt          DateTime              @default(now()) @map("created_at")
+  updatedAt          DateTime              @updatedAt @map("updated_at")
 
   @@map("discussions")
 }
 
 model DiscussionImage {
-  id        Int      @id @default(autoincrement())
-  urlPhoto  String
-  discussionId  Int                 @map("discussion_image_id")
-  discussion    Discussion      @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           Int        @id @default(autoincrement())
+  urlPhoto     String
+  discussionId Int        @map("discussion_id")
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
 
   @@map("discussion_images")
 }
 
 model DiscussionCommentar {
-  id        Int      @id @default(autoincrement())
-  commentar String
-  commentarImage   CommentarImage[]  
-  userId               Int                    @map("user_id")
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  instructorId               Int                    @map("instructor_id")
-  instructor                 CourseInstructor                   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  discussionId Int              @map("discussion_id")
-  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id             Int              @id @default(autoincrement())
+  commentar      String
+  commentarImage CommentarImage[]
+  userId         Int?              @map("user_id")
+  user           User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instructorId   Int?              @map("instructor_id")
+  instructor     CourseInstructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  discussionId   Int              @map("discussion_id")
+  discussion     Discussion       @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
 
   @@map("commentar_discussions")
 }
 
 model CommentarImage {
-  id        Int      @id @default(autoincrement())
-  urlPhoto  String
-  discussionCommentarId   Int                 @map("discussion_commentar_id")
-  discussionCommentar     DiscussionCommentar      @relation(fields: [discussionCommentarId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                    Int                 @id @default(autoincrement())
+  urlPhoto              String
+  discussionCommentarId Int                 @map("discussion_commentar_id")
+  discussionCommentar   DiscussionCommentar @relation(fields: [discussionCommentarId], references: [id], onDelete: Cascade)
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
 
   @@map("commentar_images")
 }

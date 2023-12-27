@@ -15,10 +15,7 @@ const checkRole = (...roles) => {
                 })
     
                 if(!admin) return res.status(404).json(utils.apiError("Admin tidak ditemukkan"))
-    
-    
-                if(!roles.includes(admin.roleName)) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
-    
+
                 return next()
             }
 
@@ -30,9 +27,6 @@ const checkRole = (...roles) => {
                 })
     
                 if(!instructor) return res.status(404).json(utils.apiError("Instructor tidak ditemukkan"))
-    
-    
-                if(!roles.includes(instructor.roleName)) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
     
                 return next()
             }
@@ -46,9 +40,6 @@ const checkRole = (...roles) => {
     
                 if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
     
-    
-                if(!roles.includes(user.roleName)) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
-    
                 return next()
             }
 
@@ -59,5 +50,6 @@ const checkRole = (...roles) => {
         }
     }
 }
+
 
 module.exports = checkRole

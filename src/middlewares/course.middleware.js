@@ -2,6 +2,7 @@ const db = require('../../prisma/connection'),
     utils = require('../utils/utils'),
      jwt = require("jsonwebtoken"),
     { JWT_SECRET_KEY } = require('../config')
+const { instructor } = require('../validation/course.schema')
 
 const getCourseMiddleware = async (req, res, next) => {
     try {
@@ -171,31 +172,127 @@ const courseContentMiddleware = async (req, res, next) => {
             
         res.user = jwtPayload
 
-        const userCourse = await db.userCourse.findFirst({
-            where: {
-                userId: res.user.id,
-                courseId: parseInt(req.params.courseId)
-            }
-        })
+        const userId = res.user.id
+        const roleName = res.user.roleName
+        const courseId = req.params.courseId
 
-        const user = await db.user.findUnique({
-            where: {
-                id: res.user.id
-            }
-        })
-
-        if (userCourse || user.roleName === 'admin') {
-            
-            return next() 
-        } else {
-            return res.status(403).json(utils.apiError("Silahkan ambil atau order kelas ini terlebih dahulu"))
+        if(roleName === 'admin') {
+            return next()
         }
 
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-    }
+        if(roleName === 'user') {
+            
+            const course = await db.course.findFirst({
+                where: {
+                    id: parseInt(courseId)
+                }
+            })
+
+            const courseDiscussion = course.courseDiscussionId
+
+            if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+
+            const userCourse = await db.userCourse.findFirst({
+                where: {
+                    userId: userId,
+                    courseId: parseInt(courseId)
+                }
+            })
+
+            if(userCourse) {
+                return next()
+            } else {
+                return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. Silahkan order atau enroll kelas terlebih dahulu"))
+            }
+
+        }
+
+        if(roleName === 'instructor') {
+            const course = await db.course.findFirst({
+                where: {
+                    id: parseInt(courseId)
+                }
+            })
+
+            const courseInstructorId = course.courseInstructorId
+
+            const courseInstructor = await db.courseInstructor.findFirst({
+                where: {
+                    id: courseInstructorId
+                }
+            })
+
+            if(courseInstructor) {
+                return next()
+            } else {
+                return res.status(403).json(utils.apiError("Akses tidak diperbolehkan."))
+            }
+        }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
 }
 
+const courseDiscussionMiddleware = async (req, res, next) => {
+    const userId = res.user.id
+    const roleName = res.user.roleName
+    const courseId = req.params.courseId
 
-module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware }
+    if(roleName === 'admin') {
+        return next()
+    }
+
+    if(roleName === 'user') {
+        
+        const course = await db.course.findFirst({
+            where: {
+                id: parseInt(courseId)
+            }
+        })
+
+        const courseDiscussion = course.courseDiscussionId
+
+        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+
+        const userCourse = await db.userCourse.findFirst({
+            where: {
+                userId: userId,
+                courseId: parseInt(courseId)
+            }
+        })
+
+        if(userCourse) {
+            return next()
+        } else {
+            return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+        }
+
+    }
+
+    if(roleName === 'instructor') {
+        const course = await db.course.findFirst({
+            where: {
+                id: parseInt(courseId)
+            }
+        })
+
+        const courseInstructorId = course.courseInstructorId
+
+        const courseInstructor = await db.courseInstructor.findFirst({
+            where: {
+                id: courseInstructorId
+            }
+        })
+
+        if(courseInstructor) {
+            return next()
+        } else {
+            return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+        }
+    }
+
+}
+
+module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware }

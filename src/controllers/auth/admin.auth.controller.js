@@ -56,7 +56,7 @@ module.exports = {
 
             if(!admin.roleName === 'admin') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
-            const payload = { id: admin.id }
+            const payload = { id: admin.id, roleName: admin.roleName }
             const token = await utils.createJwt(payload)
 
             const data = {

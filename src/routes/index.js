@@ -1,6 +1,7 @@
 const express = require("express"),
     authRoute = require('./auth'),
     courseRoute = require('./course'),
+    courseDiscussion = require('./course.discussion'),
     analyticRoute = require('./analytic'),
     orderRoute = require('./order'),
     userCoursesRoute = require('./user.course'),
@@ -10,6 +11,7 @@ const express = require("express"),
     router = express.Router()
 
 router.use("/auth", authRoute)
+router.use(courseDiscussion)
 router.use(courseRoute)
 router.use(analyticRoute)
 router.use(orderRoute)

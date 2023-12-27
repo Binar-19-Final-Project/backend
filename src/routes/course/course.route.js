@@ -4,8 +4,9 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { getCourseMiddleware, courseContentMiddleware } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
+    discussionController = require('../../controllers/course.discussion'),
     router = express.Router()
 
 router.get('/', controller.course.getCourses)
@@ -21,5 +22,7 @@ router.get('/:courseId/modules/:moduleId/contents', verifyToken, checkRole('admi
 router.put('/:courseId', verifyToken, checkRole('admin'), multer.single('courseImage'), validate(schema.course), controller.course.updateCourse)
 router.put('/:courseId/promos', verifyToken, checkRole('admin'), controller.course.putPromoOnCourse)
 router.delete('/:courseId/promos', verifyToken, checkRole("admin"), controller.course.cancelPromoOnCourse)
+
+router.get("/:courseId/course-discussions", verifyToken, courseDiscussionMiddleware, discussionController.courseDiscussion.getCourseDiscussionByIdCourse)
 
 module.exports = router

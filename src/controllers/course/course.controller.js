@@ -251,7 +251,7 @@ module.exports = {
                 isPublished: course.isPublished,
                 publishedAt: course.createdAt,
                 updatedAt: course.updatedAt,
-                courseDiscussion: null,
+                courseDiscussionId: null,
                 requirements: requirementsObjectsArray,
                 modules: course.courseModule.map((module) => {
                     const totalDurationContent = module.courseContent.reduce((total, content) => {
@@ -297,7 +297,7 @@ module.exports = {
 
                     data.userCourseId = userCourse.id
                     data.learningProgress = userCourse.progress
-                    data.courseDiscussion = course.courseDiscussionId
+                    data.courseDiscussionId = course.courseDiscussionId
 
                     data.modules.forEach((module) => {
                         module.contents.forEach((content) => {
@@ -308,6 +308,7 @@ module.exports = {
                 } else {
                     data.userCourseId = null
                     data.learningProgress = null
+                    data.courseDiscussionId = null
                     data.modules.forEach((module) => {
                         module.contents.forEach((content) => {
                             content.isFinished = null
