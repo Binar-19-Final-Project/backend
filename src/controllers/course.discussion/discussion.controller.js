@@ -28,14 +28,24 @@ module.exports = {
                 uploadFileName = uploadFile.name
             }
             
-            const { title, question, courseDiscussionId } = req.body
+            const { title, question } = req.body
             const userId = res.user.id
+
+            const course = await db.course.findFirst({
+                where: {
+                    id: parseInt(req.params.courseId)
+                }
+            })
+
+            const courseDiscussioniId = course.courseDiscussionId
+
+            console.log(courseDiscussioniId)
 
             const discussion = await db.discussion.create({
                 data: {
                     title: title,
                     question: question,
-                    courseDiscussionId: parseInt(courseDiscussionId),
+                    courseDiscussionId: courseDiscussioniId,
                     userId: userId,
                     urlPhoto: uploadFileUrl,
                     imageFilename: uploadFileName
@@ -57,7 +67,7 @@ module.exports = {
             const dicsussion = await db.discussion.findUnique({
                 where: {
                     id: id,
-                },
+                }
             })
 
             if (!dicsussion) return res.status(404).json(utils.apiError("Kategori Tidak di temukan"))
@@ -92,8 +102,10 @@ module.exports = {
                 imageFileName = uploadFile.name
             }
 
-            const { title, question, courseDiscussionId } = req.body
+            const { title, question } = req.body
             const userId = res.user.id
+
+            const courseDiscussionId = dicsussion.courseDiscussionId
 
             const discussion = await db.discussion.update({
                 where: {
@@ -102,7 +114,7 @@ module.exports = {
                 data: {
                     title: title,
                     question: question,
-                    courseDiscussionId: parseInt(courseDiscussionId),
+                    courseDiscussionId: courseDiscussionId,
                     userId: userId,
                     urlPhoto: imageUrl,
                     imageFilename: imageFileName

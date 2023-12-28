@@ -1,6 +1,5 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils')
-const { course } = require('../../validation/course.schema')
 
 module.exports = {
 
