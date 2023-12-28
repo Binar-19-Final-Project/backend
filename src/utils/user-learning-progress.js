@@ -19,5 +19,4 @@ module.exports = {
             return false
         }
     }
-    
 }

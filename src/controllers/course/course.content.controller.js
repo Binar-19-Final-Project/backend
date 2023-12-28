@@ -1,6 +1,7 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
-    notification = require('../../utils/notification')
+    notification = require('../../utils/notification'),
+    userLearningProgress = require('../../utils/user-learning-progress')
 
 module.exports = {
 
@@ -147,22 +148,6 @@ module.exports = {
 
             if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
 
-            /* const checkModule = await db.courseModule.findFirst({
-                where:{
-                    id: moduleId
-                }
-            })
-
-            if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan")) */
-
-            /* const courseContent = await db.courseContent.findMany({
-                where: {
-                    moduleId: moduleId
-                }
-            })
-
-            const sequence = courseContent.length + 1 */
-
             const courseContent = await db.courseContent.findMany({
                 where: {
                     courseId: courseId
@@ -193,6 +178,10 @@ module.exports = {
                 include: {
                     course: true
                 }
+            })
+
+            userCourses.forEach( async (item, index, array) => {
+                await userLearningProgress.createUserLearningProgress(data.id, item.id)
             })
 
             userCourses.forEach( async (item, index, array) => {
@@ -236,14 +225,6 @@ module.exports = {
             })
 
             if(!checkCourse) return res.status(404).json(utils.apiError("Course atau Modul tidak ditemukkan"))
-
-            /* const checkModule = await db.courseModule.findUnique({
-                where:{
-                    id: moduleId
-                }
-            })
-
-            if(!checkModule) return res.status(404).json(utils.apiError("Modul tidak ditemukkan")) */
 
             const checkTitle = await db.courseContent.findFirst({
                 where: {
@@ -294,7 +275,7 @@ module.exports = {
                     moduleId: moduleId,
                     courseId: courseId,
                 }
-            })
+            })            
 
             return res.status(200).json(utils.apiSuccess("Konten berhasil diubah", data))
 
