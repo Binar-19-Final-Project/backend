@@ -9,5 +9,6 @@ const express = require('express'),
 
 router.post('/:courseId', verifyToken, courseTestimonialMiddleware, checkRole('user'), validate(schema.testimonial), controller.courseTestimonial.createTestimonial)
 router.get('/:courseId',  controller.courseTestimonial.readTestimonialByCourseId)
+router.put('/:testimonialId/courses/:courseId', verifyToken, courseTestimonialMiddleware, checkRole('user'), validate(schema.testimonial), controller.courseTestimonial.updateTestimonial)
 
 module.exports = router
