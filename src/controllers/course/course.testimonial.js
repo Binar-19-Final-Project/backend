@@ -74,5 +74,43 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
+    },
+    
+    updateTestimonial: async(req, res) => {
+        try {
+
+            const id = parseInt(req.params.testimonialId)
+            const courseId = parseInt(req.params.courseId)
+
+            const { testimonial, rating } = req.body
+
+            const checkTestimonial = await db.courseTestimonial.findFirst({
+                where: {
+                    id: id,
+                    userId: res.user.id,
+                    courseId: courseId
+                }
+            })
+
+            if(!checkTestimonial) return res.status(404).json(utils.apiError('Testimonial tidak ditemukkan'))
+
+            await db.courseTestimonial.update({
+                where: {
+                    id: id,
+                    userId: res.user.id,
+                    courseId: courseId
+                },
+                data:{                    
+                    testimonial: testimonial,
+                    rating: parseFloat(rating)
+                }
+            })
+
+            return res.status(201).json(utils.apiSuccess("Berhasil mengubah testimoni dan rating untuk kelas ini", createTestimoni))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     }
 }
