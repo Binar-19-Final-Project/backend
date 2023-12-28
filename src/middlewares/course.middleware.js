@@ -187,6 +187,8 @@ const courseContentMiddleware = async (req, res, next) => {
                 }
             })
 
+            if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
+
             const courseDiscussion = course.courseDiscussionId
 
             if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
