@@ -93,7 +93,7 @@ module.exports = {
     getCourseDiscussionByIdCourse: async (req, res) => {
         try {
 
-            let { page = 1, limit = 10, closed, active } = req.query
+            let { page = 1, limit = 10, closed, active, search } = req.query
 
             /* Pagination */
             let skip = ( page - 1 ) * limit
@@ -101,14 +101,25 @@ module.exports = {
             /* Filter */
             let whereCondition = {}
 
+            if (search) {
+                whereCondition = {
+                    ...whereCondition,
+                    title: {
+                        contains: search
+                    }
+                }
+            }
+
             if (closed) {
                 whereCondition = {
+                    ...whereCondition,
                     closed: true
                 }
             }
 
             if (active) {
                 whereCondition = {
+                    ...whereCondition,
                     closed: false
                 }
             }
@@ -155,7 +166,10 @@ module.exports = {
 
             const resultCount = await db.discussion.count({
                 where: {
-                  courseDiscussionId: parseInt(courseId),
+                    AND: [
+                        { courseDiscussionId: parseInt(courseId) }, 
+                        whereCondition 
+                    ],
                 },
             })
 
@@ -186,6 +200,10 @@ module.exports = {
             if (closed) {
                 message += `berdasarkan status closed`
             } 
+
+            if (search) {
+                message += `berdasarkan kata kunci pencarian ${search}`
+            }
 
             return res.status(200).json(utils.apiSuccess(
                 message, 
