@@ -236,7 +236,8 @@ const courseContentMiddleware = async (req, res, next) => {
 }
 
 const courseDiscussionMiddleware = async (req, res, next) => {
-    const userId = res.user.id
+    try {
+        const userId = res.user.id
     const roleName = res.user.roleName
     const courseId = req.params.courseId
 
@@ -251,6 +252,8 @@ const courseDiscussionMiddleware = async (req, res, next) => {
                 id: parseInt(courseId)
             }
         })
+
+        if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
         const courseDiscussion = course.courseDiscussionId
 
@@ -292,7 +295,53 @@ const courseDiscussionMiddleware = async (req, res, next) => {
             return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
         }
     }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+    }
 
 }
 
-module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware }
+const discussionMiddleware = async (req, res, next) => {
+    try {
+    const userId = res.user.id
+    const roleName = res.user.roleName
+    const courseId = req.params.courseId
+
+    if(roleName === 'user') {
+        
+        const course = await db.course.findFirst({
+            where: {
+                id: parseInt(courseId)
+            }
+        })
+
+        const courseDiscussion = course.courseDiscussionId
+
+        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+
+        const userCourse = await db.userCourse.findFirst({
+            where: {
+                userId: userId,
+                courseId: parseInt(courseId)
+            }
+        })
+
+        if(userCourse) {
+            return next()
+        } else {
+            return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+        }
+
+    } else {
+        return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
+    }
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+    }
+}
+
+
+module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware }

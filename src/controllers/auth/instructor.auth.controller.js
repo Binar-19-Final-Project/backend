@@ -1,11 +1,30 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
-    multer = require('multer')(),
     imageKitFile = require('../../utils/imageKitFile')
+   
 
 module.exports = {
     register: async (req, res) => {
         try {
+
+                if (!req.file) return res.status(403).json(utils.apiError("Foto tidak boleh kosong"))
+
+                const photoInstructor = req.file
+                const allowedMimes = [ "image/png","image/jpeg","image/jpg","image/webp" ]
+                const allowedSizeMb = 2
+    
+                if(!allowedMimes.includes(photoInstructor.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
+    
+                if((photoInstructor.size / (1024*1024)) > allowedSizeMb) return res.status(409).json(utils.apiError("Gambar kategori tidak boleh lebih dari 2mb"))
+    
+                const uploadFile = await imageKitFile.upload(photoInstructor)
+    
+                if(!uploadFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+
+                const uploadFileUrl = uploadFile.url
+                const uploadFileName = uploadFile.name
+
+
             const { name, email, password } = req.body
 
             const checkEmail = await db.courseInstructor.findUnique({
@@ -24,13 +43,15 @@ module.exports = {
                     email: email,
                     password: hashPassword,
                     roleName: 'instructor',
-                    photoProfile: 'https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png'
+                    photoProfile: uploadFileUrl,
+                    imageFilename: uploadFileName
                 }
             })
 
             const data = {
                 name: instructor.name,
                 email: instructor.email,
+                photoProfile: instructor.photoProfile
             }
 
             return res.status(201).json(utils.apiSuccess("Instructor berhasil dibuat", data))
@@ -60,7 +81,7 @@ module.exports = {
 
             if(!instructor.roleName === 'instructor') return res.status(403).json(utils.apiError("Akses tidak diperbolehkan"))
 
-            const payload = { id: instructor.id }
+            const payload = { id: instructor.id, roleName: instructor.roleName }
             const token = await utils.createJwt(payload)
 
             const data = {

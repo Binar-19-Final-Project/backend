@@ -1,13 +1,10 @@
 const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     checkRole = require('../../middlewares/check.role'),
-    courseMiddleware = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course.discussion'),
     router = express.Router()
 
-router.get("/course-discussions", verifyToken, controller.courseDiscussion.getAllCourseDiscussion)
-router.get("/course-discussions/discussions/:id", controller.discussion.getDiscussionById)
-router.post("/course-discussions/discussions", verifyToken, controller.discussion.createDiscussionByIdCourse)
-router.post("/course-discussions/discussions/commentar", verifyToken, controller.commentarDiscussion.createCommentarByIdDiscussion)
+router.get("/course-discussions", verifyToken, checkRole('admin', 'instructor'), controller.courseDiscussion.getAllCourseDiscussion)
+router.get("/course-discussions/instructors", verifyToken, checkRole('admin'), controller.courseDiscussion.getCourseDiscussionByIdInstructor)
 
 module.exports = router

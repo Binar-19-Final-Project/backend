@@ -249,7 +249,8 @@ model Discussion {
   id                 Int                   @id @default(autoincrement())
   title              String
   question           String
-  discussionImage    DiscussionImage[]
+  urlPhoto           String?                @map("url_photo")
+  imageFilename      String?                @map("image_filename")
   closed             Boolean               @default(false)
   userId             Int                   @map("user_id")
   user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -262,21 +263,11 @@ model Discussion {
   @@map("discussions")
 }
 
-model DiscussionImage {
-  id           Int        @id @default(autoincrement())
-  urlPhoto     String
-  discussionId Int        @map("discussion_id")
-  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-
-  @@map("discussion_images")
-}
-
 model DiscussionCommentar {
   id             Int              @id @default(autoincrement())
   commentar      String
-  commentarImage CommentarImage[]
+  urlPhoto       String?                @map("url_photo")
+  imageFilename  String?                @map("image_filename")
   userId         Int?              @map("user_id")
   user           User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   instructorId   Int?              @map("instructor_id")
@@ -287,17 +278,6 @@ model DiscussionCommentar {
   updatedAt      DateTime         @updatedAt @map("updated_at")
 
   @@map("commentar_discussions")
-}
-
-model CommentarImage {
-  id                    Int                 @id @default(autoincrement())
-  urlPhoto              String
-  discussionCommentarId Int                 @map("discussion_commentar_id")
-  discussionCommentar   DiscussionCommentar @relation(fields: [discussionCommentarId], references: [id], onDelete: Cascade)
-  createdAt             DateTime            @default(now()) @map("created_at")
-  updatedAt             DateTime            @updatedAt @map("updated_at")
-
-  @@map("commentar_images")
 }
 
 model Order {

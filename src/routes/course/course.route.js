@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     discussionController = require('../../controllers/course.discussion'),
     router = express.Router()
@@ -24,5 +24,15 @@ router.put('/:courseId/promos', verifyToken, checkRole('admin'), controller.cour
 router.delete('/:courseId/promos', verifyToken, checkRole("admin"), controller.course.cancelPromoOnCourse)
 
 router.get("/:courseId/course-discussions", verifyToken, courseDiscussionMiddleware, discussionController.courseDiscussion.getCourseDiscussionByIdCourse)
+
+router.get("/:courseId/discussions/:id", verifyToken, courseDiscussionMiddleware, discussionController.discussion.getDiscussionById)
+router.post("/:courseId/discussions", verifyToken, discussionMiddleware, multer.single("photoDiscussion"), discussionController.discussion.createDiscussionByIdCourse)
+router.put("/:courseId/discussions/:id", verifyToken, discussionMiddleware, multer.single("photoDiscussion"), discussionController.discussion.updateDiscussionByIdCourse)
+router.put("/:courseId/discussions", verifyToken, discussionMiddleware, discussionController.discussion.closedDiscussionById)
+
+router.post("/:courseId/commentars", verifyToken, discussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.createCommentarByIdDiscussion)
+router.put("/:courseId/commentars/:id", verifyToken, discussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
+router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
+
 
 module.exports = router

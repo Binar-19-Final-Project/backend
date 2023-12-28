@@ -1,13 +1,45 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils')
+const { course } = require('../../validation/course.schema')
 
 module.exports = {
 
     getAllCourseDiscussion: async (req, res) => {
         try {
-            const courseDiscussions = await db.courseDiscussion.findMany()
 
-            return res.status(200).json(utils.apiSuccess("Sukses mengambil semua data course diskusi", courseDiscussions))
+            const roleName = res.user.roleName
+
+            let courseDiscussions
+            let message = 'Sukses mengambil semua data ruang diskusi '
+
+            if(roleName === 'admin') {
+                courseDiscussions = await db.courseDiscussion.findMany()
+                message += `menggunakan akun 'admin' `
+            }
+
+            if (roleName === 'instructor' ) {
+                const instructorId = res.user.id
+
+                const courses = await db.course.findMany({
+                    where: {
+                        courseInstructorId: instructorId
+                    },
+                    include: {
+                         courseDiscussion: true
+                    }   
+                })
+
+                courseDiscussions = courses.map((course) => ({
+                    courseId: course.id,
+                    courseName: course.title,
+                    courseDiscussionId: course.courseDiscussion.id,
+                    courseDiscussionName: course.courseDiscussion.name
+                }))
+
+                message += `berdasarkan id 'instructor' `
+            }
+
+            return res.status(200).json(utils.apiSuccess(message, courseDiscussions))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
@@ -26,7 +58,11 @@ module.exports = {
                 include: {
                     courseDiscussion: {
                         include: {
-                            dicsussion: true
+                            dicsussion: {
+                                include: {
+                                    commentar: true
+                                }
+                            }
                         }
                     }
                 }
@@ -36,17 +72,35 @@ module.exports = {
                 courseId: course.id,
                 courseDiscussionId: course.courseDiscussion.id,
                 courseDiscussionName: course.courseDiscussion.name,
-                discussion: course.courseDiscussion.dicsussion.map((discuss => ({
-                    discussionId: discuss.id,
-                    title: discuss.title,
-                    question: discuss.question,
-                    closed: discuss.closed,
-                    cretedAt: discuss.createdAt,
-                    courseDiscussionId: discuss.courseDiscussionId
-                })))
+                discussion: course.courseDiscussion.dicsussion.map((discuss) => {
+                    const totalComments = discuss.commentar.length
+                    return {
+                        discussionId: discuss.id,
+                        title: discuss.title,
+                        question: discuss.question,
+                        closed: discuss.closed,
+                        totalComments: totalComments,
+                        cretedAt: discuss.createdAt,
+                        courseDiscussionId: discuss.courseDiscussionId
+                    }
+                })
             }
 
-            return res.status(200).json(utils.apiSuccess("Sukses mengambil semua data course diskusi", data))
+            let message = 'Berhasil mengambil data diskusi berdasarkan id '
+
+            if( res.user.roleName === 'admin') {
+                message += `menggunakan akun 'admin' `
+            }
+
+            if( res.user.roleName === 'instructor') {
+                message += `menggunakan akun 'instructor' `
+            }
+
+            if( res.user.roleName === 'user') {
+                message += `menggunakan akun 'user' `
+            }
+
+            return res.status(200).json(utils.apiSuccess(message, data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
@@ -54,7 +108,32 @@ module.exports = {
     },
 
     getCourseDiscussionByIdInstructor: async (req, res) => {
+        try {
 
+            const instructorId = res.user.id
+
+            const courses = await db.course.findMany({
+                where: {
+                   courseInstructorId: instructorId
+                },
+                include: {
+                    courseDiscussion: true
+                }
+            })
+
+            const data = courses.map((course) => ({
+                    courseId: course.id,
+                    courseName: course.title,
+                    courseDiscussionId: course.courseDiscussion.id,
+                    courseDiscussionName: course.courseDiscussion.name
+            }))
+            
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
+        }
     },
 
 }

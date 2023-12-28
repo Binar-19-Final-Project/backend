@@ -225,6 +225,8 @@ CREATE TABLE `discussions` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
     `question` VARCHAR(191) NOT NULL,
+    `url_photo` VARCHAR(191) NULL,
+    `image_filename` VARCHAR(191) NULL,
     `closed` BOOLEAN NOT NULL DEFAULT false,
     `user_id` INTEGER NOT NULL,
     `course_discussion_id` INTEGER NOT NULL,
@@ -235,34 +237,14 @@ CREATE TABLE `discussions` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `discussion_images` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `urlPhoto` VARCHAR(191) NOT NULL,
-    `discussion_id` INTEGER NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `commentar_discussions` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `commentar` VARCHAR(191) NOT NULL,
+    `url_photo` VARCHAR(191) NULL,
+    `image_filename` VARCHAR(191) NULL,
     `user_id` INTEGER NULL,
     `instructor_id` INTEGER NULL,
     `discussion_id` INTEGER NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `commentar_images` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `urlPhoto` VARCHAR(191) NOT NULL,
-    `discussion_commentar_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -352,9 +334,6 @@ ALTER TABLE `discussions` ADD CONSTRAINT `discussions_user_id_fkey` FOREIGN KEY 
 ALTER TABLE `discussions` ADD CONSTRAINT `discussions_course_discussion_id_fkey` FOREIGN KEY (`course_discussion_id`) REFERENCES `course_discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `discussion_images` ADD CONSTRAINT `discussion_images_discussion_id_fkey` FOREIGN KEY (`discussion_id`) REFERENCES `discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -362,9 +341,6 @@ ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_instru
 
 -- AddForeignKey
 ALTER TABLE `commentar_discussions` ADD CONSTRAINT `commentar_discussions_discussion_id_fkey` FOREIGN KEY (`discussion_id`) REFERENCES `discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `commentar_images` ADD CONSTRAINT `commentar_images_discussion_commentar_id_fkey` FOREIGN KEY (`discussion_commentar_id`) REFERENCES `commentar_discussions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `orders` ADD CONSTRAINT `orders_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
