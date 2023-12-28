@@ -93,6 +93,11 @@ module.exports = {
     getCourseDiscussionByIdCourse: async (req, res) => {
         try {
 
+            let { page = 1, limit = 10 } = req.query
+
+            /* Pagination */
+            let skip = ( page - 1 ) * limit
+
             const courseId = req.params.courseId
 
             const course = await db.course.findFirst({
@@ -105,7 +110,9 @@ module.exports = {
                             dicsussion: {
                                 include: {
                                     commentar: true
-                                }
+                                },
+                                take: parseInt(limit),
+                                skip: skip
                             }
                         }
                     }
@@ -130,6 +137,18 @@ module.exports = {
                 })
             }
 
+            const resultCount = await db.discussion.count({
+                where: {
+                  courseDiscussionId: parseInt(courseId),
+                },
+            })
+
+            const totalPage = Math.ceil(resultCount / limit)
+
+            if (resultCount === 0) {
+                return res.status(404).json(utils.apiError("Tidak ada data course"))
+            }
+
             let message = 'Berhasil mengambil data diskusi berdasarkan id '
 
             if( res.user.roleName === 'admin') {
@@ -144,7 +163,15 @@ module.exports = {
                 message += `menggunakan akun 'user' `
             }
 
-            return res.status(200).json(utils.apiSuccess(message, data))
+            return res.status(200).json(utils.apiSuccess(
+                message, 
+                data,
+                {   
+                    currentPage: parseInt(page),
+                    totalPage: totalPage,
+                    totalData: resultCount
+                }
+            ))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
