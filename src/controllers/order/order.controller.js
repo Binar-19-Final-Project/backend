@@ -140,7 +140,7 @@ module.exports = {
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
             if(!existUserCourse) {
-                if(course.courseType.name === 'Free') {
+                if(course.courseType.name === 'Free' || 'Premium') {
                     const orderFreeCourse = await db.userCourse.create({
                         data: {
                             userId: id,
@@ -178,9 +178,9 @@ module.exports = {
 
                     return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas Gratis", orderFreeCourse))
                 
-                } else if (course.courseType.name === 'Premium') {
+                } /* else if (course.courseType.name === 'Premium') {
                     return res.status(403).json(utils.apiError("Fitur Pembayaran Belum Tersedia"))
-                }
+                } */
 
             } else {
                 return res.status(409).json(utils.apiError("Course sudah tersedia"))

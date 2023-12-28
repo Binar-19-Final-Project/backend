@@ -75,4 +75,13 @@ module.exports = {
     body("testimonial").notEmpty().withMessage("Testimonial tidak boleh kosong"),
     body("rating").notEmpty().withMessage("Rating tidak boleh kosong"),
   ],
+
+  discussion: [
+    body("title").notEmpty().withMessage("Title tidak boleh kosong"),
+    body("question").notEmpty().withMessage("Question tidak boleh kosong"),
+  ],
+
+  commentar: [
+    body("commentar").notEmpty().withMessage("Commentar tidak boleh kosong"),
+  ]
 };
