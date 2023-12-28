@@ -93,11 +93,37 @@ module.exports = {
     getCourseDiscussionByIdCourse: async (req, res) => {
         try {
 
-            let { page = 1, limit = 10 } = req.query
+            let { page = 1, limit = 10, closed, active, search } = req.query
 
             /* Pagination */
             let skip = ( page - 1 ) * limit
 
+            /* Filter */
+            let whereCondition = {}
+
+            if (search) {
+                whereCondition = {
+                    ...whereCondition,
+                    title: {
+                        contains: search
+                    }
+                }
+            }
+
+            if (closed) {
+                whereCondition = {
+                    ...whereCondition,
+                    closed: true
+                }
+            }
+
+            if (active) {
+                whereCondition = {
+                    ...whereCondition,
+                    closed: false
+                }
+            }
+            
             const courseId = req.params.courseId
 
             const course = await db.course.findFirst({
@@ -108,6 +134,7 @@ module.exports = {
                     courseDiscussion: {
                         include: {
                             dicsussion: {
+                                where: whereCondition,
                                 include: {
                                     commentar: true
                                 },
@@ -139,7 +166,10 @@ module.exports = {
 
             const resultCount = await db.discussion.count({
                 where: {
-                  courseDiscussionId: parseInt(courseId),
+                    AND: [
+                        { courseDiscussionId: parseInt(courseId) }, 
+                        whereCondition 
+                    ],
                 },
             })
 
@@ -161,6 +191,18 @@ module.exports = {
 
             if( res.user.roleName === 'user') {
                 message += `menggunakan akun 'user' `
+            }
+
+            if (active) {
+                message += `berdasarkan status active`
+            } 
+
+            if (closed) {
+                message += `berdasarkan status closed`
+            } 
+
+            if (search) {
+                message += `berdasarkan kata kunci pencarian ${search}`
             }
 
             return res.status(200).json(utils.apiSuccess(
