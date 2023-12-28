@@ -31,6 +31,7 @@ model User {
   discussion          Discussion[]
   commentarDiscussion DiscussionCommentar[]
   notification        Notification[]
+  transaction       Transaction[]
   createdAt           DateTime              @default(now()) @map("created_at")
   updatedAt           DateTime              @updatedAt @map("updated_at")
 
@@ -169,6 +170,7 @@ model Course {
   order              Order[]
   userCourse         UserCourse[]
   courseTestimonial  CourseTestimonial[]
+  transactionItems   TransactionsItem[]
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @updatedAt @map("updated_at")
 
@@ -309,4 +311,42 @@ model Notification {
   updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("notifications")
+}
+
+model Transaction {
+  id                String              @id
+  userId            Int      @map("user_id")
+  total             Int
+  status            transactions_status
+  customerName      String              @map("customer_name")
+  customerEmail     String              @map("customer_email")
+  snapToken         String?             @map("snap_token")
+  snapRedirectUrl   String?             @map("snap_redirect_url")
+  paymentMethod     String?             @map("payment_method")
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  user              User @relation(fields: [userId], references: [id], onUpdate: Restrict)
+  transaction_items TransactionsItem[]
+
+  @@map("transactions")
+}
+
+model TransactionsItem {
+  id            String      @id
+  transactionId String      @map("transaction_id")
+  courseId      Int         @map("course_id")
+  courseTitle   String      @map("course_title")
+  price         Int
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onUpdate: Restrict)
+  course        Course      @relation(fields: [courseId], references: [id], onUpdate: Restrict)
+
+  @@map("transactions_items")
+}
+
+enum transactions_status {
+  PENDING_PAYMENT
+  PAID
+  CANCELED
 }
