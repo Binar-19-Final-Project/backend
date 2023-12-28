@@ -13,7 +13,33 @@ module.exports = {
             let message = 'Sukses mengambil semua data ruang diskusi '
 
             if(roleName === 'admin') {
-                courseDiscussions = await db.courseDiscussion.findMany()
+                const courses = await db.course.findMany({
+                    include: {
+                         courseDiscussion: {
+                            include: {
+                                dicsussion: true
+                            }
+                         }
+                    }   
+                })
+
+                courseDiscussions = courses.filter((course) => course.courseDiscussion).map((course) => {
+
+                    const totalDiscussion = course.courseDiscussion.dicsussion.length
+                    const activeDiscussion = course.courseDiscussion.dicsussion.filter((discussion) => !discussion.closed).length
+
+                    return {
+                        courseId: course.id,
+                        courseName: course.title,
+                        courseInstructorId: course.courseInstructorId,
+                        courseDiscussionId: course.courseDiscussion.id,
+                        courseDiscussionName: course.courseDiscussion.name,
+                        totalDiscussion: totalDiscussion,
+                        activeDiscussion: activeDiscussion,
+                    }
+                })
+
+
                 message += `menggunakan akun 'admin' `
             }
 
@@ -25,16 +51,35 @@ module.exports = {
                         courseInstructorId: instructorId
                     },
                     include: {
-                         courseDiscussion: true
+                         courseDiscussion: {
+                            include: {
+                                dicsussion: true
+                            }
+                         }
                     }   
                 })
 
-                courseDiscussions = courses.map((course) => ({
-                    courseId: course.id,
-                    courseName: course.title,
-                    courseDiscussionId: course.courseDiscussion.id,
-                    courseDiscussionName: course.courseDiscussion.name
-                }))
+                if (!courses || !courses.length) {
+                    return res.status(404).json(utils.apiError("Tidak ada data course"));
+                  }
+                  
+                  courseDiscussions = courses
+                    .filter((course) => course.courseDiscussion !== null)
+                    .map((course) => {
+
+                        const totalDiscussion = course.courseDiscussion.dicsussion.length
+                        const activeDiscussion = course.courseDiscussion.dicsussion.filter((discussion) => !discussion.closed).length
+
+                        return {
+                            courseId: course.id,
+                            courseName: course.title,
+                            courseInstructorId: course.courseInstructorId,
+                            courseDiscussionId: course.courseDiscussion.id,
+                            courseDiscussionName: course.courseDiscussion.name,
+                            totalDiscussion: totalDiscussion,
+                            activeDiscussion: activeDiscussion
+                        }
+                    })
 
                 message += `berdasarkan id 'instructor' `
             }

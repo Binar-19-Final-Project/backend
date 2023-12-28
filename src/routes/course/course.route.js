@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     discussionController = require('../../controllers/course.discussion'),
     router = express.Router()
@@ -30,8 +30,8 @@ router.post("/:courseId/discussions", verifyToken, discussionMiddleware, multer.
 router.put("/:courseId/discussions/:id", verifyToken, discussionMiddleware, multer.single("photoDiscussion"), discussionController.discussion.updateDiscussionByIdCourse)
 router.put("/:courseId/discussions", verifyToken, discussionMiddleware, discussionController.discussion.closedDiscussionById)
 
-router.post("/:courseId/commentars", verifyToken, discussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.createCommentarByIdDiscussion)
-router.put("/:courseId/commentars/:id", verifyToken, discussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
+router.post("/:courseId/commentars", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.createCommentarByIdDiscussion)
+router.put("/:courseId/commentars/:id", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
 router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
 
 
