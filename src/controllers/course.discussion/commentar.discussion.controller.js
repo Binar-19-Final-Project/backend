@@ -144,39 +144,20 @@ module.exports = {
             }
 
             const { commentar, discussionId } = req.body
-            const userId = res.user.id
-            const roleName = res.user.roleName
-
-            let discussionCommentar
+          
             let message = 'Berhasil update komentar berdasarkan diskusi '
-
-            if( roleName === 'user' ){
-                discussionCommentar = await db.discussionCommentar.create({
+           
+                const discussionCommentar = await db.discussionCommentar.update({
+                    where: {
+                        id: commentars.id
+                    },
                     data: {
                         commentar: commentar,
                         discussionId: parseInt(discussionId),
-                        userId: parseInt(userId),
                         urlPhoto: imageUrl,
                         imageFilename: imageFileName
                     }
                 })
-
-                message += `menggunakan akun 'user'`
-            }
-
-            if (roleName === 'instructor') {
-                discussionCommentar = await db.discussionCommentar.create({
-                    data: {
-                        commentar: commentar,
-                        discussionId: parseInt(discussionId),
-                        instructorId: parseInt(userId),
-                        urlPhoto: imageUrl,
-                        imageFilename: imageFileName
-                    }
-                })
-
-                message += `menggunakan akun 'instructor'`
-            }
 
             return res.status(201).json(utils.apiSuccess(message, discussionCommentar))
         } catch (error) {
