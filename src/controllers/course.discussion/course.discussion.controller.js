@@ -93,11 +93,26 @@ module.exports = {
     getCourseDiscussionByIdCourse: async (req, res) => {
         try {
 
-            let { page = 1, limit = 10 } = req.query
+            let { page = 1, limit = 10, closed, active } = req.query
 
             /* Pagination */
             let skip = ( page - 1 ) * limit
 
+            /* Filter */
+            let whereCondition = {}
+
+            if (closed) {
+                whereCondition = {
+                    closed: true
+                }
+            }
+
+            if (active) {
+                whereCondition = {
+                    closed: false
+                }
+            }
+            
             const courseId = req.params.courseId
 
             const course = await db.course.findFirst({
@@ -108,6 +123,7 @@ module.exports = {
                     courseDiscussion: {
                         include: {
                             dicsussion: {
+                                where: whereCondition,
                                 include: {
                                     commentar: true
                                 },
@@ -162,6 +178,14 @@ module.exports = {
             if( res.user.roleName === 'user') {
                 message += `menggunakan akun 'user' `
             }
+
+            if (active) {
+                message += `berdasarkan status active`
+            } 
+
+            if (closed) {
+                message += `berdasarkan status closed`
+            } 
 
             return res.status(200).json(utils.apiSuccess(
                 message, 
