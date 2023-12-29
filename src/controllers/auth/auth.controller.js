@@ -427,9 +427,11 @@ module.exports = {
 
             if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
 
-            const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
+            if(user.password) {
+                const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
 
-            if(!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
+                if(!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
+            }
 
             const hashPassword = await utils.createHashData(newPassword)
 
