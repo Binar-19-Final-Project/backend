@@ -119,18 +119,18 @@ module.exports = {
     createOrder: async(req, res) => {
         try {
             const id = res.user.id
-            const courseId = req.params.courseId
+            const courseId = parseInt(req.params.courseId)
 
             const existUserCourse = await db.userCourse.findFirst({
                 where: {
                     userId: id,
-                    courseId: parseInt(courseId)
+                    courseId: courseId
                 }
             })
 
             const course = await db.course.findUnique({
                 where: {
-                    id: parseInt(courseId)
+                    id: courseId
                 },
                 include: {
                     courseType: true
@@ -144,7 +144,7 @@ module.exports = {
                     const orderFreeCourse = await db.userCourse.create({
                         data: {
                             userId: id,
-                            courseId: parseInt(courseId),
+                            courseId: courseId,
                             progress: 0,
                             status: "In Progress"
                         }
@@ -176,7 +176,18 @@ module.exports = {
                         await userLearningProgress.createUserLearningProgress(item.id, orderFreeCourse.id)
                     })
 
-                    return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas Gratis", orderFreeCourse))
+                    await db.course.update({
+                        where:{
+                            id: courseId
+                        },
+                        data: {
+                            taken: {
+                                increment: 1
+                            }
+                        }
+                    })
+
+                    return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas", orderFreeCourse))
                 
                 } /* else if (course.courseType.name === 'Premium') {
                     return res.status(403).json(utils.apiError("Fitur Pembayaran Belum Tersedia"))
