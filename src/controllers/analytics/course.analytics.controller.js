@@ -7,24 +7,30 @@ module.exports = {
     getCourse: async (req, res) => {
         try {
 
-            const { total, active} = req.query
+            const { active } = req.query
 
-            let whereCondition = {}
-            whereCondition = await filter.analytic.filterWhereCondition(whereCondition, active)
+            let courses
+            let message = "Berhasil mengambil data course"
 
-            let courses = await db.course.findMany({
-                where: whereCondition
-            })
-
-            if(total) {
-                courses = await db.course.count()
+            if(active) {
+                courses = await db.course.findMany({
+                    where: {
+                        isPublished: true
+                    }
+                })
+            } else {
+                courses = await db.course.findMany()
             }
 
-            courses = await db.course.count({ where: whereCondition })
+            const total = courses.length
 
-            const message = await filter.analytic.message(total, active)
+            if (active) {
+                message += ` berdasarkan status active`
+            } else {
+                message += ` berdasarkan total`
+            }
 
-            return res.status(200).json(utils.apiSuccess(message, courses))
+            return res.status(200).json(utils.apiSuccess(message, total))
 
         } catch (error) {
             console.log(error)
@@ -81,6 +87,162 @@ module.exports = {
 
             return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", coursesData))
              
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    totalEnroll: async (req, res) => {
+        try {
+
+            const { free, premium } = req.query
+
+            const userCourse  = await db.userCourse.findMany()
+
+            const orders = await db.order.findMany()
+
+            let totals
+            let message
+            if(free) {
+                totals = userCourse.length - orders.length
+                message = `Berhasil mengambil total enroll course 'free'`
+            } else if(premium) {
+                totals = orders.length
+                message = `Berhasil mengambil total enroll course 'premium'`
+            } else {
+                totals = userCourse.length
+                message = 'Berhasil mengambil total enroll course'
+            }
+    
+            return res.status(200).json(utils.apiSuccess(message, totals))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    courseTaken: async (req, res) => {
+        try {
+            
+            const { free, premium } = req.query
+              
+              const whereCondition = {};
+              
+              const orderByCondition = {
+                id: 'asc' 
+              };
+              
+              if (free === 'true') {
+                whereCondition.courseType = {
+                  name: 'Free'
+                }
+              } else if (premium === 'true') {
+                whereCondition.courseType = {
+                  name: 'Premium'
+                }
+              }
+              
+              const orderByTaken = {
+                taken: 'desc'
+              };
+              
+              const highestTaken = await db.course.findFirst({
+                where: whereCondition,
+                orderBy: orderByTaken,
+                select: {
+                  taken: true
+                }
+              });
+              
+              const courses = await db.course.findMany({
+                where: {
+                  courseType: whereCondition.courseType,
+                  taken: highestTaken.taken
+                },
+                orderBy: orderByCondition
+              });
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", courses))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    totalCourseInCategory: async (req, res) => {
+        try {
+            const categories = await db.courseCategory.findMany({
+                include: {
+                    course: true
+                }
+            })
+
+            const data = categories.map((category) => {
+
+                const totalCourse = category.course.length
+
+                return {
+                    categoryName: category.name,
+                    totalCourse: totalCourse,
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    totalInstructor: async (req, res) => {
+        try {
+            const instructors = await db.courseInstructor.findMany()
+
+            const data = instructors.length
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    totalCourseByInstructor: async (req, res) => {
+        try {
+            const instructors = await db.courseInstructor.findMany({
+                include: {
+                    course: true
+                }
+            })
+
+            const data = instructors.map((instructor) => ({
+                instructorName: instructor.name,
+                totalCourses: instructor.course.length
+              }))
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    totalCourseByType: async (req, res) => {
+        try {
+            const types = await db.courseType.findMany({
+                include: {
+                    course: true
+                }
+            })
+
+            const data = types.map((type) => ({
+                typeName: type.name,
+                totalCourse: type.course.length
+            }))
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
