@@ -45,6 +45,8 @@ module.exports = {
             const userCourseId = parseInt(req.params.userCourseId)
             const contentId = parseInt(req.params.contentId)
 
+            if (!userCourseId) return res.status(422).json(utils.apiError("user course id tidak boleh kosong"))
+
             const userCourse = await db.userCourse.findUnique({
                 where: {
                     id: userCourseId,
