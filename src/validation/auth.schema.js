@@ -108,10 +108,6 @@ module.exports = {
   ],
 
   changePassword: [
-    body("oldPassword")
-        .notEmpty().withMessage("Password lama tidak boleh kosong")
-        .isLength({ min: 8 }).withMessage("Password lama lama minimal 8 karakter")
-        .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password lama harus mengandung setidaknya satu huruf kapital dan satu angka"),
     body("newPassword")
         .notEmpty().withMessage("Password baru tidak boleh kosong")
         .isLength({ min: 8 }).withMessage("Password baru minimal 8 karakter")

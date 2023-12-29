@@ -424,6 +424,7 @@ module.exports = {
                 }
             })
 
+
             if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
 
             const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
@@ -452,6 +453,49 @@ module.exports = {
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
+
+    changePasswordGoogle: async (req, res) => {
+
+        try {
+            
+            const userId = res.user.id
+            const {oldPassword, newPassword} = req.body
+
+            const user = await db.user.findUnique({
+                where:{
+                    id: userId
+                }
+            })
+
+            if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
+
+            const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
+
+            if(!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
+
+            const hashPassword = await utils.createHashData(newPassword)
+
+            await db.user.update({
+                where:{
+                    id: userId
+                },
+                data: {
+                    password: hashPassword
+                }
+            })
+
+            const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi')
+
+            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
 
     updateProfile: async (req, res) => {
         try {
