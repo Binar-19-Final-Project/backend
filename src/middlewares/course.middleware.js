@@ -80,7 +80,7 @@ const courseCertificate = async (req, res, next) => {
     }
 }
 
-const courseContentMiddleware = async (req, res, next) => {
+/* const courseContentMiddleware = async (req, res, next) => {
     try {
         const userCourse = await db.userCourse.findFirst({
             where: {
@@ -129,9 +129,9 @@ const courseContentMiddleware = async (req, res, next) => {
         console.log(error)
         return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
     }
-}
+} */
 
-/* const courseContentMiddleware = async (req, res, next) => {
+const courseContentMiddleware = async (req, res, next) => {
     try {
         const content = await db.courseContent.findFirst({
             where: {
@@ -180,18 +180,6 @@ const courseContentMiddleware = async (req, res, next) => {
         }
 
         if(roleName === 'user') {
-            
-            const course = await db.course.findFirst({
-                where: {
-                    id: parseInt(courseId)
-                }
-            })
-
-            if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
-
-            const courseDiscussion = course.courseDiscussionId
-
-            if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
 
             const userCourse = await db.userCourse.findFirst({
                 where: {
@@ -234,7 +222,7 @@ const courseContentMiddleware = async (req, res, next) => {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
-} */
+}
 
 const courseDiscussionMiddleware = async (req, res, next) => {
     try {
