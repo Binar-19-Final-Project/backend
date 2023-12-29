@@ -177,7 +177,9 @@ module.exports = {
                     data: {
                         email: email,
                         name: name,
-                        googleId: sub
+                        googleId: sub,
+                        roleName: "user",
+                        photoProfile: "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png",
                     }
                 })
             }
