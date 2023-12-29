@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
 
     /* const jwtPayload = jwt.verify(token, JWT_SECRET_KEY)
     if (!jwtPayload) {
-      return res.status(401).json(utils.apiError("Token tidak valid"))
+      return res.status(401).json(utils.apiError("Token tidak valid. Silahkan login ulang"))
     }
     
     res.user = jwtPayload
@@ -25,7 +25,7 @@ const verifyToken = async (req, res, next) => {
         if (err instanceof jwt.TokenExpiredError) {
           return res.status(401).json(utils.apiError("Token kedaluwarsa, silahkan login ulang"));
         } else if (err instanceof jwt.JsonWebTokenError) {
-          return res.status(401).json(utils.apiError("Token tidak valid"));
+          return res.status(401).json(utils.apiError("Token tidak valid. Silahkan login ulang"));
         } else {
           console.log(err)
           return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
