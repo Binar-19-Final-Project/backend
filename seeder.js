@@ -17,12 +17,12 @@ const existingPairs = new Set();
 async function seedData()  {
     /* Reset database before run seeder */
       /* Delete all data in table */
-    await db.$transaction([db.user.deleteMany()])
-    await db.$transaction([db.admin.deleteMany()])
-    await db.$transaction([db.courseInstructor.deleteMany()])
-    await db.$transaction([db.courseCategory.deleteMany()])
-    await db.$transaction([db.courseType.deleteMany()])
-    await db.$transaction([db.courseLevel.deleteMany()])
+    // await db.$transaction([db.user.deleteMany()])
+    // await db.$transaction([db.admin.deleteMany()])
+    // await db.$transaction([db.courseInstructor.deleteMany()])
+    // await db.$transaction([db.courseCategory.deleteMany()])
+    // await db.$transaction([db.courseType.deleteMany()])
+    // await db.$transaction([db.courseLevel.deleteMany()])
     // await db.$transaction([db.courseInstructor.deleteMany()])
     // await db.$transaction([db.coursePromo.deleteMany()])
     // await db.$transaction([db.course.deleteMany()])
@@ -32,12 +32,12 @@ async function seedData()  {
     // await db.$transaction([db.userCourse.deleteMany()])
     // await db.$transaction([db.order.deleteMany()])
       /* Reset ID to 1 again */
-    await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE admins AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
-    await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE admins AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
+    // await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
@@ -47,104 +47,104 @@ async function seedData()  {
     // await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
     // /* User Seeder */
-    for (let i = 0; i < 10; i++) {
-        const seedUsers = {
-            name: faker.person.fullName(),
-            email: faker.internet.email(),
-            phone: faker.number.int({ max: 100000000 }),
-            password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-            city: faker.location.city(),
-            country: faker.location.country(),
-            photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
-            verified: true,
-            roleName: "user", 
-        }
+    // for (let i = 0; i < 10; i++) {
+    //     const seedUsers = {
+    //         name: faker.person.fullName(),
+    //         email: faker.internet.email(),
+    //         phone: faker.number.int({ max: 100000000 }),
+    //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+    //         city: faker.location.city(),
+    //         country: faker.location.country(),
+    //         photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
+    //         verified: true,
+    //         roleName: "user", 
+    //     }
     
-        await db.user.create({ data: seedUsers })
-    }
+    //     await db.user.create({ data: seedUsers })
+    // }
 
     // /* Admin Seeder */
-    for (let i = 0; i < 1; i++) {
-      const seedUsers = {
-          name: "admin",
-          email: "admin@admin.com",
-          password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-          roleName: "admin",
-      }
+  //   for (let i = 0; i < 1; i++) {
+  //     const seedUsers = {
+  //         name: "admin",
+  //         email: "admin@admin.com",
+  //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+  //         roleName: "admin",
+  //     }
   
-      await db.admin.create({ data: seedUsers })
-  }
+  //     await db.admin.create({ data: seedUsers })
+  // }
 
     // /* Instructor Seeder */
-      for (let i = 0; i < 1; i++) {
-        const seedUsers = {
-            name: "instructor",
-            email: "instructor@instructor.com",
-            password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-            roleName: "instructor",
-            photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
-        }
+    //   for (let i = 0; i < 1; i++) {
+    //     const seedUsers = {
+    //         name: "instructor",
+    //         email: "instructor@instructor.com",
+    //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+    //         roleName: "instructor",
+    //         photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
+    //     }
     
-        await db.courseInstructor.create({ data: seedUsers })
-    }
+    //     await db.courseInstructor.create({ data: seedUsers })
+    // }
 
     // /* Course Category Seeder */
-    for (let i = 0; i < 6; i++) {
-      let courseCategoryName
-        do {
-          courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development', 'Machine Learning'])
-        } while (usedCourseCategoryName.has(courseCategoryName))
+    // for (let i = 0; i < 6; i++) {
+    //   let courseCategoryName
+    //     do {
+    //       courseCategoryName = faker.helpers.arrayElement(['Product Management', 'UI UX Design', 'Web Development', 'Android Development', 'iOS Development', 'Machine Learning'])
+    //     } while (usedCourseCategoryName.has(courseCategoryName))
 
-        usedCourseCategoryName.add(courseCategoryName)
+    //     usedCourseCategoryName.add(courseCategoryName)
 
-        const slug = slugify(courseCategoryName, { lower: true, remove: /[*+~.()'"!:@]/g })
+    //     const slug = slugify(courseCategoryName, { lower: true, remove: /[*+~.()'"!:@]/g })
     
-        const seedCategoryCourse = {
-          name: courseCategoryName,
-          slug: slug,
-          urlPhoto: faker.image.urlLoremFlickr({ category: 'business' })
-        }
+    //     const seedCategoryCourse = {
+    //       name: courseCategoryName,
+    //       slug: slug,
+    //       urlPhoto: faker.image.urlLoremFlickr({ category: 'business' })
+    //     }
   
-      await db.courseCategory.create({ data: seedCategoryCourse })
-    }
+    //   await db.courseCategory.create({ data: seedCategoryCourse })
+    // }
 
     // /* Course Type Seeder */
-    for (let i = 0; i < 2; i++) {
-      let courseType
-        do {
-          courseType = faker.helpers.arrayElement(['Free', 'Premium'])
-        } while (usedCourseType.has(courseType))
+    // for (let i = 0; i < 2; i++) {
+    //   let courseType
+    //     do {
+    //       courseType = faker.helpers.arrayElement(['Free', 'Premium'])
+    //     } while (usedCourseType.has(courseType))
     
-        usedCourseType.add(courseType)
+    //     usedCourseType.add(courseType)
 
-        const slug = slugify(courseType, { lower: true, remove: /[*+~.()'"!:@]/g })
+    //     const slug = slugify(courseType, { lower: true, remove: /[*+~.()'"!:@]/g })
     
-        const seedCourseType = {
-          name: courseType,
-          slug: slug
-        }
+    //     const seedCourseType = {
+    //       name: courseType,
+    //       slug: slug
+    //     }
   
-      await db.courseType.create({ data: seedCourseType })
-    }
+    //   await db.courseType.create({ data: seedCourseType })
+    // }
 
     // /* Course Level Seeder */
-    for (let i = 0; i < 3; i++) {
-      let courseLevel
-        do {
-          courseLevel = faker.helpers.arrayElement(['Beginner', 'Intermediate', 'Advanced'])
-        } while (usedCourseLevel.has(courseLevel))
+    // for (let i = 0; i < 3; i++) {
+    //   let courseLevel
+    //     do {
+    //       courseLevel = faker.helpers.arrayElement(['Beginner', 'Intermediate', 'Advanced'])
+    //     } while (usedCourseLevel.has(courseLevel))
     
-        usedCourseLevel.add(courseLevel)
+    //     usedCourseLevel.add(courseLevel)
 
-        const slug = slugify(courseLevel, { lower: true, remove: /[*+~.()'"!:@]/g })
+    //     const slug = slugify(courseLevel, { lower: true, remove: /[*+~.()'"!:@]/g })
     
-        const seedCourseLevel = {
-          name: courseLevel,
-          slug: slug
-        }
+    //     const seedCourseLevel = {
+    //       name: courseLevel,
+    //       slug: slug
+    //     }
   
-      await db.courseLevel.create({ data: seedCourseLevel })
-    }
+    //   await db.courseLevel.create({ data: seedCourseLevel })
+    // }
 
     // /* Course Instructor Seeder */
     // for (let i = 0; i < 5; i++) {
@@ -197,11 +197,11 @@ async function seedData()  {
     //     price: faker.number.int({ min: 100000, max: 1000000 }),
     //     requirements: "Mengetahui basic javascript, Mengetahui basic NodeJs",
     //     imageUrl: "https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg",
-    //     courseInstructorId: faker.number.int({ min: 1, max: 5 }),
+    //     courseInstructorId: 1,
     //     courseTypeId: faker.number.int({ min: 1, max: 2 }),
     //     courseCategoryId: faker.number.int({ min: 1, max: 5 }),
     //     courseLevelId: faker.number.int({ min: 1, max: 3 }),
-    //     isPromo: faker.datatype.boolean(0.2),
+    //     /* isPromo: faker.datatype.boolean(0.2), */
     //     taken: faker.number.int({ min: 50, max: 100 })
     //   }
       
@@ -210,42 +210,55 @@ async function seedData()  {
     //   }
   
     //   await db.course.create({ data: seedCourse })
-    // }
 
-    // /* Course Module Seeder */
-    // for (let i = 0; i < 100; i++) {
-
-    //   const title = faker.commerce.productName()
-    //   const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
-
-    //   const seedCourseModules = {
-    //       title: title,
-    //       slug: slug, 
-    //       courseId: faker.number.int({ min: 1, max: 30 })
+    //   if ( seedCourse.courseInstructorId === 1) {
+    //     await db.courseDiscussion.create({
+    //       data: {
+    //         name: `Forum Diskusi Kelas ${seedCourse.title}`,
+    //         course: {
+    //             connect: {
+    //                 id: seedCourse.id 
+    //             }
+    //         }
+    //     }
+    //     })
     //   }
-  
-    //   await db.courseModule.create({ data: seedCourseModules })
     // }
+
+    /* Course Module Seeder */
+    for (let i = 0; i < 100; i++) {
+
+      const title = faker.commerce.productName()
+      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+
+      const seedCourseModules = {
+          title: title,
+          slug: slug, 
+          courseId: faker.number.int({ min: 9, max: 38 })
+      }
+  
+      await db.courseModule.create({ data: seedCourseModules })
+    }
 
     //  /* Course Content Seeder */
-    //  for (let i = 0; i < 400; i++) {
+     for (let i = 0; i < 300; i++) {
 
-    //   const title = faker.commerce.productName()
-    //   const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+      const title = faker.commerce.productName()
+      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
 
-    //   const seedCourseContents = {
-    //       title: title,
-    //       slug: slug,
-    //       videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
-    //       sequence: faker.number.int({ min: 1, max: 8 }),
-    //       isDemo: faker.datatype.boolean(0.3),
-    //       duration: faker.number.int({ min: 1, max: 10 }),
-    //       courseId: faker.number.int({ min: 1, max: 30 }),
-    //       moduleId: faker.number.int({ min: 1, max: 100 }),
-    //   }
+      const seedCourseContents = {
+          title: title,
+          slug: slug,
+          videoUrl: "https://www.youtube.com/watch?v=VR2C_llrvqk",
+          sequence: faker.number.int({ min: 1, max: 8 }),
+          isDemo: faker.datatype.boolean(0.3),
+          duration: faker.number.int({ min: 1, max: 10 }),
+          courseId: faker.number.int({ min: 9, max: 38 }),
+          moduleId: faker.number.int({ min: 1, max: 100 }),
+      }
   
-    //   await db.courseContent.create({ data: seedCourseContents })
-    // }
+      await db.courseContent.create({ data: seedCourseContents })
+    }
 
     // /* Course Testimonial Seeder */
     // for (let i = 0; i < 60; i++) {
