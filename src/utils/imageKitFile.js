@@ -31,7 +31,7 @@ module.exports = {
         try {
 
             const file = await imageKit.listFiles({
-                searchQuery: `name = ${fileName}`
+                searchQuery: `name = "${fileName}"`
             })
 
             await imageKit.deleteFile(file[0].fileId)
