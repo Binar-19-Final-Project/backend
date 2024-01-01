@@ -136,6 +136,7 @@ module.exports = {
                             dicsussion: {
                                 where: whereCondition,
                                 include: {
+                                    user: true,
                                     commentar: true
                                 },
                                 take: parseInt(limit),
@@ -155,6 +156,8 @@ module.exports = {
                     return {
                         discussionId: discuss.id,
                         title: discuss.title,
+                        username: discuss.user.name,
+                        userPhoto: discuss.user.photoProfile,
                         question: discuss.question,
                         closed: discuss.closed,
                         totalComments: totalComments,
@@ -163,6 +166,7 @@ module.exports = {
                     }
                 })
             }
+
 
             const resultCount = await db.discussion.count({
                 where: {
