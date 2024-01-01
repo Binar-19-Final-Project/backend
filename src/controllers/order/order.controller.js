@@ -1,6 +1,7 @@
 const db = require('../../../prisma/connection'),
     utils = require('../../utils/utils'),
     userLearningProgress = require('../../utils/user-learning-progress'),
+    notification = require('../../utils/notification'),
     filter = require('../../utils/filter')
 
 module.exports = {
@@ -19,14 +20,29 @@ module.exports = {
 
             const whereCondition = await filter.order.filterWhereCondition(status)
 
-            const data = await db.order.findMany({
+            const orders = await db.order.findMany({
                 take: parseInt(limit),
                 skip: skip,
                 where: whereCondition,
                 orderBy: {
                     createdAt: 'desc'
+                }, include: {
+                    course: true,
+                    user: true
                 }
             })
+
+            const data = orders.map((order) => ({
+                orderId: order.id,
+                orderCode: order.orderCode,
+                price: order.price,
+                orderStatus: order.status,
+                paymentMethod: order.paymentMethod,
+                successAt: order.successAt,
+                orderAt: order.createdAt,
+                username: order.user.name,
+                courseName: order.course.title
+            }))
 
             /* Total Data & Total Page after Pagination */
             const resultCount = await db.order.count() 
@@ -120,6 +136,7 @@ module.exports = {
         try {
             const id = res.user.id
             const courseId = parseInt(req.params.courseId)
+            const { paymentMethod } = req.body
 
             const existUserCourse = await db.userCourse.findFirst({
                 where: {
@@ -140,7 +157,7 @@ module.exports = {
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
             if(!existUserCourse) {
-                if(course.courseType.name === 'Free' || 'Premium') {
+                if(course.courseType.name === 'Free') {
                     const orderFreeCourse = await db.userCourse.create({
                         data: {
                             userId: id,
@@ -189,12 +206,106 @@ module.exports = {
 
                     return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas", orderFreeCourse))
                 
-                } /* else if (course.courseType.name === 'Premium') {
-                    return res.status(403).json(utils.apiError("Fitur Pembayaran Belum Tersedia"))
-                } */
+                } else if (course.courseType.name === 'Premium') {
+
+                    if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong"))
+
+                    const randomCode = Math.floor(100000 + Math.random() * 900000)
+
+                    const orderCode = `trx-${randomCode}`
+
+                    const order = await db.order.create({
+                        data: {
+                            orderCode: orderCode,
+                            price: course.price,
+                            paymentMethod: paymentMethod,
+                            status: 'Pending',
+                            userId: id,
+                            courseId: course.id
+                        }
+                    })
+
+                    return res.status(201).json(utils.apiError("Lakukan proses pembayaran untuk menyelesaikan pembelian course ini", order))
+                }
 
             } else {
                 return res.status(409).json(utils.apiError("Course sudah tersedia"))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
+        }
+    },
+
+    confirmOrderPremium: async (req, res) => {
+        try {
+            const { id } = req.params
+            const userId = res.user.id
+
+            const confimrOrder = await db.order.update({
+                where: {
+                    id: parseInt(id)
+                }, data: {
+                    status: 'Success',
+                    successAt: new Date()
+                }
+            })
+
+            if(confimrOrder) {
+
+                const courseId = confimrOrder.courseId
+
+                const orderFreeCourse = await db.userCourse.create({
+                    data: {
+                        userId: userId,
+                        courseId: courseId,
+                        progress: 0,
+                        status: "In Progress"
+                    }
+                })
+
+                const modules = await db.courseModule.findMany({
+                    where: {
+                        courseId: orderFreeCourse.courseId
+                    },
+                    select: {
+                        id: true
+                    }
+                })
+
+                const moduleIds = modules.map(({id}) => id)
+
+                const contents = await db.courseContent.findMany({
+                    where: {
+                        moduleId: {
+                            in: moduleIds
+                        }
+                    },
+                    select: {
+                        id: true
+                    }
+                })
+
+                contents.forEach( async (item, index, array) => {
+                    await userLearningProgress.createUserLearningProgress(item.id, orderFreeCourse.id)
+                })
+
+                await db.course.update({
+                    where:{
+                        id: courseId
+                    },
+                    data: {
+                        taken: {
+                            increment: 1
+                        }
+                    }
+                })
+
+                await notification.createNotification("Pembayaran Berhasil", null, "Pembayaran kelas premium berhasil dilakukan. Anda bisa mengakses kelas ini sekarang juga!", userId)
+
+                return res.status(201).json(utils.apiSuccess("Konfirmasi pembelian berhasil", orderFreeCourse))
+
             }
 
         } catch (error) {
