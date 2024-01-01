@@ -22,6 +22,7 @@ module.exports = {
             return data
             
         } catch (error) {
+            console.log(error)
             return false
         }
     },
@@ -30,7 +31,7 @@ module.exports = {
         try {
 
             const file = await imageKit.listFiles({
-                searchQuery: `name = ${fileName}`
+                searchQuery: `name = "${fileName}"`
             })
 
             await imageKit.deleteFile(file[0].fileId)
@@ -38,6 +39,7 @@ module.exports = {
             return true
             
         } catch (error) {
+            console.log(error)
             return false
         }
     }
