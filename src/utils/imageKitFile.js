@@ -22,6 +22,7 @@ module.exports = {
             return data
             
         } catch (error) {
+            console.log(error)
             return false
         }
     },
@@ -38,6 +39,7 @@ module.exports = {
             return true
             
         } catch (error) {
+            console.log(error)
             return false
         }
     }
