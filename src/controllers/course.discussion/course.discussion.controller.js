@@ -175,10 +175,6 @@ module.exports = {
 
             const totalPage = Math.ceil(resultCount / limit)
 
-            if (resultCount === 0) {
-                return res.status(404).json(utils.apiError("Tidak ada data course"))
-            }
-
             let message = 'Berhasil mengambil data diskusi berdasarkan id '
 
             if( res.user.roleName === 'admin') {
