@@ -193,7 +193,7 @@ module.exports = {
               roleId,
             }); */
       
-            const payload = { id: user.id }
+            const payload = { id: user.id, roleName: user.roleName }
             const token = await utils.createJwt(payload)
             const data = {
                 token: token

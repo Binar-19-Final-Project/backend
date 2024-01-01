@@ -33,47 +33,6 @@ module.exports = {
         }
     },
 
-    create: async (req, res) => {
-        try {
-            const { name } = req.body
-            const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
-            const instructor = await db.courseInstructor.create({
-                data: {
-                    name: name,
-                    slug: slug
-                }
-            })
-
-            return res.status(201).json(utils.apiSuccess("Berhasil membuat data instructor", instructor))
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
-    update: async (req, res) => {
-        const { id } = req.params
-         
-        const { name } = req.body
-        const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g })
-        try {
-            const updatedInstructor = await db.courseInstructor.update({
-                where: {
-                    id: parseInt(id) 
-                },
-                data: { 
-                    name: name,
-                    slug: slug
-                }
-            })
-
-            return res.status(200).json(utils.apiSuccess("Berhasil update data instructor", updatedInstructor))
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
     delete: async (req, res) => {
         const { id } = req.params
          

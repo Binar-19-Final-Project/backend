@@ -7,6 +7,7 @@ const express = require('express'),
     { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     discussionController = require('../../controllers/course.discussion'),
+    certificateController = require('../../controllers/course.certificate'),
     router = express.Router()
 
 router.get('/', controller.course.getCourses)
@@ -33,6 +34,8 @@ router.put("/:courseId/discussions", verifyToken, discussionMiddleware, discussi
 router.post("/:courseId/commentars", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.createCommentarByIdDiscussion)
 router.put("/:courseId/commentars/:id", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
 router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
+
+router.post("/certificates",  certificateController.certificate.createCertificate)
 
 
 module.exports = router
