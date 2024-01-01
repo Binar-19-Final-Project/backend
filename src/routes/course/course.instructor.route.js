@@ -4,6 +4,7 @@ const express = require('express'),
     controller = require('../../controllers/course'),
     { verifyToken } = require('../../middlewares/verify.token'),
     checkRole = require('../../middlewares/check.role'),
+    multer = require('multer')(),
     router = express.Router()
 
 router.get('/:id', controller.courseInstructor.readById)
