@@ -212,18 +212,17 @@ module.exports = {
                 }))
             }
 
-            let message = 'Berhasil mengambil data diskusi berdasarkan id '
-
+            let message
             if( res.user.roleName === 'admin') {
-                message += `menggunakan akun 'admin' `
+               message = 'admin'
             }
 
             if( res.user.roleName === 'instructor') {
-                message += `menggunakan akun 'instructor' `
+               message = 'instructor'
             }
 
             if( res.user.roleName === 'user') {
-                message += `menggunakan akun 'user' `
+               message = 'user'
             }
 
             return res.status(200).json(utils.apiSuccess(message, data))
