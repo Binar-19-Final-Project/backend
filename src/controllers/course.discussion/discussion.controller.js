@@ -132,6 +132,32 @@ module.exports = {
     getDiscussionById: async (req, res) => {
         try {
 
+
+            const id = res.user.id
+            const roleName = res.user.roleName
+
+            let currentUserName = null
+
+            if(roleName === 'user') {
+                const user = await db.user.findFirst({
+                    where: {
+                        id: id
+                    }
+                })
+
+                currentUserName = user.name
+            }
+
+            if(roleName === 'instructor') {
+                const user = await db.courseInstructor.findFirst({
+                    where: {
+                        id: id
+                    }
+                })
+
+                currentUserName = user.name
+            }
+
             const discussionId = req.params.id
 
             const discussion = await db.discussion.findFirst({
@@ -173,6 +199,7 @@ module.exports = {
                 commentars: discussion.commentar.map((comment) => ({
                     commentarId: comment.id,
                     commentar: comment.commentar,
+                    currentUserName: currentUserName,
                     photoCommentar: comment.urlPhoto,
                     userId: comment.userId,
                     username: comment.user ? comment.user.name : null,
