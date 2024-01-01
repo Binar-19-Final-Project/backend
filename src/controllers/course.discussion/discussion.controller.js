@@ -173,6 +173,7 @@ module.exports = {
                 commentars: discussion.commentar.map((comment) => ({
                     commentarId: comment.id,
                     commentar: comment.commentar,
+                    photoCommentar: comment.urlPhoto,
                     userId: comment.userId,
                     username: comment.user ? comment.user.name : null,
                     userPhoto: comment.user ? comment.user.photoProfile : null,
