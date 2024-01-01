@@ -77,8 +77,10 @@ module.exports = {
 
             let userCourses
             let userLearningProgress
+
+            const roleName = res.user.roleName
             
-            if (res.user) {
+            if (roleName === 'user') {
                 userCourses = await db.userCourse.findFirst({
                     where: {
                         userId: res.user.id,
