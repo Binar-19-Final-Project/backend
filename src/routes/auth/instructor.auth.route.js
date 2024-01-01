@@ -8,6 +8,7 @@ const express = require('express'),
     router = express.Router()
 
 router.post('/instructor/register', verifyToken, multer.single('photoInstructor'),  validate(schema.registerInstructor), checkRole('admin'), controller.authInstructor.register)
+router.post('/instructor/register', verifyToken, multer.single('photoInstructor'),  validate(schema.registerInstructor), checkRole('admin'), controller.authInstructor.register)
 router.post('/instructor/login', controller.authInstructor.login)
 
 module.exports = router

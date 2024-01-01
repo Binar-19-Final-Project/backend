@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "ilearntech-oauth2",
+  "private_key_id": "2d5c82caf2d48c990f85c9cf9e3b7514420e94c2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDRx9C2JbBLCY7c\nV6ZtLOVXFGZGs429WlConSODoyjWN58bX1FlkEAkfwshwPWV3PsPu1CQGW6vR3rI\nOsAj/XEjWIqMNUk3vVfZT9FRODU+ulGKEYs+2Zbz195jNttu300lqaWQBmrXJS3z\nIhG+ajWaxU+q9a5+XhJquVWTm4BnLrU0d21j8NUxH3gffUNEI8BWh5POXjLZZQMd\nU+I6VQdGtYUHd7X87sp/jF460p7cL6UyGTGaM7vRgeFI28t4gyU1zeYHW1SzOeWg\nZHPfyk2e79jdeq9mNs4dKJGYpYRObP3du9sXT8b/Jhgb/tln7UXjjr4tHKkVbWHi\nFDKObR8HAgMBAAECggEACZRF9gpuM7GkieIESuD0j1araELAJVYzRQYHd0tqTK81\nosm7hhBaYCIKGiVreI6UZ6I4HA1IzhtpUJ7KKsGpyNo86AkcbWg3048GHJfyantB\nAWBHJ6cqR2WqXIUb67Sp4lgcTpNGOHSxHNgkJPLW9ecgFllbTtfNZyfa01v3YYzz\nGQfT/Tyz2O5WGSXvT3NOXvR+T8d/8iPt8KQ+6EG5atR32eLuhRNm4oYgTr6bo/9z\na+GgbQO7Pj4sRJyhQUV4SFrAvdUNYg5g1VjODHAq3NAlnveXvdpKIqhEHPGEQhxd\njNFhiWOnM+DgcRzrgAy/QXe0GmEcirTN5ycrqxe7mQKBgQD0aeL5TLL3590crzFl\nXHu055of40Q3xHSOI6Wh8pxyF3NV/OevN8+qtXt3wpDI7rA4MsuwxzDcN7N/nQV4\nwx6tnauvQ6DuhJTzLrB7ERqW9whN25aNOMpeHsexEwlCskmfScDzHixBzFxn4VxQ\nbiO6Iu0K/sYFg1KdqNLkEgoP/wKBgQDbuaJfJ8rS//1CRWI50oC5VNuUbibtG2w7\ndbts6jg7meJ7hno5uZ9i9Q0Km+EUt62Qjh+3NDRM87haXvJUxSMXuB1UZy14gMvo\nVKiTMYwbMNczQgpW7fO2TReUqOLdeXfOgGCdvZpWfRhVPo2g/g/15Oy/z4hVH5kY\nnwllJFxw+QKBgC7pgAI/wX4px9vwmHePF8NyTLfgJEDb+U8q8miyK2sOqzmO8F1G\nRhrK+KbU9ntKrRIsVcJZiTxLiK1u0xUJxoKmZ8SdI2+EjR5cEM2eS888HSDsi+oR\nQ25rVALd14IwvEbRnjJL0UzTz8y0icZ6TWs1tu/MVO/L8/iE5e2WtM27AoGBAJxg\nR1EVjuIQUfxCSSAB0p8T55qBsq55H9RJe/SN1SuF34wuLvq6Qtc4s+li+xO1jY8d\ntzC5tKc3pXKbtDfkfY8595XEQLZMY9KbvcXUM3R+lAnk7Frlytdpkmi4sY0SD9Ql\nxZ09/YOkUBcLB90WM+G65Uu1tb9vV5QQS61x7WBxAoGBANh1bFTThvpnmxNy0Rs8\n5z6K5TWA2d2Ac/UHMiCibEX5w5ePSWNOEdGqqms6XVel5yWI0rcqhvnj73SQs+jv\ny5gPWF7f5RLENDGCLhfZc5CgHFDVleMbyJGbepzv8+7yn8KlPbxYgH3H1yu3Q4pn\nxsHdcB9BRPaOuBlMECs49hQk\n-----END PRIVATE KEY-----\n",
+  "client_email": "drive-ilearn-tech@ilearntech-oauth2.iam.gserviceaccount.com",
+  "client_id": "104357304415863510010",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/drive-ilearn-tech%40ilearntech-oauth2.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

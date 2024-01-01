@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "ilearntech-oauth2",
+  "private_key_id": "eeebf82070c6bffc2d576912e22430cfafc7061a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCKV1YSzlvmqv3\nHtZrZFybeAdULA636xsjNbmEhfncdYRfj7svoDJRhzYcRUe0p+dUjuliGZTmQRJ0\nnhF8KA11npJyQPmP5Nz9iJnIgCC09pJnyfu+rtIkdwZvzx5SwFfucdsq2cSnBA2+\nN7FkSM4In0rkQBntNfY+qY0qCNjL5RJk1kNrs/TXFItJsUBA5HX6JtKbv+WC7XN/\np/ktxKgtLoq12hvBexG9+NK4N9XGV51nyscg0YuwJurJUQbcxcZ8UYsDDrNdPxOG\ns6cRf61eWceD2phqAPfztzf7vpaZ1hXKNgq3oG757Jz55J0be4hMkiF1hMPjoji4\nh1JWAKohAgMBAAECggEAT41rNZX8voF9HA+CgxXn67tOJWq3zRuDTvXgQTAzo+Ry\njETzyRu2AjmILiUksBxrZ/X2Ib+hhoX67dUmDNzMRvjlv/JnTlHTSf4CJGh6/ipY\n6jWT9Bjk+RPbi0wtfHJalNQJnJEFRfkfOGTRRemeoWHC6app9Qs7DYmi0So2ybMm\nZQQb57Q68jeAd+tMqoJBR7Ss467yU3yHdUgD5SQ4Qc7DqY7p1txra8r/+uQClEoh\nMgLtPfOp/vhZzZ7twX0X1MLGJ5dj8VclTxrcQ6KfP3r3W1BLE2GWxSwg4SrxM8e9\nwIDClKIfm/F7GAM1vipc5V4kUPHY889KxD5w80ZT0QKBgQDzVE2NrMn94I3Nc2JL\nmHLngBWIIVdDSPo3s7tclgvTTd6pp2TFy0LHCDEiNIARkZxpLhKvgYJVrd6HC7TH\nj0dZ3km6RY/KUJhg/kz612gwI+usS/Qged45UK9sNgalDFLg074HvSCOeedHkrBa\nf9u3gPxvqQGM1l7Seh9zQ1vvOwKBgQDMRaHVBKlWvBSKNTqCgLeczAA9Kmc0G4eD\nKv/vVaINN2nCPYfMgahszPssgurG6SQZYIoSC9U3vO5YeNiVLb0HgPwoC/Z3yBfb\nUNY5OellB9ePgh0+5CeuhH6uZWQtNUJc40NRXub0FO1uol4dmpf4ACTWTYCkVLAP\nOWYHjkiuUwKBgQDiOHE1kvvj1N3gsTIkd+Hzyge6nMylGHbQTH+XT0RFOfMVpTOy\nFAvMQJh1ZXvfWZGh05y5oF0MzO3CfaaflVxPd7Lxw3QwMofIPQRSfOs3Pl3/vEmF\n2+c3QAUnRH8e+PsgXJsiVLms3DaiOwVLzez2iKuoH+b6Cd70LWeJ4IjbOwKBgAyb\nm6J3ODB3SVlCccsOQMb3vGgKDvajYFjTNZrDEU55hhiMDa6srgWRHUuhBPaj+ytp\nzvvQKSfYjGl/g/apLQqihm2+V0cLXZWWxrIfhe1Lb52W7VEtadmWqe7/qRA1QlRT\nXptOHTkhdYonkWGIYirXb26et/rskzVNWKPMv2WrAoGBAKtOOMPNcknDAnghOaNn\nSiMaLRbtNyMY7whZBYC/obhH4ddFlXgdOTtHMPZfXdujJgNLKa9E0lxWwFbmIJpU\nJtcAouEletgTZo9H525dSNRPHERy4nrg6vbvugSRCJMVXOugXvqk7ahLP3jg0R5I\nQ+8Hp3TpPmkozu7Jr+tCAgs3\n-----END PRIVATE KEY-----\n",
+  "client_email": "drive-new@ilearntech-oauth2.iam.gserviceaccount.com",
+  "client_id": "114342190087558018805",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/drive-new%40ilearntech-oauth2.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
