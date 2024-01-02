@@ -132,11 +132,10 @@ module.exports = {
         }
     },
 
-    createOrder: async(req, res) => {
+    enrollFree: async(req, res) => {
         try {
             const userId = res.user.id
             const courseId = parseInt(req.params.courseId)
-            const { paymentMethod } = req.body
 
             const existUserCourse = await db.userCourse.findFirst({
                 where: {
@@ -157,7 +156,7 @@ module.exports = {
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
             if(!existUserCourse) {
-                if(course.courseType.name === 'Free') {
+
                     const orderFreeCourse = await db.userCourse.create({
                         data: {
                             userId: userId,
@@ -206,9 +205,9 @@ module.exports = {
 
                     return res.status(201).json(utils.apiSuccess("Berhasil Mengambil Kelas", orderFreeCourse))
                 
-                } else if (course.courseType.name === 'Premium') {
+                /*  else if (course.courseType.name === 'Premium') {
 
-                    /* if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong")) */
+                    // if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong"))
 
                     const randomCode = Math.floor(100000 + Math.random() * 900000)
 
@@ -228,7 +227,7 @@ module.exports = {
                     await notification.createNotification("Proses Pembayaran", null, "Silahkan lakukan proses pembayaran untuk course yang telah diorder", userId)
 
                     return res.status(201).json(utils.apiError("Lakukan proses pembayaran untuk menyelesaikan pembelian course ini", order))
-                }
+                } */
 
             } else {
                 return res.status(409).json(utils.apiError("Course sudah tersedia"))
@@ -238,6 +237,54 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server "))
         }
+    },
+
+    orderPremium: async (req, res) => {
+        const userId = res.user.id
+            const courseId = parseInt(req.params.courseId)
+            const { paymentMethod }= req.body
+            if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong"))
+
+            const existUserCourse = await db.userCourse.findFirst({
+                where: {
+                    userId: userId,
+                    courseId: courseId
+                }
+            })
+
+            const course = await db.course.findUnique({
+                where: {
+                    id: courseId
+                },
+                include: {
+                    courseType: true
+                }
+            })
+
+            if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
+
+            if(!existUserCourse) {
+                const randomCode = Math.floor(100000 + Math.random() * 900000)
+
+                    const orderCode = `trx-${randomCode}`
+
+                    const order = await db.order.create({
+                        data: {
+                            orderCode: orderCode,
+                            price: course.price,
+                            paymentMethod: paymentMethod,
+                            status: 'Pending',
+                            userId: userId,
+                            courseId: course.id
+                        }
+                    })
+
+                    await notification.createNotification("Proses Pembayaran", null, "Silahkan lakukan proses pembayaran untuk course yang telah diorder", userId)
+
+                    return res.status(201).json(utils.apiError("Lakukan proses pembayaran untuk menyelesaikan pembelian course ini", order))
+            } else {
+                return res.status(409).json(utils.apiError("Course sudah tersedia"))
+            }
     },
 
     confirmOrderPremium: async (req, res) => {
