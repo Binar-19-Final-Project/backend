@@ -265,6 +265,15 @@ module.exports = {
                 }
             })
 
+            const checkOrder = await db.order.findFirst({
+                where: {
+                    userId: res.user.id,
+                    courseId: courseId
+                }
+            })
+
+            if(checkOrder) return res.status(409).json(utils.apiError("Anda sudah melakukan order. Selesaikan proses pembayaran"))
+
             const type = course.courseType.name
 
             if(type !== 'Premium') return res.status(403).json(utils.apiError("Ini adalah untuk proses ambil course premium"))
