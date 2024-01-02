@@ -155,6 +155,8 @@ module.exports = {
 
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
+            if(!course.courseType.name === 'Free') return res.status(403).json(utils.apiError("Ini adalah course gratis"))
+
             if(!existUserCourse) {
 
                     const orderFreeCourse = await db.userCourse.create({
@@ -260,6 +262,8 @@ module.exports = {
                     courseType: true
                 }
             })
+
+            if(!course.courseType.name === 'Premium') return res.status(403).json(utils.apiError("Ini adalah course premium"))
 
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
