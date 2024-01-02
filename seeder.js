@@ -7,11 +7,11 @@ const slugify = require('slugify');
 /* For create unique data */
 // const usedRoleName = new Set()
 // const usedUserId = new Set()
-const usedCourseCategoryName = new Set()
+/* const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
 const usedCourseLevel = new Set()
 const usedCoursePromoName = new Set()
-const existingPairs = new Set();
+const existingPairs = new Set(); */
 
 
 async function seedData()  {
