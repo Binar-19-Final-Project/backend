@@ -168,16 +168,11 @@ module.exports = {
             }
 
 
-            const resultCount = await db.discussion.count({
-                where: {
-                    AND: [
-                        { courseDiscussionId: parseInt(courseId) }, 
-                        whereCondition 
-                    ],
-                },
-            })
-
-            const totalPage = Math.ceil(resultCount / limit)
+            const totalData = await db.discussion.count({
+                where: whereCondition,
+            });
+            
+            const totalPage = Math.ceil(totalDiscussions / limit);
 
             let message = 'Berhasil mengambil data diskusi berdasarkan id '
 
@@ -211,7 +206,7 @@ module.exports = {
                 {   
                     currentPage: parseInt(page),
                     totalPage: totalPage,
-                    totalData: resultCount
+                    totalData: totalData
                 }
             ))
         } catch (error) {
