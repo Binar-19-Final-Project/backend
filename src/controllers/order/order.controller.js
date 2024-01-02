@@ -281,6 +281,7 @@ module.exports = {
             if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
 
             if(!existUserCourse) {
+
                 const randomCode = Math.floor(100000 + Math.random() * 900000)
 
                     const orderCode = `trx-${randomCode}`
@@ -307,7 +308,6 @@ module.exports = {
     confirmOrderPremium: async (req, res) => {
         try {
             const { id } = req.params
-            const userId = res.user.id
 
             const confimrOrder = await db.order.update({
                 where: {
@@ -321,6 +321,8 @@ module.exports = {
             if(confimrOrder) {
 
                 const courseId = confimrOrder.courseId
+
+                const userId = confimrOrder.userId
 
                 const orderFreeCourse = await db.userCourse.create({
                     data: {

@@ -29,8 +29,8 @@ async function seedData()  {
     // await db.$transaction([db.courseModule.deleteMany()])
     // await db.$transaction([db.courseContent.deleteMany()])
     // await db.$transaction([db.courseTestimonial.deleteMany()])
-    // await db.$transaction([db.userCourse.deleteMany()])
-    // await db.$transaction([db.order.deleteMany()])
+    await db.$transaction([db.userCourse.deleteMany()])
+    await db.$transaction([db.order.deleteMany()])
       /* Reset ID to 1 again */
     // await db.$queryRaw`ALTER TABLE users AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE admins AUTO_INCREMENT = 1`
@@ -43,37 +43,37 @@ async function seedData()  {
     // await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1
-    // await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
-    // await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
     // /* User Seeder */
-    for (let i = 0; i < 10; i++) {
-        const seedUsers = {
-            name: faker.person.fullName(),
-            email: faker.internet.email(),
-            phone: faker.number.int({ max: 100000000 }),
-            password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-            city: faker.location.city(),
-            country: faker.location.country(),
-            photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
-            verified: true,
-            roleName: "user", 
-        }
+    // for (let i = 0; i < 10; i++) {
+    //     const seedUsers = {
+    //         name: faker.person.fullName(),
+    //         email: faker.internet.email(),
+    //         phone: faker.number.int({ max: 100000000 }),
+    //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+    //         city: faker.location.city(),
+    //         country: faker.location.country(),
+    //         photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
+    //         verified: true,
+    //         roleName: "user", 
+    //     }
     
-        await db.user.create({ data: seedUsers })
-    }
+    //     await db.user.create({ data: seedUsers })
+    // }
 
     /* Admin Seeder */
-    for (let i = 0; i < 1; i++) {
-      const seedUsers = {
-          name: "admin",
-          email: "admin@admin.com",
-          password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-          roleName: "admin",
-      }
+  //   for (let i = 0; i < 1; i++) {
+  //     const seedUsers = {
+  //         name: "admin",
+  //         email: "admin@admin.com",
+  //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+  //         roleName: "admin",
+  //     }
   
-      await db.admin.create({ data: seedUsers })
-  }
+  //     await db.admin.create({ data: seedUsers })
+  // }
 
     // /* Instructor Seeder */
     //   for (let i = 0; i < 1; i++) {
