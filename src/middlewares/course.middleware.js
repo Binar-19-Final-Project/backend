@@ -116,6 +116,48 @@ const courseCertificate = async (req, res, next) => {
     }
 }
 
+const getCourseCertificate = async (req, res, next) => {
+
+    const courseId = req.params.courseId
+
+    const course = await db.course.findFirst({
+        where: {
+            id: parseInt(courseId)
+        },
+        include: {
+            courseType: true
+        }
+    })
+
+    if(!course) return res.status(404).json(utils.apiError("Course tidak ditemukan"))
+
+    const typeCourse = course.courseType.name
+
+    if(typeCourse === 'Free') return res.status(404).json(utils.apiError("Tidak ada sertifikat untuk course ini"))
+
+    const userCourse = await db.userCourse.findFirst({
+        where: {
+            userId: res.user.id,
+            courseId: parseInt(courseId)
+        }
+    })
+
+    if(!userCourse) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. User tidak mempunyai course ini"))
+
+    const userTestimonial = await db.courseTestimonial.findFirst({
+        where: {
+            userId: res.user.id,
+            courseId: parseInt(courseId)
+        }
+    })
+
+    if(userTestimonial) {
+        return next()
+    } else {
+        return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. Mohon berikan rating dan testimoni course ini terlebih dahulu"))
+    }
+}
+
 /* const courseContentMiddleware = async (req, res, next) => {
     try {
         const userCourse = await db.userCourse.findFirst({
@@ -432,4 +474,4 @@ const commentarDiscussionMiddleware = async (req, res, next) => {
 }
 
 
-module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate }
+module.exports = { getCourseCertificate, getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate }
