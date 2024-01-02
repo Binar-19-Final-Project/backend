@@ -37,7 +37,7 @@ router.put("/:courseId/commentars/:id", verifyToken, commentarDiscussionMiddlewa
 router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
 
 router.post("/:courseId/certificates", verifyToken, checkRole("user"), courseCertificate, certificateController.certificate.createCertificate)
-router.get("/certificates", verifyToken, checkRole("user"), certificateController.certificate.createCertificate)
+router.get("/:courseId/certificates", verifyToken, checkRole("user"), courseCertificate, certificateController.certificate.getCertificate)
 
 
 module.exports = router

@@ -214,7 +214,19 @@ module.exports = {
 
   getCertificate: async (req, res) => {
     try {
-      
+      const courseId = parseInt(req.params.courseId)
+      const userId = res.user.id
+
+      const certificate = await db.certificate.findFirst({
+        where: {
+          userId: userId,
+          courseId: courseId
+        }
+      })
+
+      if(!certificate) return res.status(404).json(utils.apiError("Tidak ada sertifikat"))
+
+      return res.status(200).json(utils.apiSuccess("Berhasil Mengambil Data Sertifikat Berdasarakan course id dan user id", certificate))
     } catch (error) {
       console.log(error);
       return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
