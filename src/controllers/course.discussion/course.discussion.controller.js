@@ -172,7 +172,7 @@ module.exports = {
                 where: whereCondition,
             });
             
-            const totalPage = Math.ceil(totalDiscussions / limit);
+            const totalPage = Math.ceil(totalData / limit);
 
             let message = 'Berhasil mengambil data diskusi berdasarkan id '
 
