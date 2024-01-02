@@ -208,7 +208,7 @@ module.exports = {
                 
                 } else if (course.courseType.name === 'Premium') {
 
-                    if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong"))
+                    /* if(!paymentMethod) return res.status(422).json(utils.apiError("paymentMethod tidak boleh kosong")) */
 
                     const randomCode = Math.floor(100000 + Math.random() * 900000)
 
