@@ -95,7 +95,7 @@ const courseCertificate = async (req, res, next) => {
 
     const certificate = await db.certificate.findFirst({
         where: {
-            courseId: courseId,
+            courseId: parseInt(courseId),
             userId: res.user.id,
         }
     })
