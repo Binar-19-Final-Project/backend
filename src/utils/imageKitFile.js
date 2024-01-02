@@ -34,6 +34,9 @@ module.exports = {
                 searchQuery: `name = "${fileName}"`
             })
 
+            console.log(file)
+            console.log(file[0])
+
             await imageKit.deleteFile(file[0].fileId)
 
             return true
