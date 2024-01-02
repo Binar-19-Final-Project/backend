@@ -556,8 +556,9 @@ module.exports = {
             console.log(user.imageFilename)
 
             if(user.imageFilename !== null) {
-                const deleteFile = await imageKitFile.delete(user.imageFilename)
-                if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+                console.log(true)
+                // const deleteFile = await imageKitFile.delete(user.imageFilename)
+                // if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
             }
 
             const uploadFile = await imageKitFile.upload(photoProfile)
