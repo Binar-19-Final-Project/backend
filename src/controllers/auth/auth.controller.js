@@ -547,12 +547,11 @@ module.exports = {
 
             if((photoProfile.size / (1024*1024)) > allowedSizeMb) return res.status(400).json(utils.apiError("Gambar tidak boleh lebih dari 2mb"))
 
-            const user = await db.user.findUnique({
-                where: {
-                    id: res.user.id
-                }
-            })
-
+            // const user = await db.user.findUnique({
+            //     where: {
+            //         id: res.user.id
+            //     }
+            // })
             // if(user.imageFilename !== null) {
             //     const deleteFile = await imageKitFile.delete(user.imageFilename)
             //     if(!deleteFile) return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
