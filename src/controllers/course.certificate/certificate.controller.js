@@ -148,7 +148,7 @@ module.exports = {
           };
         })
 
-        const pdfPath = './sertifikatss.pdf';
+        const pdfPath = './sertifikat.pdf';
         await page.pdf({ path: pdfPath, width: htmlDimensions.width, height:htmlDimensions.height })
 
         await browser.close();
@@ -175,7 +175,7 @@ module.exports = {
 
         await file.makePublic()
 
-        const [metadata] = await file.getMetadata();
+        /* const [metadata] = await file.getMetadata(); */
         /* const publicUrl = metadata.mediaLink; */
 
         const publicUrl = new URL(
