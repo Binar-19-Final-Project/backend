@@ -642,6 +642,8 @@ module.exports = {
 
             const courseId = parseInt(req.params.courseId)
 
+            const publish = req.body.publish
+
             const checkCourse = await db.course.findUnique({
                 where:{
                     id: courseId
@@ -650,16 +652,31 @@ module.exports = {
 
             if(!checkCourse) return res.status(404).json(utils.apiError("Course tidak ditemukkan"))
             
-            await db.course.update({
-                where: {
-                    id: courseId
-                },
-                data: {
-                    isPublished: false
-                }
-            })
+            if(publish === 'true') {
+                const course = await db.course.update({
+                    where: {
+                        id: courseId
+                    },
+                    data: {
+                        isPublished: true
+                    }
+                })
 
-            return res.status(200).json(utils.apiSuccess("Course berhasil diunpublish"))
+                return res.status(201).json(utils.apiSuccess("Berhasil publish course", course))
+            }
+
+            if(publish === 'false') {
+                const course = await db.course.update({
+                    where: {
+                        id: courseId
+                    },
+                    data: {
+                        isPublished: false
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil unpublish course", course))
+            }
 
         } catch (error) {
             console.log(error)
