@@ -134,13 +134,13 @@ module.exports = {
 
     createOrder: async(req, res) => {
         try {
-            const id = res.user.id
+            const userId = res.user.id
             const courseId = parseInt(req.params.courseId)
             const { paymentMethod } = req.body
 
             const existUserCourse = await db.userCourse.findFirst({
                 where: {
-                    userId: id,
+                    userId: userId,
                     courseId: courseId
                 }
             })
@@ -160,7 +160,7 @@ module.exports = {
                 if(course.courseType.name === 'Free') {
                     const orderFreeCourse = await db.userCourse.create({
                         data: {
-                            userId: id,
+                            userId: userId,
                             courseId: courseId,
                             progress: 0,
                             status: "In Progress"
@@ -220,10 +220,12 @@ module.exports = {
                             price: course.price,
                             paymentMethod: paymentMethod,
                             status: 'Pending',
-                            userId: id,
+                            userId: userId,
                             courseId: course.id
                         }
                     })
+
+                    await notification.createNotification("Proses Pembayaran", null, "Silahkan lakukan proses pembayaran untuk course yang telah diorder", userId)
 
                     return res.status(201).json(utils.apiError("Lakukan proses pembayaran untuk menyelesaikan pembelian course ini", order))
                 }

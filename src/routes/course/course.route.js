@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     discussionController = require('../../controllers/course.discussion'),
     certificateController = require('../../controllers/course.certificate'),
@@ -35,7 +35,8 @@ router.post("/:courseId/commentars", verifyToken, commentarDiscussionMiddleware,
 router.put("/:courseId/commentars/:id", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
 router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
 
-router.post("/certificates",  certificateController.certificate.createCertificate)
+router.post("/:courseId/certificates", verifyToken, checkRole("user"), courseCertificate, certificateController.certificate.createCertificate)
+router.get("/certificates", verifyToken, checkRole("user"), certificateController.certificate.createCertificate)
 
 
 module.exports = router

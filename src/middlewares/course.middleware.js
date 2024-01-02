@@ -66,6 +66,42 @@ const courseTestimonialMiddleware = async (req, res, next) => {
 }
 
 const courseCertificate = async (req, res, next) => {
+
+    const courseId = req.params.courseId
+
+    const course = await db.course.findFirst({
+        where: {
+            id: parseInt(courseId)
+        },
+        include: {
+            courseType: true
+        }
+    })
+
+    if(!course) return res.status(404).json(utils.apiError("Course tidak ditemukan"))
+
+    const typeCourse = course.courseType.name
+
+    if(typeCourse === 'Free') return res.status(404).json(utils.apiError("Tidak ada sertifikat untuk course ini"))
+
+    const userCourse = await db.userCourse.findFirst({
+        where: {
+            userId: res.user.id,
+            courseId: parseInt(courseId)
+        }
+    })
+
+    if(!userCourse) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. User tidak mempunyai course ini"))
+
+    const certificate = await db.certificate.findFirst({
+        where: {
+            courseId: courseId,
+            userId: res.user.id,
+        }
+    })
+
+    if(certificate) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. User sudah mencetak sertifikat untuk course ini"))
+
     const userTestimonial = await db.courseTestimonial.findFirst({
         where: {
             userId: res.user.id,
@@ -76,7 +112,7 @@ const courseCertificate = async (req, res, next) => {
     if(userTestimonial) {
         return next()
     } else {
-        return res.status(403).json(utils.apiError("Mohon berikan rating dan testimoni course ini terlebih dahulu"))
+        return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. Mohon berikan rating dan testimoni course ini terlebih dahulu"))
     }
 }
 
@@ -396,4 +432,4 @@ const commentarDiscussionMiddleware = async (req, res, next) => {
 }
 
 
-module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware }
+module.exports = { getCourseMiddleware, courseTestimonialMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate }

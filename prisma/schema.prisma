@@ -31,11 +31,24 @@ model User {
   discussion          Discussion[]
   commentarDiscussion DiscussionCommentar[]
   notification        Notification[]
-  transaction       Transaction[]
+  transaction         Transaction[]
+  certificate         Certificate[]
   createdAt           DateTime              @default(now()) @map("created_at")
   updatedAt           DateTime              @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Certificate {
+  id                   Int                    @id @default(autoincrement())
+  addToLinkedin        String                 @db.LongText                
+  urlCertificate       String                 @map("url_certificate")
+  userId               Int                    @map("user_id")
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId             Int                    @map("course_id")
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @updatedAt @map("updated_at")
+
 }
 
 model Admin {
