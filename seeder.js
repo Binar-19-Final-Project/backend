@@ -47,33 +47,33 @@ async function seedData()  {
     // await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
     // /* User Seeder */
-    // for (let i = 0; i < 10; i++) {
-    //     const seedUsers = {
-    //         name: faker.person.fullName(),
-    //         email: faker.internet.email(),
-    //         phone: faker.number.int({ max: 100000000 }),
-    //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-    //         city: faker.location.city(),
-    //         country: faker.location.country(),
-    //         photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
-    //         verified: true,
-    //         roleName: "user", 
-    //     }
+    for (let i = 0; i < 10; i++) {
+        const seedUsers = {
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
+            phone: faker.number.int({ max: 100000000 }),
+            password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+            city: faker.location.city(),
+            country: faker.location.country(),
+            photoProfile: "https://img.freepik.com/free-photo/portrait-successful-man-having-stubble-posing-with-broad-smile-keeping-arms-folded_171337-1267.jpg",
+            verified: true,
+            roleName: "user", 
+        }
     
-    //     await db.user.create({ data: seedUsers })
-    // }
+        await db.user.create({ data: seedUsers })
+    }
 
-    // /* Admin Seeder */
-  //   for (let i = 0; i < 1; i++) {
-  //     const seedUsers = {
-  //         name: "admin",
-  //         email: "admin@admin.com",
-  //         password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
-  //         roleName: "admin",
-  //     }
+    /* Admin Seeder */
+    for (let i = 0; i < 1; i++) {
+      const seedUsers = {
+          name: "admin",
+          email: "admin@admin.com",
+          password: bcrypt.hashSync("Password123", bcrypt.genSaltSync(10)),
+          roleName: "admin",
+      }
   
-  //     await db.admin.create({ data: seedUsers })
-  // }
+      await db.admin.create({ data: seedUsers })
+  }
 
     // /* Instructor Seeder */
     //   for (let i = 0; i < 1; i++) {
@@ -209,7 +209,7 @@ async function seedData()  {
     //     seedCourse.coursePromoId = faker.number.int({ min: 1, max: 2 });
     //   } */
   
-    //   await db.course.create({ data: seedCourse })
+      // await db.course.create({ data: seedCourse })
 
     //   if ( seedCourse.courseInstructorId === 1) {
     //     await db.courseDiscussion.create({
@@ -260,25 +260,25 @@ async function seedData()  {
     //   await db.courseContent.create({ data: seedCourseContents })
     // }
 
-    /* Course Testimonial Seeder */
-    for (let i = 0; i < 60; i++) {
-      let userId = faker.number.int({ min: 1, max: 10 })
-      let courseId = faker.number.int({ min: 1, max: 30 })
-      const pair = `${userId}-${courseId}`
+    // /* Course Testimonial Seeder */
+    // for (let i = 0; i < 60; i++) {
+    //   let userId = faker.number.int({ min: 1, max: 10 })
+    //   let courseId = faker.number.int({ min: 1, max: 30 })
+    //   const pair = `${userId}-${courseId}`
     
-      if (!existingPairs.has(pair)) {
-        existingPairs.add(pair);
+    //   if (!existingPairs.has(pair)) {
+    //     existingPairs.add(pair);
     
-        const seedCourseTestimonial = {
-          testimonial: faker.lorem.text(),
-          rating: faker.number.int({ min: 1, max: 5 }),
-          userId,
-          courseId,
-        };
+    //     const seedCourseTestimonial = {
+    //       testimonial: faker.lorem.text(),
+    //       rating: faker.number.int({ min: 1, max: 5 }),
+    //       userId,
+    //       courseId,
+    //     };
     
-        await db.courseTestimonial.create({ data: seedCourseTestimonial });
-      }
-    }
+    //     await db.courseTestimonial.create({ data: seedCourseTestimonial });
+    //   }
+    // }
 
     /* User Course Seeder */
     // for (let i = 0; i < 50; i++) {

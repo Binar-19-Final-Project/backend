@@ -80,11 +80,11 @@ module.exports = {
                   totalPrice = originalPrice - discountAmount
                 }
 
-                const taken = course.userCourse.map((course) => ({
+                /* const taken = course.userCourse.map((course) => ({
                     courseId: course.courseId
                 }))
 
-                const totalTaken = taken.length
+                const totalTaken = taken.length */
 
                 /* console.log(totalTaken) */
               
@@ -97,7 +97,7 @@ module.exports = {
                   originalPrice: originalPrice,
                   rating: averageRatings,
                   duration: totalDurationContent,
-                  taken: totalTaken,
+                  taken: course.taken,
                   imageUrl: course.imageUrl,
                   category: course.courseCategory.name,
                   type: course.courseType.name,
@@ -208,11 +208,11 @@ module.exports = {
 
             /* const taken = course.userCourse.length  */
 
-            const taken = course.userCourse.map((course) => ({
+            /* const taken = course.userCourse.map((course) => ({
                 courseId: course.courseId
             }))
 
-            const totalTaken = taken.length
+            const totalTaken = taken.length */
 
             const requirementsString = course.requirements
             const requirementsArray = requirementsString.split(',').map(requirement => requirement.trim())
@@ -232,7 +232,7 @@ module.exports = {
                 originalPrice: originalPrice,
                 rating: averageRatings,
                 duration: totalDurationModule,
-                taken: totalTaken,
+                taken: course.taken,
                 imageUrl: course.imageUrl,
                 categoryId: course.courseCategoryId,
                 category: course.courseCategory.name,
