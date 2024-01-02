@@ -12,6 +12,7 @@ const express = require('express'),
 
 router.get('/', controller.course.getCourses)
 router.get('/:id', getCourseMiddleware, controller.course.getCourseById)
+router.put('/:courseId/unpublish', verifyToken, checkRole('admin'), controller.course.unpublishCourse)
 router.post('/', multer.single('courseImage'), validate(schema.course), verifyToken, checkRole('admin'), controller.course.createCourse)
  
 router.get('/:courseId/modules', controller.courseModule.getAllCourseModuleByCourseId)

@@ -637,7 +637,7 @@ module.exports = {
     },
 
     
-    deleteCourse: async(req, res) => {
+    unpublishCourse: async(req, res) => {
         try {
 
             const courseId = parseInt(req.params.courseId)
@@ -659,7 +659,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Course berhasil dihapus"))
+            return res.status(200).json(utils.apiSuccess("Course berhasil diunpublish"))
 
         } catch (error) {
             console.log(error)
