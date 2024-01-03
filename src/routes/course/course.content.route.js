@@ -10,4 +10,6 @@ router.post('/', verifyToken, checkRole('admin'), validate(schema.content), cont
 router.put('/:id', verifyToken, checkRole('admin'), validate(schema.content), controller.courseContent.updateCourseContent)
 router.delete('/:id', verifyToken, checkRole('admin'), controller.courseContent.deleteCourseContent)
 
+router.put('/:id/publish', verifyToken, checkRole('admin'), controller.courseContent.unpublishContent)
+
 module.exports = router

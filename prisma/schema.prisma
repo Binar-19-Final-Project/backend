@@ -43,8 +43,8 @@ model Certificate {
   id                   Int                    @id @default(autoincrement())
   addToLinkedin        String                 @db.LongText                
   urlCertificate       String                 @map("url_certificate")
-  userId               Int                    @map("user_id")
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               Int?                    @map("user_id")
+  user                 User?                   @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   courseId             Int                    @map("course_id")
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @updatedAt @map("updated_at")
@@ -67,10 +67,10 @@ model UserCourse {
   id                   Int                    @id @default(autoincrement())
   progress             Int
   status               String
-  userId               Int                    @map("user_id")
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId             Int                    @map("course_id")
-  course               Course                 @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId               Int?                    @map("user_id")
+  user                 User?                   @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseId             Int?                    @map("course_id")
+  course               Course?                 @relation(fields: [courseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   userLearningProgress UserLearningProgress[]
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @updatedAt @map("updated_at")
@@ -165,17 +165,17 @@ model Course {
   imageUrl           String              @map("image_url")
   imageFilename      String?             @map("image_filename")
   courseDiscussionId Int?                @unique @map("course_discussion_id")
-  courseDiscussion   CourseDiscussion?   @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
-  courseInstructorId Int                 @map("course_instructor_id")
-  courseInstructor   CourseInstructor    @relation(fields: [courseInstructorId], references: [id], onDelete: Cascade)
-  courseTypeId       Int                 @map("course_type_id")
-  courseType         CourseType          @relation(fields: [courseTypeId], references: [id], onDelete: Cascade)
-  courseCategoryId   Int                 @map("course_category_id")
-  courseCategory     CourseCategory      @relation(fields: [courseCategoryId], references: [id], onDelete: Cascade)
-  courseLevelId      Int                 @map("course_level_id")
-  courseLevel        CourseLevel         @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
+  courseDiscussion   CourseDiscussion?   @relation(fields: [courseDiscussionId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseInstructorId Int?                 @map("course_instructor_id")
+  courseInstructor   CourseInstructor?    @relation(fields: [courseInstructorId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseTypeId       Int?                 @map("course_type_id")
+  courseType         CourseType?          @relation(fields: [courseTypeId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseCategoryId   Int?                 @map("course_category_id")
+  courseCategory     CourseCategory?      @relation(fields: [courseCategoryId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseLevelId      Int?                 @map("course_level_id")
+  courseLevel        CourseLevel?         @relation(fields: [courseLevelId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   coursePromoId      Int?                @map("course_promo_id")
-  coursePromo        CoursePromo?        @relation(fields: [coursePromoId], references: [id], onDelete: Cascade)
+  coursePromo        CoursePromo?        @relation(fields: [coursePromoId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   isPromo            Boolean             @default(false) @map("is_promo")
   isPublished        Boolean             @default(true) @map("is_published")
   courseModule       CourseModule[]
@@ -194,8 +194,9 @@ model CourseModule {
   id            Int             @id @default(autoincrement())
   title         String
   slug          String
-  courseId      Int             @map("course_id")
-  course        Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  isPublished   Boolean           @default(true) @map("is_published")   
+  courseId      Int?             @map("course_id")
+  course        Course?          @relation(fields: [courseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   courseContent CourseContent[]
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
@@ -210,11 +211,12 @@ model CourseContent {
   sequence             Int
   videoUrl             String                 @map("video_url")
   duration             Int
+  isPublished          Boolean           @default(true) @map("is_published")  
   isDemo               Boolean                @default(false) @map("is_demo")
-  courseId             Int                    @map("course_id")
-  course               Course                 @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  moduleId             Int                    @map("course_module_id")
-  courseModule         CourseModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  courseId             Int?                    @map("course_id")
+  course               Course?                 @relation(fields: [courseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  moduleId             Int?                    @map("course_module_id")
+  courseModule         CourseModule?           @relation(fields: [moduleId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   userLearningProgress UserLearningProgress[]
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @updatedAt @map("updated_at")
@@ -225,10 +227,10 @@ model CourseContent {
 model UserLearningProgress {
   id           Int           @id @default(autoincrement())
   isFinished   Boolean       @default(false) @map("is_finished")
-  contentId    Int           @map("content_id")
-  content      CourseContent @relation(fields: [contentId], references: [id], onDelete: Cascade)
-  userCourseId Int           @map("user_course_id")
-  userCourse   UserCourse    @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+  contentId    Int?           @map("content_id")
+  content      CourseContent? @relation(fields: [contentId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  userCourseId Int?           @map("user_course_id")
+  userCourse   UserCourse?    @relation(fields: [userCourseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   finishedAt   DateTime?     @map("finished_at")
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
@@ -240,10 +242,10 @@ model CourseTestimonial {
   id          Int    @id @default(autoincrement())
   testimonial String @db.Text
   rating      Float
-  userId      Int
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId    Int
-  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId      Int?
+  user        User?   @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseId    Int?
+  course      Course? @relation(fields: [courseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
 
   @@unique([userId, courseId])
   @@map("course_testimonials")
@@ -267,10 +269,10 @@ model Discussion {
   urlPhoto           String?                @map("url_photo")
   imageFilename      String?                @map("image_filename")
   closed             Boolean               @default(false)
-  userId             Int                   @map("user_id")
-  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseDiscussionId Int                   @map("course_discussion_id")
-  courseDiscussion   CourseDiscussion      @relation(fields: [courseDiscussionId], references: [id], onDelete: Cascade)
+  userId             Int?                   @map("user_id")
+  user               User?                  @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseDiscussionId Int?                   @map("course_discussion_id")
+  courseDiscussion   CourseDiscussion?      @relation(fields: [courseDiscussionId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   commentar          DiscussionCommentar[]
   createdAt          DateTime              @default(now()) @map("created_at")
   updatedAt          DateTime              @updatedAt @map("updated_at")
@@ -284,11 +286,11 @@ model DiscussionCommentar {
   urlPhoto       String?                @map("url_photo")
   imageFilename  String?                @map("image_filename")
   userId         Int?              @map("user_id")
-  user           User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User?             @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   instructorId   Int?              @map("instructor_id")
-  instructor     CourseInstructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  discussionId   Int              @map("discussion_id")
-  discussion     Discussion       @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  instructor     CourseInstructor? @relation(fields: [instructorId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  discussionId   Int?              @map("discussion_id")
+  discussion     Discussion?       @relation(fields: [discussionId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   createdAt      DateTime         @default(now()) @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
 
@@ -302,10 +304,10 @@ model Order {
   status        String
   successAt     DateTime?
   paymentMethod String    @map("payment_method")
-  userId        Int       @map("user_id")
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId      Int       @map("course_id")
-  course        Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId        Int?       @map("user_id")
+  user          User?      @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
+  courseId      Int?       @map("course_id")
+  course        Course?    @relation(fields: [courseId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
@@ -317,8 +319,8 @@ model Notification {
   type      String
   data      Json?
   message   String?
-  userId    Int       @map("user_id")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?       @map("user_id")
+  user      User?      @relation(fields: [userId], references: [id],  onDelete: SetNull, onUpdate: SetNull)
   readAt    DateTime? @map("read_at")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")

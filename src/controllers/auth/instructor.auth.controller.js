@@ -95,86 +95,44 @@ module.exports = {
         }
     },
 
-    update: async (req, res) => {
+    changePassword: async (req, res) => {
+
         try {
-            const { id } = req.params;
-            const { name, email, password } = req.body;
-    
+            
+            const instructorId = res.user.id
+            const {oldPassword, newPassword} = req.body
+
             const instructor = await db.courseInstructor.findUnique({
-                where: {
-                    id: parseInt(id)
+                where:{
+                    id: instructorId
                 }
-            });
-    
-            if (!instructor) {
-                return res.status(404).json(utils.apiError("Instruktur tidak ditemukan"));
+            })
+
+
+            if(!instructor) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
+
+            if(instructor.password) {
+                const verifyOldPassword = await utils.verifyHashData(oldPassword, instructor.password)
+
+                if(!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
             }
 
-            if (email && email !== instructor.email) {
-                const checkEmail = await db.courseInstructor.findUnique({
-                    where: {
-                        email: email
-                    }
-                });
-    
-                if (checkEmail) {
-                    return res.status(409).json(utils.apiError("Email telah terdaftar"));
-                }
-            }
-    
-            let photoProfileUrl = instructor.photoProfile;
-            let imageFilename = instructor.imageFilename;
-            if (req.file) {
-                const allowedMimes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
-                const allowedSizeMb = 2;
-                const photoInstructor = req.file;
-    
-                if (!allowedMimes.includes(photoInstructor.mimetype)) {
-                    return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"));
-                }
-    
-                if (photoInstructor.size / (1024 * 1024) > allowedSizeMb) {
-                    return res.status(409).json(utils.apiError("Gambar kategori tidak boleh lebih dari 2mb"));
-                }
-    
-                const uploadFile = await imageKitFile.upload(photoInstructor);
-    
-                if (!uploadFile) {
-                    return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
-                }
-    
-                photoProfileUrl = uploadFile.url;
-                imageFilename = uploadFile.name;
-            }
-    
-            let hashPassword = instructor.password;
-            if (password) {
-                hashPassword = await utils.createHashData(password);
-            }
-    
-            const updatedInstructor = await db.courseInstructor.update({
-                where: {
-                    id: parseInt(id)
+            const hashPassword = await utils.createHashData(newPassword)
+
+            await db.courseInstructor.update({
+                where:{
+                    id: instructorId
                 },
                 data: {
-                    name: name || instructor.name,
-                    email: email || instructor.email,
-                    password: hashPassword,
-                    photoProfile: photoProfileUrl,
-                    imageFilename: imageFilename
+                    password: hashPassword
                 }
-            });
-    
-            const data = {
-                name: updatedInstructor.name,
-                email: updatedInstructor.email,
-                photoProfile: updatedInstructor.photoProfile
-            };
-    
-            return res.status(200).json(utils.apiSuccess("Data instruktur berhasil diperbarui", data));
+            })
+
+            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
+
         } catch (error) {
-            console.log(error);
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
     

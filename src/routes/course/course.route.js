@@ -4,7 +4,7 @@ const express = require('express'),
     { verifyToken } = require('../../middlewares/verify.token'),
     multer = require('multer')(),
     checkRole = require('../../middlewares/check.role'),
-    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate } = require('../../middlewares/course.middleware'),
+    { getCourseMiddleware, courseContentMiddleware, courseDiscussionMiddleware, discussionMiddleware, commentarDiscussionMiddleware, courseCertificate, getCourseCertificate } = require('../../middlewares/course.middleware'),
     controller = require('../../controllers/course'),
     discussionController = require('../../controllers/course.discussion'),
     certificateController = require('../../controllers/course.certificate'),
@@ -36,8 +36,9 @@ router.post("/:courseId/commentars", verifyToken, commentarDiscussionMiddleware,
 router.put("/:courseId/commentars/:id", verifyToken, commentarDiscussionMiddleware, multer.single("photoCommentar"), discussionController.commentarDiscussion.updateCommentarByIdCourse)
 router.get("/:courseId/commentars/:id", verifyToken, courseDiscussionMiddleware, discussionController.commentarDiscussion.getCommentarById)
 
-router.post("/:courseId/certificates", verifyToken, checkRole("user"), courseCertificate, certificateController.certificate.createCertificate)
-router.get("/:courseId/certificates", verifyToken, checkRole("user"), courseCertificate, certificateController.certificate.getCertificate)
+router.post("/:courseId/certificates", verifyToken, checkRole("user"), /* courseCertificate, */ certificateController.certificate.createCertificate)
+router.get("/:courseId/certificates/download", verifyToken, checkRole("user"), getCourseCertificate, certificateController.certificate.downloadCertificate)
+router.get("/:courseId/certificates/linkedin", verifyToken, checkRole("user"), getCourseCertificate, certificateController.certificate.linkedinCertificate)
 
 
 module.exports = router

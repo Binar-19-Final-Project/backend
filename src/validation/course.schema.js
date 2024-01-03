@@ -37,7 +37,6 @@ module.exports = {
     body("price").notEmpty().withMessage("Harga kelas tidak boleh kosong"),
     body("courseInstructorId").notEmpty().withMessage("Instructor kelas tidak boleh kosong"),
     body("description").notEmpty().withMessage("Deskripsi kelas tidak boleh kosong"),
-    body("isPublished").notEmpty().withMessage("Status publish tidak boleh kosong"),
   ],
 
   promo: [

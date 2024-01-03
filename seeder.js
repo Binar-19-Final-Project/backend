@@ -7,11 +7,11 @@ const slugify = require('slugify');
 /* For create unique data */
 // const usedRoleName = new Set()
 // const usedUserId = new Set()
-/* const usedCourseCategoryName = new Set()
+const usedCourseCategoryName = new Set()
 const usedCourseType = new Set()
 const usedCourseLevel = new Set()
 const usedCoursePromoName = new Set()
-const existingPairs = new Set(); */
+const existingPairs = new Set();
 
 
 async function seedData()  {
@@ -21,9 +21,8 @@ async function seedData()  {
     // await db.$transaction([db.admin.deleteMany()])
     // await db.$transaction([db.courseInstructor.deleteMany()])
     // await db.$transaction([db.courseCategory.deleteMany()])
-    // await db.$transaction([db.courseType.deleteMany()])
+    await db.$transaction([db.courseType.deleteMany()])
     // await db.$transaction([db.courseLevel.deleteMany()])
-    // await db.$transaction([db.courseInstructor.deleteMany()])
     // await db.$transaction([db.course.deleteMany()])
     // await db.$transaction([db.coursePromo.deleteMany()])
     // await db.$transaction([db.courseModule.deleteMany()])
@@ -36,17 +35,16 @@ async function seedData()  {
     // await db.$queryRaw`ALTER TABLE admins AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_categories AUTO_INCREMENT = 1`
-    // await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
+    await db.$queryRaw`ALTER TABLE course_types AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_levels AUTO_INCREMENT = 1`
-    // await db.$queryRaw`ALTER TABLE course_instructors AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE courses AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_promos AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE course_modules AUTO_INCREMENT = 1`
-    // await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1
+    // await db.$queryRaw`ALTER TABLE course_contents AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE user_courses AUTO_INCREMENT = 1`
     // await db.$queryRaw`ALTER TABLE orders AUTO_INCREMENT = 1`
 
-    // /* User Seeder */
+    /* User Seeder */
     // for (let i = 0; i < 10; i++) {
     //     const seedUsers = {
     //         name: faker.person.fullName(),
@@ -75,7 +73,7 @@ async function seedData()  {
   //     await db.admin.create({ data: seedUsers })
   // }
 
-    // /* Instructor Seeder */
+    /* Instructor Seeder */
     //   for (let i = 0; i < 1; i++) {
     //     const seedUsers = {
     //         name: "instructor",
@@ -109,23 +107,23 @@ async function seedData()  {
     // }
 
     // /* Course Type Seeder */
-    // for (let i = 0; i < 2; i++) {
-    //   let courseType
-    //     do {
-    //       courseType = faker.helpers.arrayElement(['Free', 'Premium'])
-    //     } while (usedCourseType.has(courseType))
+    for (let i = 0; i < 2; i++) {
+      let courseType
+        do {
+          courseType = faker.helpers.arrayElement(['Free', 'Premium'])
+        } while (usedCourseType.has(courseType))
     
-    //     usedCourseType.add(courseType)
+        usedCourseType.add(courseType)
 
-    //     const slug = slugify(courseType, { lower: true, remove: /[*+~.()'"!:@]/g })
+        const slug = slugify(courseType, { lower: true, remove: /[*+~.()'"!:@]/g })
     
-    //     const seedCourseType = {
-    //       name: courseType,
-    //       slug: slug
-    //     }
+        const seedCourseType = {
+          name: courseType,
+          slug: slug
+        }
   
-    //   await db.courseType.create({ data: seedCourseType })
-    // }
+      await db.courseType.create({ data: seedCourseType })
+    }
 
     // /* Course Level Seeder */
     // for (let i = 0; i < 3; i++) {
@@ -226,39 +224,39 @@ async function seedData()  {
     // }
 
     /* Course Module Seeder */
-    for (let i = 0; i < 10; i++) {
+    // for (let i = 0; i < 30; i++) {
 
-      const title = faker.commerce.productName()
-      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+    //   const title = faker.commerce.productName()
+    //   const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
 
-      const seedCourseModules = {
-          title: title,
-          slug: slug, 
-          courseId: 10 /* faker.number.int({ min: 9, max: 38 }) */
-      }
+    //   const seedCourseModules = {
+    //       title: title,
+    //       slug: slug, 
+    //       courseId: faker.number.int({ min: 1, max: 10 })
+    //   }
   
-      await db.courseModule.create({ data: seedCourseModules })
-    }
+    //   await db.courseModule.create({ data: seedCourseModules })
+    // }
 
     // //  /* Course Content Seeder */
-     for (let i = 0; i < 30; i++) {
+    //  for (let i = 0; i < 30; i++) {
 
-      const title = faker.commerce.productName()
-      const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
+    //   const title = faker.commerce.productName()
+    //   const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g })
 
-      const seedCourseContents = {
-          title: title,
-          slug: slug,
-          videoUrl: "UYIERNVOGzk?si=ZkxZYjAJ507j7YT0",
-          sequence: faker.number.int({ min: 1, max: 8 }),
-          isDemo: faker.datatype.boolean(0.3),
-          duration: faker.number.int({ min: 1, max: 10 }),
-          courseId: 10,
-          moduleId: faker.number.int({ min: 6, max: 15 }),
-      }
+    //   const seedCourseContents = {
+    //       title: title,
+    //       slug: slug,
+    //       videoUrl: "UYIERNVOGzk?si=ZkxZYjAJ507j7YT0",
+    //       sequence: faker.number.int({ min: 1, max: 8 }),
+    //       isDemo: faker.datatype.boolean(0.3),
+    //       duration: faker.number.int({ min: 1, max: 10 }),
+    //       courseId:  faker.number.int({ min: 1, max: 30 }),
+    //       moduleId: faker.number.int({ min: 1, max: 30 }),
+    //   }
   
-      await db.courseContent.create({ data: seedCourseContents })
-    }
+    //   await db.courseContent.create({ data: seedCourseContents })
+    // }
 
     // /* Course Testimonial Seeder */
     // for (let i = 0; i < 60; i++) {
@@ -281,30 +279,31 @@ async function seedData()  {
     // }
 
     /* User Course Seeder */
-    // for (let i = 0; i < 50; i++) {
-    //   let userId = faker.number.int({ min: 1, max: 10 })
-    //   let courseId = faker.number.int({ min: 1, max: 30 })
-    //   const pair = `${userId}-${courseId}`
+    for (let i = 0; i < 1; i++) {
+      // let userId = faker.number.int({ min: 1, max: 10 })
+      // let courseId = faker.number.int({ min: 1, max: 30 })
+      // const pair = `${userId}-${courseId}`
     
-    //   if (!existingPairs.has(pair)) {
-    //     existingPairs.add(pair);
+      // if (!existingPairs.has(pair)) {
+      //   existingPairs.add(pair);
     
-    //     const seedUserCourse = {
-    //       userId,
-    //       courseId,
-    //       progress: faker.number.int({ min: 98, max: 100 })
-    //     }
+        const seedUserCourse = {
+          userId: 1,
+          courseId: 1,
+          progress: 0,/* faker.number.int({ min: 98, max: 100 }) */
+          status: 'In Progress'
+        }
 
 
-    //     if(seedUserCourse.progress === 100) {
-    //         seedUserCourse.status = 'Selesai'
-    //     } else {
-    //         seedUserCourse.status = 'In Progress'
-    //     }
+      //   if(seedUserCourse.progress === 100) {
+      //       seedUserCourse.status = 'Selesai'
+      //   } else {
+      //       seedUserCourse.status = 'In Progress'
+      //   }
     
-    //     await db.userCourse.create({ data: seedUserCourse });
-    //   }
-    // }
+        await db.userCourse.create({ data: seedUserCourse });
+      // }
+    }
 
     /* Course Order Seeder */
     // for (let i = 0; i < 60; i++) {

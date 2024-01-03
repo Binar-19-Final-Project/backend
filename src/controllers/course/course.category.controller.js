@@ -77,13 +77,17 @@ module.exports = {
 
       const { name, isPublished } = req.body;
 
+      console.log('===============================', isPublished)
+
       const nameSlug = await utils.createSlug(name);
+
+      const isPublishedBool = isPublished === 'true'
       
       await db.courseCategory.create({
         data: {
           name: name,
           slug: nameSlug,
-          isPublished: Boolean(isPublished),
+          isPublished: isPublishedBool,
           urlPhoto: uploadFile.url,
           imageFileName: uploadFile.name
         },
@@ -170,7 +174,7 @@ module.exports = {
 
       await db.courseCategory.update({
         where: {
-          id: id,
+          id: id,                     
         },
         data: {
           name: name,
