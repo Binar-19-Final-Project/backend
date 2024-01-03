@@ -388,7 +388,7 @@ module.exports = {
 
     getProfile: async (req, res) => {
         try {
-            const { id } = res.user
+            const { id } = res.user.id
             const user = await db.user.findUnique({
                 where: {
                     id: id
