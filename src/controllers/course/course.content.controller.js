@@ -360,6 +360,53 @@ module.exports = {
             console.log(error)
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
+    },
+
+    demoContent: async(req, res) => {
+        try {
+
+            const contentId = parseInt(req.params.contentId)
+
+            const publish = req.body.publish
+
+            const checkCourse = await db.courseContent.findUnique({
+                where:{
+                    id: contentId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course content tidak ditemukkan"))
+            
+            if(publish === 'true') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isDemo: true
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil publish course content", course))
+            }
+
+            if(publish === 'false') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isDemo: false
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil unpublish course content", course))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     }
 
 }
