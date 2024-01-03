@@ -370,12 +370,6 @@ module.exports = {
                     }
                 })
 
-                await db.order.delete({
-                    where: {
-                        id: parseInt(id)
-                    }
-                })
-
                 await notification.createNotification("Pembayaran Berhasil", null, "Pembayaran kelas premium berhasil dilakukan. Anda bisa mengakses kelas ini sekarang juga!", userId)
 
                 return res.status(201).json(utils.apiSuccess("Konfirmasi pembelian berhasil", orderFreeCourse))
