@@ -16,7 +16,7 @@ module.exports = {
                 <p style="color: #555; text-align: center;">This code expires in 10 minute(s).</p>
                 <p style="color: #FF0000; text-align: center;"><i>Don't share this verification code to anyone</i></p>
             </div>
-        `,
+            `,
         }
     },
 
@@ -25,20 +25,34 @@ module.exports = {
             from: NODEMAILER_EMAIL,
             to: email,
             subject: "Reset Password",
+            // html:`
+            // <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+            //     <h2 style="color: #333; text-align: center;">Reset Password</h2>
+            //     <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
+            //         <span style="color: tomato;">Click <a href="${LOCAL_URL}:${PORT}/reset-password/${resetToken}">here</a> to reset your password</span>
+            //     </div>
+            //     <h2 style="color: #333; text-align: center;">Or copy this link</h2>
+            //     <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
+            //         <p>
+            //             ${LOCAL_URL}:${PORT}/reset-password/${resetToken}
+            //         </p>
+            //     </div>
+            // </div>
+            // `,
             html:`
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
                 <h2 style="color: #333; text-align: center;">Reset Password</h2>
                 <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
-                    <span style="color: tomato;">Click <a href="${LOCAL_URL}:${PORT}/reset-password/${resetToken}">here</a> to reset your password</span>
+                    <span style="color: tomato;">Click <a href="${RAILWAY_URL}/reset-password/${resetToken}">here</a> to reset your password</span>
                 </div>
                 <h2 style="color: #333; text-align: center;">Or copy this link</h2>
                 <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
                     <p>
-                        ${LOCAL_URL}:${PORT}/reset-password/${resetToken}
+                        ${RAILWAY_URL}/reset-password/${resetToken}
                     </p>
                 </div>
             </div>
-        `,
+            `,
         }
     },
 
