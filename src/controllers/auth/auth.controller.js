@@ -395,7 +395,7 @@ module.exports = {
                 }
             })
 
-            if(!user) return res.status(404).json(utils.apiSuccess("User tidak ditemukkan"))
+            if(!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
         
             const data = {
                 name: user.name,
