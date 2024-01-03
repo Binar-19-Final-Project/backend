@@ -40,12 +40,6 @@ module.exports = {
                             }
                         }
                     }
-                    /* courseModule: true,
-                    courseContent: {
-                        orderBy: {
-                            sequence: 'asc'
-                        }
-                    } */
                 },
                orderBy: orderBy
             })
@@ -61,8 +55,6 @@ module.exports = {
                 const sumRatings = ratings.reduce((sum, rating) => sum + rating, 0)
                 const averageRatings = totalRatings > 0 ? sumRatings / totalRatings : 0
 
-                /* const taken = course.userCourse.length */
-
                 let totalDurationContent = 0
                 course.courseModule.map((module) => {
                     module.courseContent.map((content) => {
@@ -70,23 +62,11 @@ module.exports = {
                     })
                 })
 
-                /* course.courseContent.map((content) => {
-                    totalDurationContent += content.duration
-                }) */
-
                 let totalPrice = originalPrice
                 if (discount) {
                   const discountAmount = (originalPrice * discount) / 100
                   totalPrice = originalPrice - discountAmount
                 }
-
-                /* const taken = course.userCourse.map((course) => ({
-                    courseId: course.courseId
-                }))
-
-                const totalTaken = taken.length */
-
-                /* console.log(totalTaken) */
               
                 return {
                   id: course.id,
@@ -99,10 +79,10 @@ module.exports = {
                   duration: totalDurationContent,
                   taken: course.taken,
                   imageUrl: course.imageUrl,
-                  category: course.courseCategory.name,
-                  type: course.courseType.name,
-                  level: course.courseLevel.name,
-                  instructor: course.courseInstructor.name,
+                  category: course.courseCategory ? course.courseCategory.name : null,
+                  type: course.courseType ? course.courseType.name : null,
+                  level: course.courseLevel ? course.courseLevel.name : null,
+                  instructor: course.courseInstructor ? course.courseInstructor.name : null,
                   totalModule: totalModule,
                   isPromo: course.isPromo,
                   namePromo: promoName,
@@ -234,14 +214,14 @@ module.exports = {
                 duration: totalDurationModule,
                 taken: course.taken,
                 imageUrl: course.imageUrl,
-                categoryId: course.courseCategoryId,
-                category: course.courseCategory.name,
-                typeId: course.courseTypeId,
-                type: course.courseType.name,
-                levelId: course.courseLevelId,
-                level: course.courseLevel.name,
-                instructorId: course.courseInstructorId,
-                instructor: course.courseInstructor.name,
+                categoryId: course.courseCategory ? course.courseCategory.id : null,
+                category: course.courseCategory ? course.courseCategory.name : null,
+                typeId: course.courseType ? course.courseType.id : null,
+                type: course.courseType ? course.courseType.name : null,
+                levelId: course.courseLevel ? course.courseLevel.id : null,
+                level: course.courseLevel ? course.courseLevel.name : null,
+                instructorId: course.courseInstructor ? course.courseInstructor.id : null,
+                instructor: course.courseInstructor ? course.courseInstructor.name : null,
                 totalModule: totalModule,
                 namePromo: promoName,
                 discount: discount,
