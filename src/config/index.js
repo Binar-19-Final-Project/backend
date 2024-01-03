@@ -7,6 +7,10 @@ module.exports = {
   /* JWT Key Configuration*/
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
 
+  /* Google Cloud Service */
+  KEY_FILENAME: process.env.KEY_FILENAME,
+  PROJECT_ID: process.env.PROJECT_ID,
+
   /* Nodemailer Configuration */
   NODEMAILER_SERVICE: process.env.NODEMAILER_SERVICE,
   NODEMAILER_HOST: process.env.NODEMAILER_HOST,

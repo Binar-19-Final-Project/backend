@@ -75,7 +75,7 @@ module.exports = {
 
             /* const userId = res.user.id */
 
-            let userCourses
+           /*  let userCourses
             let userLearningProgress
 
             const roleName = res.user.roleName
@@ -93,7 +93,7 @@ module.exports = {
                         userCourseId: userCourses.id
                     }
                 })
-            }
+            } */
             
             let data = {
                 contentId: courseContent.id,
@@ -105,14 +105,14 @@ module.exports = {
                 isDemo: courseContent.isDemo,
                 moduleId: courseContent.moduleId,
                 courseId: courseContent.courseModule.courseId,
-                userCourseId: null,
-                isFinished: null,
+                /* userCourseId: null,
+                isFinished: null, */
             };
             
-            if (userCourses) {
+            /* if (userCourses) {
                 data.userCourseId = userCourses.id;
                 data.isFinished = userLearningProgress.isFinished;
-            }
+            } */
             
             return res.status(200).json(utils.apiSuccess("Behasil mengambil data konten", data));
         } catch (error) {
@@ -314,5 +314,99 @@ module.exports = {
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
+
+    unpublishContent: async(req, res) => {
+        try {
+
+            const contentId = parseInt(req.params.contentId)
+
+            const publish = req.body.publish
+
+            const checkCourse = await db.courseContent.findUnique({
+                where:{
+                    id: contentId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course content tidak ditemukkan"))
+            
+            if(publish === 'true') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isPublished: true
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil publish course content", course))
+            }
+
+            if(publish === 'false') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isPublished: false
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil unpublish course content", course))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
+
+    demoContent: async(req, res) => {
+        try {
+
+            const contentId = parseInt(req.params.contentId)
+
+            const publish = req.body.publish
+
+            const checkCourse = await db.courseContent.findUnique({
+                where:{
+                    id: contentId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course content tidak ditemukkan"))
+            
+            if(publish === 'true') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isDemo: true
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil publish course content", course))
+            }
+
+            if(publish === 'false') {
+                const course = await db.courseContent.update({
+                    where: {
+                        id: contentId
+                    },
+                    data: {
+                        isDemo: false
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil unpublish course content", course))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    }
 
 }

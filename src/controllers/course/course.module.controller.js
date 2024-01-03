@@ -266,4 +266,51 @@ module.exports = {
         }
     },
 
+    unpublishCourse: async(req, res) => {
+        try {
+
+            const moduleId = parseInt(req.params.moduleId)
+
+            const publish = req.body.publish
+
+            const checkCourse = await db.courseModule.findUnique({
+                where:{
+                    id: moduleId
+                }
+            })
+
+            if(!checkCourse) return res.status(404).json(utils.apiError("Course Module tidak ditemukkan"))
+            
+            if(publish === 'true') {
+                const course = await db.courseModule.update({
+                    where: {
+                        id: moduleId
+                    },
+                    data: {
+                        isPublished: true
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil publish course module", course))
+            }
+
+            if(publish === 'false') {
+                const course = await db.courseModule.update({
+                    where: {
+                        id: moduleId
+                    },
+                    data: {
+                        isPublished: false
+                    }
+                })
+
+                return res.status(201).json(utils.apiSuccess("Berhasil unpublish course module", course))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    }
+
 }

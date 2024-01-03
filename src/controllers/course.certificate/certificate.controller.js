@@ -2,7 +2,10 @@ const db = require('../../../prisma/connection'),
   utils = require('../../utils/utils'),
   puppeteer = require('puppeteer'),
   { readFileSync } = require('fs'),
+  { KEY_FILENAME, PROJECT_ID } = require('../../config'),
+  fs = require('fs'),
   { Storage } = require('@google-cloud/storage');
+
 
 module.exports = {
   createCertificate: async (req, res) => {
@@ -90,8 +93,9 @@ module.exports = {
                 border-left-color: #1e3a5f;
                 border-top-color: #1e3a5f;
               }
-              */ .logo {
-                color: tan;
+        
+              .logo {
+                color: #1e3a5f;
               }
         
               .marquee {
@@ -115,25 +119,42 @@ module.exports = {
               .reason {
                 margin: 20px;
               }
+        
+              .signature {
+                border-top: 2px solid black;
+                margin-top: 50px;
+                font-size: 18px;
+                font-style: italic;
+                color: #1e3a5f;
+                width: 200px;
+              }
+              .tanda {
+                margin-top: 60px;
+                font-size: 16px;
+                color: #1e3a5f;
+                width: 200px;
+              }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="certificate">
-                <div class="logo">An Organization</div>
+                <div class="logo">An Learning Course</div>
         
-                <div class="marquee">Certificate of Completion</div>
+                <div class="marquee">Certificate of Participation</div>
         
                 <div class="assignment">This certificate is presented to</div>
         
-                <div class="person">${name}</div>
+                <div class="person">Joe Nathan</div>
         
                 <div class="reason">
-                  ${courseName}
+                  For participation in completing the Beginner web learning class
                 </div>
+                <div class="tanda">Tanda Tangan</div>
+        
+                <div class="signature">Nama Mentor</div>
               </div>
             </div>
-             
           </body>
         </html>
         `
@@ -148,7 +169,7 @@ module.exports = {
           };
         })
 
-        const pdfPath = './sertifikat.pdf';
+        const pdfPath = `./${name}-${courseName}.pdf`;
         await page.pdf({ path: pdfPath, width: htmlDimensions.width, height:htmlDimensions.height })
 
         await browser.close();
@@ -158,7 +179,7 @@ module.exports = {
 
       const uploadFileToGCS = async (pdfPath) => {
         const storage = new Storage({
-          projectId: 'submission-mgca-mnurafifudin',
+          projectId: PROJECT_ID,
           keyFilename: 'editor-ilearn.json',
         });
 
@@ -182,6 +203,15 @@ module.exports = {
           `https://storage.googleapis.com/${bucketName}/${destinationFileName}`
         );
   
+        fs.unlink(pdfPath, (err) => {
+          if (err) {
+            console.error("Error deleting file:", err);
+            return;
+          }
+          console.log("Local certificate file deleted");
+        });
+
+
         return publicUrl
       }
 
@@ -212,7 +242,7 @@ module.exports = {
     }
   },
 
-  getCertificate: async (req, res) => {
+  downloadCertificate: async (req, res) => {
     try {
       const courseId = parseInt(req.params.courseId)
       const userId = res.user.id
@@ -221,8 +251,33 @@ module.exports = {
         where: {
           userId: userId,
           courseId: courseId
-        }
+        },
       })
+
+      certificate.addToLinkedin = undefined
+
+      if(!certificate) return res.status(404).json(utils.apiError("Tidak ada sertifikat"))
+
+      return res.status(200).json(utils.apiSuccess("Berhasil Mengambil Data Sertifikat Berdasarakan course id dan user id", certificate))
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(utils.apiError("Kesalahan pada internal server"));
+    }
+  },
+
+  linkedinCertificate: async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId)
+      const userId = res.user.id
+
+      const certificate = await db.certificate.findFirst({
+        where: {
+          userId: userId,
+          courseId: courseId
+        },
+      })
+
+      certificate.urlCertificate = undefined
 
       if(!certificate) return res.status(404).json(utils.apiError("Tidak ada sertifikat"))
 

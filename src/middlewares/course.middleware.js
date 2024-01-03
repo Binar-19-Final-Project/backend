@@ -100,7 +100,7 @@ const courseCertificate = async (req, res, next) => {
         }
     })
 
-    if(certificate) return res.status(403).json(utils.apiError("Akses tidak diperbolehkan. User sudah mencetak sertifikat untuk course ini"))
+    if(certificate) return res.status(403).json(utils.apiError("User sudah mencetak sertifikat untuk course ini"))
 
     const userTestimonial = await db.courseTestimonial.findFirst({
         where: {
@@ -324,7 +324,7 @@ const courseDiscussionMiddleware = async (req, res, next) => {
 
         const courseDiscussion = course.courseDiscussionId
 
-        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi pada course ini"))
 
         const userCourse = await db.userCourse.findFirst({
             where: {
@@ -383,9 +383,11 @@ const discussionMiddleware = async (req, res, next) => {
             }
         })
 
+        if(!course) return res.status(404).json(utils.apiError("Course tidak ada"))
+
         const courseDiscussion = course.courseDiscussionId
 
-        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi pada course ini"))
 
         const userCourse = await db.userCourse.findFirst({
             where: {
@@ -428,7 +430,7 @@ const commentarDiscussionMiddleware = async (req, res, next) => {
 
         const courseDiscussion = course.courseDiscussionId
 
-        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi"))
+        if(courseDiscussion === null) return res.status(404).json(utils.apiError("Tidak ada ruang diskusi pada course ini"))
 
         const userCourse = await db.userCourse.findFirst({
             where: {
